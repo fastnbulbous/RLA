@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fraction Explorer Academy 🍕 — Rainbow Learning</title>
+  <title>Rainbow's Fraction Fun 🍕 - Rainbow's Number Fun</title>
   <meta name="description" content="Compare, sort and explore fractions up to 1/16 with Rainbow Doggy! Visual fraction strips, number lines, and common denominators for Year 2–4.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -433,11 +433,12 @@
         <span style="font-size:0.65rem;font-weight:800;color:var(--text2);font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:0.3px;background:rgba(30,41,59,0.6);border:1px solid var(--border);padding:2px 8px;border-radius:8px;transition:all 0.2s;white-space:nowrap;">🏠 Home avavav! 🐾</span>
       </a>
       <div class="logo-text">
-        <h1>Fraction Explorer 🍕</h1>
+        <h1>Rainbow's Fraction Fun 🍕</h1>
         <p>Learn fractions with Rainbow Doggy 🐶</p>
       </div>
     </div>
     <div class="stats-bar">
+      <button id="themeToggleBtn" class="tool-btn" onclick="toggleTheme()">☀️ Light</button>
       <button class="tool-btn" id="muteBtn" onclick="toggleMute()">🔊 Sound On</button>
       <div class="stat-badge streak">🔥 <span id="streakCount">0</span></div>
       <div class="stat-badge stars">⭐ <span id="starsCount">0</span></div>
@@ -463,6 +464,50 @@
     <button class="diff-btn" id="dBtn3" onclick="selectDiff(3)">🌈 Rainbow Quest<small>up to 1/16 + sevenths</small></button>
   </div>
 
+  <!-- ── PJ INTRO ── -->
+  <div id="pjIntro" class="pj-intro-container" style="display:none;">
+    <div style="
+      background:rgba(15,23,42,.92); backdrop-filter:blur(10px);
+      border:1.5px solid rgba(192,132,252,.4); border-radius:14px;
+      padding:8px 13px; font-family:'Outfit',sans-serif; font-weight:800;
+      font-size:.78rem; color:#e2e8f0; text-align:center; max-width:130px;
+      position:relative; line-height:1.4;
+    ">
+      Avvavavava! 🐾 Pick a mode to start!
+      <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:rgba(15,23,42,.92);border-right:1.5px solid rgba(192,132,252,.4);border-bottom:1.5px solid rgba(192,132,252,.4);"></div>
+    </div>
+    <img src="rainbow-pj.png" style="width:80px;height:80px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(192,132,252,.7));cursor:pointer;" onclick="dismissPjIntro()" alt="Rainbow PJ">
+  </div>
+  <style>
+    .pj-intro-container {
+      position: fixed;
+      left: calc(50% - 640px);
+      top: 220px;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      animation: pjIntroFloat 2.2s ease-in-out infinite alternate;
+    }
+    @media (max-width: 1350px) {
+      .pj-intro-container {
+        left: 20px;
+        top: 220px;
+      }
+    }
+    @media (max-width: 768px) {
+      .pj-intro-container {
+        left: 14px;
+        top: 60%;
+      }
+    }
+    @keyframes pjIntroFloat {
+      0% { transform: translateY(0) rotate(-3deg); }
+      100% { transform: translateY(-12px) rotate(3deg); }
+    }
+  </style>
+
   <!-- ── MAIN GRID ── -->
   <div class="main-grid">
 
@@ -477,7 +522,7 @@
           <span class="diff-badge beginner" id="diffBadge">🌱 BEGINNER</span>
           <span style="font-size:.78rem;color:var(--text2);" id="questNum">Quest #1</span>
         </div>
-        <div class="challenge-text" id="challengeText">Welcome to Fraction Explorer! 🍕 Choose a mode above and click the button to begin your fraction adventure with Rainbow Doggy!</div>
+        <div class="challenge-text" id="challengeText">Welcome to Rainbow's Fraction Fun! 🍕 Choose a mode above and click the button to begin your fraction adventure with Rainbow Doggy!</div>
         <div id="modeContent"></div>
         <div class="feedback-msg" id="feedbackMsg"></div>
         <div style="display:flex;gap:9px;justify-content:flex-end;align-items:center;flex-wrap:wrap;">
@@ -520,6 +565,7 @@
     </div>
   </div>
 
+  <script src="shared.js"></script>
   <script>
   // ╔═══════════════════════════════════════════╗
   //   FRACTION EXPLORER ACADEMY — JAVASCRIPT
@@ -667,7 +713,8 @@
     tickInteraction();
     if (!st.usedHelp) st.streak++;
     saveState(); updateScores();
-    playSound('correct'); triggerConfetti(); if(window.rpjSuccess) rpjSuccess();
+    playSound('correct'); triggerConfetti();
+    if (typeof rpjSuccess === 'function') rpjSuccess();
     const fbEl = document.getElementById('feedbackMsg');
     const summary = fbEl ? fbEl.innerHTML : '';
     clearFeedback();
@@ -711,8 +758,57 @@
 
   function _fracModalEsc(e) { if (e.key === 'Escape') dismissAnswerModal(); }
 
+  // Show PJ intro only on first visit this session
+  (function() {
+    if (!sessionStorage.getItem('frac_visited')) {
+      sessionStorage.setItem('frac_visited', '1');
+      const el = document.getElementById('pjIntro');
+      if (el) el.style.display = 'flex';
+    }
+  })();
+
+  function dismissPjIntro() {
+    const el = document.getElementById('pjIntro');
+    if (!el || el._dismissing) return;
+    el._dismissing = true;
+
+    // Capture the current position of the floating element in viewport space
+    const rect = el.getBoundingClientRect();
+
+    // Lock it to its current rendered screen position using fixed positioning
+    el.style.position = 'fixed';
+    el.style.left = rect.left + 'px';
+    el.style.top = rect.top + 'px';
+    el.style.width = rect.width + 'px';
+    el.style.height = rect.height + 'px';
+    el.style.right = 'auto';
+    el.style.bottom = 'auto';
+    el.style.margin = '0';
+    
+    // Stop keyframe animation and reset transform so transition handles it cleanly
+    el.style.animation = 'none';
+    el.style.transform = 'none';
+
+    // Force a DOM reflow
+    el.offsetHeight;
+
+    // Calculate translation to the bottom-left corner (with an 18px padding from viewport edge)
+    const destX = 18 - rect.left;
+    const destY = window.innerHeight - 18 - rect.height - rect.top;
+
+    // Apply a gorgeous, slow, cubic-bezier transition (1.6 seconds for majestic floating effect)
+    el.style.transition = 'transform 1.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.4s ease-out';
+    el.style.transformOrigin = 'center center';
+    el.style.transform = `translate(${destX}px, ${destY}px) scale(0.12) rotate(-540deg)`;
+    el.style.opacity = '0';
+
+    // Remove the element from the DOM after transition completes
+    setTimeout(() => el.remove(), 1650);
+  }
+
   // ─── MODE & DIFFICULTY ───
   function selectMode(m) {
+    dismissPjIntro();
     tickInteraction();
     st.mode = m;
     for (let i=0;i<7;i++) { const b=document.getElementById(`mBtn${i}`); if(b) b.classList.toggle('active',i===m); }
@@ -737,6 +833,7 @@
   }
 
   function selectDiff(d) {
+    dismissPjIntro();
     st.diff = d;
     for (let i=0;i<4;i++) document.getElementById(`dBtn${i}`).classList.toggle('active',i===d);
     const names = ['beginner','explorer','champion','rainbow-quest'];
@@ -745,6 +842,7 @@
     badge.textContent = labels[d]; badge.className = `diff-badge ${names[d]}`;
     st.nlTol = [12,8,5,3][d];
     clearFeedback(); renderStrips(); playSound('click');
+    generateChallenge();
   }
 
   // ─── FRACTION STRIPS ───
@@ -932,11 +1030,14 @@
       { name: 'Hairy Maclary', img: 'hairy_maclary.png' },
       { name: 'Muffin McLay', img: 'muffin_mclay.png' },
       { name: 'Schnitzel', img: 'schnitzel_von_krumm.png' },
-      { name: 'Kind Dog', img: 'head.png' }
+      { name: 'Rainbow Doggy', img: 'head.png' }
     ];
+    const hidePortraits = st.diff >= 2;
     let result = text;
     charList.forEach(c => {
-      const inlineHTML = `<span class="char-inline-span"><img class="char-inline-img" src="${c.img}"><strong>${c.name}</strong></span>`;
+      const inlineHTML = hidePortraits
+        ? `<strong>${c.name}</strong>`
+        : `<span class="char-inline-span"><img class="char-inline-img" src="${c.img}"><strong>${c.name}</strong></span>`;
       const strongRegex = new RegExp(`<strong>${c.name}</strong>`, 'g');
       result = result.replace(strongRegex, inlineHTML);
     });
@@ -960,7 +1061,7 @@
 
   const CHAR_EMOJIS = {
     'Rainbow Doggy': '🐶',
-    'Kind Dog': '🐶',
+    'Rainbow Doggy': '🐶',
     'Hairy Maclary': '🐕',
     'Hercules Morse': '🐕',
     'Bottomley Potts': '🐩',
@@ -1033,7 +1134,7 @@
     { total:8, dogA:8, food:'dogs', emoji:'🐕', dogAName:'Scarface Claw', dogBName:'Schnitzel von Krumm', isScareStory:true }
   ];
 
-  function generateKindDogQ() {
+  function generateRainbowDoggyQ() {
     const t = KIND_DOG_TEMPLATES[Math.floor(Math.random() * KIND_DOG_TEMPLATES.length)];
     if (t.isScareStory) {
       // Scare story: variant is either 'left' (brave dogs left) or 'doggy' (dogs that ran away)
@@ -1063,7 +1164,7 @@
 
   const CHAR_IMAGES = {
     'Rainbow Doggy': 'head.png',
-    'Kind Dog': 'head.png',
+    'Rainbow Doggy': 'head.png',
     'Hairy Maclary': 'hairy_maclary.png',
     'Hercules Morse': 'hercules_morse.png',
     'Bottomley Potts': 'bottomley_potts.png',
@@ -1077,9 +1178,9 @@
     return CHAR_IMAGES[name] || 'hairy_maclary.png';
   }
 
-  function showKindDogQ() {
-    const q = generateKindDogQ();
-    st.kindDogQ = q;
+  function showRainbowDoggyQ() {
+    const q = generateRainbowDoggyQ();
+    st.rainbowDoggyQ = q;
     st.usedHelp = false;
     document.getElementById('hintBtn').style.display = 'none';
 
@@ -1099,7 +1200,7 @@
       'Slinky Malinki': "Meow! I'm Slinky Malinki! Can you work out how many pieces I snatched? 🐾",
       'Scarface Claw': "Hiss! I'm Scarface Claw, the toughest tom in town! What fraction did I scare away? 🐾",
       'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's solve this fraction story! 🐾",
-      'Kind Dog': "Avvavavava! I'm Kind Dog! Let's solve this fraction story! 🐾"
+      'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's solve this fraction story! 🐾"
     };
     const activeImg = getCharImage(narrator);
     const mascotEl = document.getElementById('mascotImg');
@@ -1230,16 +1331,16 @@
         if (isVillain) {
           const desc = q.dogBName === 'Scarface Claw' ? 'the toughest tom in town' : 'the cheeky cat who loves to steal';
           storyText = `🐈‍⬛ <strong>${q.dogBName}</strong> (${desc}) spotted <strong>${q.dogAName}</strong> with some <strong>${q.food}</strong> split into <strong>${q.total} equal pieces</strong>!<br>` +
-                      `<strong>${q.dogAName}</strong> managed to eat <strong>${q.dogA}</strong>, but <strong>${q.dogBName}</strong> swiped <strong>${q.dogB}</strong> pieces right off the plate! 🐾<br>`;
+                      `<strong>${q.dogAName}</strong> managed to eat <strong>${q.dogA}</strong> ${q.dogA === 1 ? 'piece' : 'pieces'}, but <strong>${q.dogBName}</strong> swiped <strong>${q.dogB}</strong> ${q.dogB === 1 ? 'piece' : 'pieces'} right off the plate! 🐾<br>`;
         } else {
           storyText = `${q.emoji} <strong>${q.dogAName}</strong> and <strong>${q.dogBName}</strong> found some <strong>${q.food}</strong> split into <strong>${q.total} equal pieces</strong>.<br>` +
-                      `<strong>${q.dogAName}</strong> ate <strong>${q.dogA}</strong> pieces, and <strong>${q.dogBName}</strong> ate <strong>${q.dogB}</strong> pieces.<br>`;
+                      `<strong>${q.dogAName}</strong> ate <strong>${q.dogA}</strong> ${q.dogA === 1 ? 'piece' : 'pieces'}, and <strong>${q.dogBName}</strong> ate <strong>${q.dogB}</strong> ${q.dogB === 1 ? 'piece' : 'pieces'}.<br>`;
         }
       }
     }
 
     const choiceBtns = q.choices.map(n =>
-      `<button onclick="checkKindDogQ(${n})"
+      `<button onclick="checkRainbowDoggyQ(${n})"
         style="padding:12px 22px;border-radius:14px;border:2px solid var(--border);background:var(--card);font-family:'Outfit',sans-serif;font-weight:800;font-size:1.15rem;cursor:pointer;color:var(--text1);transition:all .2s;">
         ${formatFraction(n, q.total)}
       </button>`
@@ -1249,10 +1350,13 @@
       storyText + question;
     document.getElementById('challengeText').innerHTML = injectInlineIcons(finalHtml);
 
+    st.rainbowDoggyDiagram = { slices, legend };
+
+    const showDiagram = st.diff < 2;
     document.getElementById('modeContent').innerHTML = `
       <div style="text-align:center;padding:8px 0;max-width:460px;margin:0 auto;">
-        <div style="margin:12px 0;display:flex;flex-wrap:wrap;justify-content:center;">${slices}</div>
-        ${legend}
+        <div id="rdDiagram" style="${showDiagram ? '' : 'display:none;'}margin:12px 0;display:${showDiagram ? 'flex' : 'none'};flex-wrap:wrap;justify-content:center;">${slices}</div>
+        <div id="rdLegend" style="${showDiagram ? '' : 'display:none;'}">${legend}</div>
         <div style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;" id="kdChoices">${choiceBtns}</div>
         <div id="kdFeedback" style="margin-top:14px;min-height:24px;font-weight:700;font-size:.95rem;"></div>
       </div>`;
@@ -1260,8 +1364,8 @@
     document.getElementById('loadBtn').innerHTML = '🎲 Next Challenge';
   }
 
-  function checkKindDogQ(chosen) {
-    const q = st.kindDogQ;
+  function checkRainbowDoggyQ(chosen) {
+    const q = st.rainbowDoggyQ;
     if (!q) return;
     document.querySelectorAll('#kdChoices button').forEach(b => b.disabled = true);
     const fb = document.getElementById('kdFeedback');
@@ -1344,9 +1448,9 @@
       speechEl.innerHTML = modeTexts[st.mode] || modeTexts[0];
     }
 
-    // ── 40% Kind Dog branch for Champion / Master ──
+    // ── 40% Rainbow Doggy branch for Champion / Master ──
     if ((st.diff === 2 || st.diff === 3) && Math.random() < 0.4) {
-      showKindDogQ();
+      showRainbowDoggyQ();
       return;
     }
     [genExplore, genCompare, genSort, genLCD, genNL, genSeesaw, genShrink][st.mode]();
@@ -1487,17 +1591,31 @@
     const fracs = pickDistinct(n);
     if (fracs.length<2) { document.getElementById('challengeText').innerHTML='⚠️ Try a higher difficulty for more distinct fractions!'; return; }
     st.sortFracs = fracs;
-    st.sortCorrect = [...fracs].sort((a,b)=>fv(a)-fv(b));
+    const ascending = Math.random() < 0.5;
+    st.sortAscending = ascending;
+    st.sortCorrect = [...fracs].sort((a,b)=> ascending ? fv(a)-fv(b) : fv(b)-fv(a));
+
+    const missionText = ascending
+      ? 'Drag the fractions into order from smallest to biggest!'
+      : 'Drag the fractions into order from biggest to smallest!';
+    const headerText = ascending
+      ? `Sort ${fracs.length} fractions from <span style="font-size:.85em;font-weight:600;opacity:.85;color:#22c55e;">SMALLEST</span> → <span style="font-size:1.15em;font-weight:900;color:#ef4444;">LARGEST</span>!`
+      : `Sort ${fracs.length} fractions from <span style="font-size:1.15em;font-weight:900;color:#ef4444;">LARGEST</span> → <span style="font-size:.85em;font-weight:600;opacity:.85;color:#22c55e;">SMALLEST</span>!`;
+    const subText = ascending
+      ? 'Drag the cards from the top pool into the green sorting track below. Smallest goes LEFT! 🏃'
+      : 'Drag the cards from the top pool into the green sorting track below. Biggest goes LEFT! 🏃';
+    const arrowText = ascending
+      ? '<span style="color:#22c55e;">← Smallest</span> ······················· <span style="color:#ef4444;">Largest →</span>'
+      : '<span style="color:#ef4444;">← Largest</span> ························ <span style="color:#22c55e;">Smallest →</span>';
 
     document.getElementById('challengeText').innerHTML =
-      `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: Drag the fractions into order from smallest to biggest!</div>📊 <strong>Sort ${fracs.length} fractions from SMALLEST → LARGEST!</strong><br>
-      Drag the cards from the top pool into the green sorting track below. Smallest goes LEFT! 🏃`;
+      `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: ${missionText}</div>📊 <strong>${headerText}</strong><br>${subText}`;
 
     document.getElementById('modeContent').innerHTML = `
       <div id="sortPool" class="sort-pool">
         ${fracs.map((f,i)=>`<div class="frac-card" draggable="true" id="fc${i}" data-val="${fv(f)}"><div class="fc-n">${f[0]}</div><div class="fc-d">${f[1]}</div></div>`).join('')}
       </div>
-      <div class="sort-arrow">← Smallest ······················· Largest →</div>
+      <div class="sort-arrow">${arrowText}</div>
       <div id="sortZone" class="sort-zone">
         <span class="sort-zone-hint" id="szHint">Drag fractions here in order →</span>
       </div>
@@ -1561,13 +1679,14 @@
     const uVals=cards.map(c=>parseFloat(c.dataset.val));
     const cVals=st.sortCorrect.map(fv);
     const ok=uVals.every((v,i)=>Math.abs(v-cVals[i])<.001);
+    const arrow = st.sortAscending ? ' &lt; ' : ' &gt; ';
     if (ok) {
       cards.forEach(c=>c.style.borderColor='#22c55e');
-      setFeedback(`✅ Perfect! ${st.sortCorrect.map(f=>fs(f)).join(' &lt; ')} 🏆`,'#22c55e');
+      setFeedback(`✅ Perfect! ${st.sortCorrect.map(f=>fs(f)).join(arrow)} 🏆`,'#22c55e');
       bumpCorrect();
     } else {
       cards.forEach((c,i)=>{ c.style.borderColor=Math.abs(parseFloat(c.dataset.val)-cVals[i])<.001?'#22c55e':'#ef4444'; });
-      setFeedback(`aw aw! 🐾 ❌ Not quite! Correct order: <strong style="color:#22c55e;">${st.sortCorrect.map(f=>fs(f)).join(' &lt; ')}</strong>`,'#ef4444');
+      setFeedback(`aw aw! 🐾 ❌ Not quite! Correct order: <strong style="color:#22c55e;">${st.sortCorrect.map(f=>fs(f)).join(arrow)}</strong>`,'#ef4444');
       bumpWrong();
     }
   }
@@ -1594,8 +1713,8 @@
     const c1=denColor(f1[1]), c2=denColor(f2[1]);
 
     document.getElementById('challengeText').innerHTML =
-      `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: Find the smallest number both bottom numbers go into!</div>🔗 <strong>Find the LCD (Smallest Shared Bottom Number)</strong><br>
-      What is the SMALLEST number that both <strong style="color:${c1}">${f1[1]}</strong> and <strong style="color:${c2}">${f2[1]}</strong> divide into evenly?`;
+      `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: Find the smallest bottom number that both fractions can share!</div>🔗 <strong>Find the LCD (Lowest Common Denominator)</strong><br>
+      To compare these two fractions we need to give them the <strong>same bottom number</strong>. What is the <strong>smallest number</strong> that both <strong style="color:${c1}">${f1[1]}</strong> and <strong style="color:${c2}">${f2[1]}</strong> go into evenly — so both fractions can use it as their new bottom number?`;
 
     document.getElementById('modeContent').innerHTML = `
       <div class="lcd-box">
@@ -1612,13 +1731,27 @@
             <span style="color:${c2}">${f2[1]}</span>
           </div>
         </div>
+        <div style="background:rgba(234,88,12,.1);border:1px solid rgba(234,88,12,.3);border-radius:12px;padding:10px 14px;font-size:.82rem;line-height:1.7;">
+          <div style="font-weight:800;color:#f97316;margin-bottom:4px;">🙈 The simple way (always works, but not always the smallest):</div>
+          <div style="color:var(--text2);">Just multiply the two bottom numbers together: <strong style="color:${c1}">${f1[1]}</strong> × <strong style="color:${c2}">${f2[1]}</strong> = <strong style="color:var(--text1);">${f1[1]*f2[1]}</strong></div>
+          <div style="color:var(--text2);margin-top:2px;">Then scale each fraction up so both bottoms become <strong style="color:var(--text1);">${f1[1]*f2[1]}</strong>:</div>
+          <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:4px;">
+            <span style="color:${c1};">${f1[0]}/${f1[1]} → ${f1[0]*f2[1]}/${f1[1]*f2[1]}</span>
+            <span style="color:${c2};">${f2[0]}/${f2[1]} → ${f2[0]*f1[1]}/${f1[1]*f2[1]}</span>
+          </div>
+          ${f1[1]*f2[1] !== theLCD ? `<div style="color:#facc15;font-weight:700;margin-top:4px;">⚡ But can we find a <em>smaller</em> shared bottom number? That's the LCD!</div>` : `<div style="color:#22c55e;font-weight:700;margin-top:4px;">✅ In this case the simple way IS the LCD — lucky!</div>`}
+        </div>
         <div class="lcd-hint" id="lcdHint">
-          <div class="lcd-hint-title">📋 Multiples Helper</div>
+          <div class="lcd-hint-title">📋 Multiples Helper — find the smallest match!</div>
           <div style="font-size:.8rem;font-weight:700;color:${c1};margin-bottom:3px;">Multiples of ${f1[1]}:</div>
           <div class="mult-row">${m1.map(m=>`<span class="mult-chip${m2.includes(m)&&m===theLCD?' match':''}">${m}</span>`).join('')}</div>
           <div style="font-size:.8rem;font-weight:700;color:${c2};margin-top:5px;margin-bottom:3px;">Multiples of ${f2[1]}:</div>
           <div class="mult-row">${m2.map(m=>`<span class="mult-chip${m1.includes(m)&&m===theLCD?' match':''}">${m}</span>`).join('')}</div>
         </div>
+        <div style="text-align:center;">
+          <button class="tool-btn" onclick="lcdWalkthrough()" style="margin-bottom:10px;border-color:#a78bfa;color:#a78bfa;">🐾 Walk me through it!</button>
+        </div>
+        <div id="lcdSteps" style="display:none;flex-direction:column;gap:8px;font-size:.85rem;"></div>
         <div style="text-align:center;font-size:.88rem;color:var(--text2);font-weight:700;">Pick the LCD:</div>
         <div class="choices-grid">
           ${opts.map(o=>`<button class="choice-btn" onclick="checkLCD(${o},this)">${o}</button>`).join('')}
@@ -1628,6 +1761,71 @@
     hlTwoFracs(f1,f2);
     document.getElementById('hintBtn').style.display='inline-flex';
     document.getElementById('loadBtn').innerHTML='🎲 New LCD Quest';
+  }
+
+  function lcdWalkthrough() {
+    const q = st.lcdQ;
+    if (!q) return;
+    const { f1, f2, lcd } = q;
+    const c1 = denColor(f1[1]), c2 = denColor(f2[1]);
+    const easy = f1[1] * f2[1];
+    const n1scaled = f1[0] * (lcd / f1[1]);
+    const n2scaled = f2[0] * (lcd / f2[1]);
+
+    const steps = [
+      {
+        title: 'Step 1 — Start with what we have',
+        body: `We want to compare <strong style="color:${c1}">${f1[0]}/${f1[1]}</strong> and <strong style="color:${c2}">${f2[0]}/${f2[1]}</strong>. Right now their bottom numbers are different (<strong style="color:${c1}">${f1[1]}</strong> and <strong style="color:${c2}">${f2[1]}</strong>), so we can't compare them directly — like trying to add apples and oranges! 🍎🍊`
+      },
+      {
+        title: 'Step 2 — The simple way (always works!)',
+        body: `Multiply the two bottom numbers: <strong style="color:${c1}">${f1[1]}</strong> × <strong style="color:${c2}">${f2[1]}</strong> = <strong>${easy}</strong>. That's a shared bottom number both fractions can use!<br>
+        Scale up: <span style="color:${c1}">${f1[0]}/${f1[1]} becomes ${f1[0]*f2[1]}/${easy}</span> &nbsp;·&nbsp; <span style="color:${c2}">${f2[0]}/${f2[1]} becomes ${f2[0]*f1[1]}/${easy}</span><br>
+        ${easy === lcd ? `<span style="color:#22c55e;font-weight:700;">✅ ${easy} is already the smallest — that's our LCD!</span>` : `<span style="color:#facc15;font-weight:700;">⚡ ${easy} works but is it the <em>smallest</em> we can use?</span>`}`
+      },
+      ...(easy !== lcd ? [{
+        title: 'Step 3 — Find a smarter (smaller) shared bottom',
+        body: `List multiples of each bottom number and find the first one they share:<br>
+        <span style="color:${c1};font-weight:700;">Multiples of ${f1[1]}:</span> ${Array.from({length:10},(_,i)=>f1[1]*(i+1)).map(m=>`<span style="color:${m===lcd?'#22c55e':c1};font-weight:${m===lcd?'900':'400'};">${m}</span>`).join(', ')}<br>
+        <span style="color:${c2};font-weight:700;">Multiples of ${f2[1]}:</span> ${Array.from({length:10},(_,i)=>f2[1]*(i+1)).map(m=>`<span style="color:${m===lcd?'#22c55e':c2};font-weight:${m===lcd?'900':'400'};">${m}</span>`).join(', ')}<br>
+        The first number in <em>both</em> lists is <strong style="color:#22c55e;font-size:1.1em;">${lcd}</strong> — that's the LCD! 🎉`
+      }] : []),
+      {
+        title: `Step ${easy !== lcd ? 4 : 3} — Convert both fractions to the LCD`,
+        body: `Now give both fractions the bottom number <strong style="color:#22c55e;">${lcd}</strong>:<br>
+        <span style="color:${c1};">${f1[0]}/${f1[1]} × ${lcd/f1[1]}/${lcd/f1[1]} = <strong>${n1scaled}/${lcd}</strong></span><br>
+        <span style="color:${c2};">${f2[0]}/${f2[1]} × ${lcd/f2[1]}/${lcd/f2[1]} = <strong>${n2scaled}/${lcd}</strong></span><br>
+        Now both have the same bottom number and we can compare: <strong style="color:${c1};">${n1scaled}/${lcd}</strong> vs <strong style="color:${c2};">${n2scaled}/${lcd}</strong> — just look at the top numbers! ${n1scaled > n2scaled ? `<strong style="color:${c1};">${f1[0]}/${f1[1]}</strong> is bigger 🏆` : n2scaled > n1scaled ? `<strong style="color:${c2};">${f2[0]}/${f2[1]}</strong> is bigger 🏆` : `They're equal! 🤝`}`
+      }
+    ];
+
+    const box = document.getElementById('lcdSteps');
+    box.style.display = 'flex';
+    box.innerHTML = '';
+    let current = 0;
+
+    function showStep(i) {
+      const s = steps[i];
+      const div = document.createElement('div');
+      div.style.cssText = 'background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.3);border-radius:12px;padding:12px 14px;animation:fadeIn .35s ease;';
+      div.innerHTML = `<div style="font-weight:800;color:#a78bfa;margin-bottom:6px;">${s.title}</div><div style="color:var(--text1);line-height:1.65;">${s.body}</div>`;
+      if (i < steps.length - 1) {
+        const btn = document.createElement('button');
+        btn.className = 'tool-btn';
+        btn.style.cssText = 'margin-top:8px;border-color:#a78bfa;color:#a78bfa;';
+        btn.textContent = `Next step →`;
+        btn.onclick = () => { btn.remove(); current++; showStep(current); };
+        div.appendChild(btn);
+      } else {
+        div.innerHTML += `<div style="color:#22c55e;font-weight:800;margin-top:8px;">🐾 Now you know the LCD — pick your answer below!</div>`;
+      }
+      box.appendChild(div);
+      div.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    showStep(0);
+    // hide the walk-me-through button so it can't be clicked twice
+    document.querySelector('[onclick="lcdWalkthrough()"]').style.display = 'none';
   }
 
   function checkLCD(answer, btn) {
@@ -1666,14 +1864,14 @@
     document.getElementById('challengeText').innerHTML =
       `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: Drag the marker to where this fraction lives on the number line!</div>🎯 <strong>Place <span style="color:var(--accent);font-size:1.15em;">${f[0]}/${f[1]}</span> on the Number Line!</strong><br>
       Drag the 🟠 ball to where this fraction lives between 0 and 1.<br>
-      <small style="color:var(--text2);">Tolerance: ±${st.nlTol}% — ${['wide (easy!)','normal','tight','very precise!'][st.diff]}</small>`;
+      <small style="color:var(--text2);">Tolerance: ±${st.nlTol}% — ${['wide (easy!)','normal','tight','very precise!'][st.diff]}</small>${st.diff===3?'<br><small style="color:#f43f5e;font-weight:700;">🌈 Rainbow Quest: no labels on the number line — you\'re on your own! 🐾</small>':''}`;
 
     document.getElementById('modeContent').innerHTML = `
       <div class="nl-wrap">
         <div class="nl-track" id="nlTrack">
           <div class="nl-line"></div>
           ${[0,.25,.5,.75,1].map(v=>`<div class="nl-tick-vline" style="left:calc(20px + ${v} * (100% - 40px));"></div>`).join('')}
-          ${ticks.map(t=>`<div class="nl-tick" style="left:calc(20px + ${t.v} * (100% - 40px))"><div class="nl-tick-bar"></div><div class="nl-tick-lbl">${t.l}</div></div>`).join('')}
+          ${ticks.map(t=>`<div class="nl-tick" style="left:calc(20px + ${t.v} * (100% - 40px))"><div class="nl-tick-bar"></div>${st.diff===3?'':'<div class="nl-tick-lbl">'+t.l+'</div>'}</div>`).join('')}
           <div class="nl-dragger" id="nlDrag" style="left:calc(20px + 0.5*(100% - 40px));">${f[0]}/${f[1]}</div>
           <div class="nl-correct-dot" id="nlDot"></div>
         </div>
@@ -1963,7 +2161,13 @@
   function showHint() {
     st.usedHelp = true;
     playSound('click');
-    if (st.mode===1&&st.q) {
+    if (st.mode===0&&st.rainbowDoggyDiagram) {
+      const d = document.getElementById('rdDiagram');
+      const l = document.getElementById('rdLegend');
+      if (d) { d.style.display = 'flex'; d.style.flexWrap = 'wrap'; d.style.justifyContent = 'center'; d.style.margin = '12px 0'; }
+      if (l) { l.style.display = ''; }
+      setFeedback(`💡 <em>Hint:</em> Here's the picture — count the pieces to work out the fraction!`,'#f97316');
+    } else if (st.mode===1&&st.q) {
       const f1=st.q.f1,f2=st.q.f2;
       setFeedback(`💡 <em>Hint:</em> ${fs(f1)} ≈ ${(fv(f1)*100).toFixed(0)}%  ·  ${fs(f2)} ≈ ${(fv(f2)*100).toFixed(0)}%`,'#f97316');
     } else if (st.mode===2&&st.sortCorrect) {
@@ -2043,7 +2247,7 @@
       'Slinky Malinki': 'slinky.png',
       'Scarface Claw': 'scarface.png',
       'Rainbow Doggy': 'head.png',
-      'Kind Dog': 'head.png'
+      'Rainbow Doggy': 'head.png'
     };
     
     const mascotQuotes = {
@@ -2056,7 +2260,7 @@
       'Slinky Malinki': "Meow! I'm Slinky Malinki! A cheeky cat who loves swiping the biggest fraction slices! 🐈‍⬛✨",
       'Scarface Claw': "Hiss! I'm Scarface Claw, the toughest tomcat in town! Hand over that pizza slice! 🍕😼",
       'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's explore visual fraction strips together! 🌈🐶",
-      'Kind Dog': "Avvavavava! I'm Kind Dog! Sharing is caring — let's solve this fraction quest! 💖🐶"
+      'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Sharing is caring — let's solve this fraction quest! 💖🐶"
     };
 
     document.body.addEventListener('mouseenter', e => {
@@ -2093,82 +2297,22 @@
 
   // ─── INIT ───
   document.addEventListener('DOMContentLoaded',()=>{
-    changeTheme('rainbow-doggy');
+    // Use shared.js theme (respects persisted rla_theme; falls back to dark)
+    if (typeof initTheme === 'function') initTheme();
+    else document.body.classList.add('theme-rainbow-doggy');
     st.muted=localStorage.getItem('rla_muted')==='true';
     if(st.muted) document.getElementById('muteBtn').textContent='🔇 Muted';
     updateScores();
     initMascotCenterHover();
+    if (typeof initRpj === 'function') initRpj();
     selectMode(0); selectDiff(0);
+    showIntroModal('fractions',
+      '<strong>Welcome to Fraction Friends! 🍕</strong><br><br>Help Kind Dog share pizza slices and treats fairly! Match shapes, compare fractions, and spot equivalent slices. Can you outsmart Scarface Claw? 😼',
+      'Kind Dog');
   });
   </script>
-  <!-- Floating Rainbow PJ mascot -->
-  <div id="rpj" onclick="rpjClick()" title="🐾 Click me!" style="
-    position:fixed; bottom:18px; right:18px;
-    width:80px; height:80px;
-    z-index:200; cursor:pointer;
-    transition: opacity .4s ease, transform .5s cubic-bezier(.175,.885,.32,1.8), bottom .5s ease, right .5s ease, width .5s cubic-bezier(.175,.885,.32,1.8), height .5s cubic-bezier(.175,.885,.32,1.8);
-    opacity: 0.22;
-  ">
-    <img src="rainbow-pj.png" style="width:100%;height:100%;object-fit:contain;border-radius:50%;
-      filter:drop-shadow(0 0 8px rgba(249,115,22,.5));pointer-events:none;" alt="Rainbow PJ">
-  </div>
-  <script>
-  (function(){
-    const rpj = document.getElementById('rpj');
-    let hideTimer = null;
 
-    function rpjShow() {
-      clearTimeout(hideTimer);
-      rpj.style.opacity = '0.22';
-    }
-    function rpjHide() {
-      rpj.style.opacity = '0';
-      hideTimer = setTimeout(rpjShow, 4000);
-    }
-
-    window.rpjClick = function() {
-      playNextAva(0.75);
-      rpj.style.opacity = '0.9';
-      rpj.style.transform = 'scale(1.3) rotate(12deg)';
-      setTimeout(() => {
-        rpj.style.transform = '';
-        rpjHide();
-      }, 600);
-    };
-
-    window.rpjSuccess = function() {
-      clearTimeout(hideTimer);
-      // expand to centre
-      const vw = window.innerWidth, vh = window.innerHeight;
-      const size = Math.min(vw, vh) * 0.45;
-      rpj.style.transition = 'opacity .3s ease, transform .5s cubic-bezier(.175,.885,.32,1.8), bottom .5s ease, right .5s ease, width .5s cubic-bezier(.175,.885,.32,1.8), height .5s cubic-bezier(.175,.885,.32,1.8)';
-      rpj.style.width = size + 'px';
-      rpj.style.height = size + 'px';
-      rpj.style.bottom = ((vh - size) / 2) + 'px';
-      rpj.style.right = ((vw - size) / 2) + 'px';
-      rpj.style.opacity = '0.95';
-      rpj.style.transform = 'rotate(-8deg) scale(1.05)';
-      // wobble
-      setTimeout(() => { rpj.style.transform = 'rotate(8deg) scale(1.08)'; }, 300);
-      setTimeout(() => { rpj.style.transform = 'rotate(-8deg) scale(1.05)'; }, 700);
-      setTimeout(() => { rpj.style.transform = 'rotate(6deg) scale(1.07)'; }, 1100);
-      setTimeout(() => { rpj.style.transform = 'rotate(-6deg) scale(1.04)'; }, 1500);
-      setTimeout(() => { rpj.style.transform = 'rotate(0deg) scale(1)'; }, 1900);
-      // shrink back
-      setTimeout(() => {
-        rpj.style.width = '80px';
-        rpj.style.height = '80px';
-        rpj.style.bottom = '18px';
-        rpj.style.right = '18px';
-        rpj.style.transform = '';
-        rpjHide();
-      }, 2500);
-    };
-
-    rpj.addEventListener('mouseover', () => { if (rpj.style.opacity !== '0') { rpj.style.opacity='0.85'; rpj.style.transform='scale(1.15) rotate(8deg)'; }});
-    rpj.addEventListener('mouseout',  () => { if (parseFloat(rpj.style.opacity||0) < 0.9) { rpj.style.opacity='0.22'; rpj.style.transform=''; }});
-  })();
-  </script>
+  <img id="rpj" src="rainbow-pj.png" alt="Rainbow PJ" onclick="rpjClick()">
 
   <!-- Floating Guide Toggle Button -->
   <button id="guideToggleBtn" onclick="toggleGuide()">🐾 Guide</button>

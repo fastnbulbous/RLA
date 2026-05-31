@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Explorer Academy 🚀</title>
+    <title>Rainbow's Time Fun ⏰ - Rainbow's Number Fun</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1184,11 +1184,12 @@
                 <span style="font-size:0.65rem;font-weight:800;color:var(--text-secondary);font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:0.3px;background:rgba(30,41,59,0.6);border:1px solid var(--card-border);padding:2px 8px;border-radius:8px;transition:all 0.2s;white-space:nowrap;">🏠 Home avavav! 🐾</span>
             </a>
             <div class="logo-text">
-                <h1>Rainbow Time Explorer 🌈</h1>
+                <h1>Rainbow's Time Fun 🌈</h1>
                 <p>Learn time with Rainbow Doggy 🐶</p>
             </div>
         </div>
         <div class="stats-bar">
+            <button id="themeToggleBtn" class="tool-btn" onclick="toggleTheme()">☀️ Light</button>
             <button class="tool-btn" id="muteBtn" onclick="toggleMute()">🔊 Sound On</button>
             <div class="stat-badge streak" title="Daily Streak">
                 🔥 <span id="streakCount">0</span>
@@ -1208,6 +1209,16 @@
                 <span style="font-size: 0.85rem; font-weight:700; color: var(--accent-pink);" id="levelScore">Phase 1: 0/5 Stars</span>
             </div>
             
+            <!-- ── PJ INTRO ── -->
+            <div id="pjIntro" style="display:none;flex-direction:column;align-items:center;gap:6px;margin-bottom:10px;animation:pjIntroFloat 2.2s ease-in-out infinite alternate;transition:transform .55s cubic-bezier(.4,0,.2,1),opacity .4s ease;">
+              <div style="background:rgba(15,23,42,.88);backdrop-filter:blur(10px);border:1.5px solid rgba(192,132,252,.4);border-radius:14px;padding:9px 16px;font-family:'Outfit',sans-serif;font-weight:800;font-size:.88rem;color:#e2e8f0;text-align:center;max-width:220px;position:relative;">
+                Avvavavava! 🐾 Pick a phase to start your quest!
+                <div style="position:absolute;bottom:-8px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:rgba(15,23,42,.88);border-right:1.5px solid rgba(192,132,252,.4);border-bottom:1.5px solid rgba(192,132,252,.4);"></div>
+              </div>
+              <img src="rainbow-pj.png" style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 0 18px rgba(192,132,252,.7));cursor:pointer;" onclick="dismissPjIntro()" alt="Rainbow PJ">
+            </div>
+            <style>@keyframes pjIntroFloat{0%{transform:translateY(0) rotate(-3deg)}100%{transform:translateY(-10px) rotate(3deg)}}</style>
+
             <!-- Progression Journey Tabs Map -->
             <div class="level-tabs" style="margin-bottom: 5px;">
                 <button class="tab-btn active" id="tab0" onclick="selectQuestPhase(0)" style="flex: 1;">
@@ -1243,7 +1254,7 @@
                 <div style="position: relative; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--card-border); padding: 8px 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; line-height: 1.45; color: var(--text-primary); flex-grow: 1;">
                     <!-- Triangle pointer for bubble -->
                     <div style="position: absolute; left: -6px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 10px; height: 10px; background: #0f172a; border-left: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border);"></div>
-                    <span id="mascotSpeechText">Hi explorer! I'm Rainbow Doggy 🌈 Let's learn to read the clock together!</span>
+                    <span id="mascotSpeechText">Hi! I'm Rainbow Doggy 🌈 Let's learn to read the clock together!</span>
                 </div>
             </div>
             
@@ -1593,6 +1604,7 @@
       </div><!-- end .panel inside drawer -->
     </div><!-- end #guideDrawer -->
 
+    <script src="shared.js"></script>
     <script>
         function injectInlineIcons(text) {
           const charList = [
@@ -1606,7 +1618,7 @@
             { name: 'Hairy Maclary', img: 'hairy_maclary.png' },
             { name: 'Muffin McLay', img: 'muffin_mclay.png' },
             { name: 'Schnitzel', img: 'schnitzel_von_krumm.png' },
-            { name: 'Kind Dog', img: 'head.png' }
+            { name: 'Rainbow Doggy', img: 'head.png' }
           ];
           let result = text;
           charList.forEach(c => {
@@ -1637,7 +1649,7 @@
             'Slinky Malinki': 'slinky.png',
             'Scarface Claw': 'scarface.png',
             'Rainbow Doggy': 'head.png',
-            'Kind Dog': 'head.png'
+            'Rainbow Doggy': 'head.png'
           };
           
           const mascotQuotes = {
@@ -1650,7 +1662,7 @@
             'Slinky Malinki': "Meow! I'm Slinky Malinki! A cheeky cat who loves shiny, glittering treasures! 🐾",
             'Scarface Claw': "Hiss! I'm Scarface Claw, the toughest tomcat in town! Watch out! 🐾",
             'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's play and learn together! 🐾",
-            'Kind Dog': "Avvavavava! I'm Kind Dog! Let's share some love and learning! 🐾"
+            'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's share some love and learning! 🐾"
           };
 
           document.body.addEventListener('mouseenter', e => {
@@ -1880,6 +1892,7 @@
             if (!state.usedHelp) {
                 state.streak += 1;
             }
+            if (typeof rpjSuccess === 'function') rpjSuccess();
         }
 
         function showAnswerModal(isCorrect, summaryHtml, helpUsed) {
@@ -1978,9 +1991,9 @@
             updateClockFaceVisuals();
         });
         document.addEventListener('DOMContentLoaded', () => {
-            // Load and apply theme
-            const savedTheme = localStorage.getItem('time_theme') || 'default';
-            changeTheme(savedTheme);
+            // Load and apply theme — prefer shared.js rla_theme, fall back to rainbow-doggy
+            if (typeof initTheme === 'function') initTheme();
+            else changeTheme('rainbow-doggy');
 
             resizeCanvas();
             updateScoresDisplay();
@@ -1990,9 +2003,13 @@
 
             // Initialize the colossal center-screen mascot hover card!
             initMascotCenterHover();
+            if (typeof initRpj === 'function') initRpj();
 
             // Auto-load the first quest challenge so the screen is immediately interactive!
             generateChallenge();
+            showIntroModal('time',
+              '<strong>Welcome to Time Travellers! ⏰</strong><br><br>Drag the clock hands to show the right time, read analogue clocks, and race against the countdown. Can you master every hour and minute? 🕐',
+              'Hairy Maclary');
         });
 
         function toggleDrawingMode() {
@@ -2366,7 +2383,57 @@
             generateChallenge();
         }
 
+        function dismissPjIntro() {
+            const el = document.getElementById('pjIntro');
+            if (!el || el._dismissing) return;
+            el._dismissing = true;
+            
+            // Capture the current position of the floating element in viewport space
+            const rect = el.getBoundingClientRect();
+            
+            // Lock it to its current rendered screen position using fixed positioning
+            el.style.position = 'fixed';
+            el.style.left = rect.left + 'px';
+            el.style.top = rect.top + 'px';
+            el.style.width = rect.width + 'px';
+            el.style.height = rect.height + 'px';
+            el.style.right = 'auto';
+            el.style.bottom = 'auto';
+            el.style.margin = '0';
+            el.style.zIndex = '1000';
+            
+            // Stop keyframe animation and reset transform so transition handles it cleanly
+            el.style.animation = 'none';
+            el.style.transform = 'none';
+            
+            // Force a DOM reflow
+            el.offsetHeight;
+            
+            // Calculate translation to the bottom-right corner (where the RPJ watermark lives)
+            const destX = window.innerWidth - 18 - rect.width - rect.left;
+            const destY = window.innerHeight - 18 - rect.height - rect.top;
+            
+            // Apply a gorgeous, slow, cubic-bezier transition (1.5 seconds for majestic floating effect)
+            el.style.transition = 'transform 1.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 1.3s ease-out';
+            el.style.transformOrigin = 'center center';
+            el.style.transform = `translate(${destX}px, ${destY}px) scale(0.12) rotate(540deg)`;
+            el.style.opacity = '0';
+            
+            // Remove the element from the DOM after transition completes
+            setTimeout(() => el.remove(), 1550);
+        }
+
+        // Show PJ intro only on first visit this session
+        (function() {
+            if (!sessionStorage.getItem('time_visited')) {
+                sessionStorage.setItem('time_visited', '1');
+                const el = document.getElementById('pjIntro');
+                if (el) el.style.display = 'flex';
+            }
+        })();
+
         function selectQuestPhase(phase) {
+            dismissPjIntro();
             tickInteraction();
 
             state.currentDifficulty = phase - 1; // Map phase 0,1,2,3 to difficulty -1,0,1,2
@@ -2578,11 +2645,14 @@
             const nextHour = hour === 12 ? 1 : hour + 1;
 
             if (phase === 0 || phase === 1) {
-                // Phase 1: Reinforce Quiz Mode (All-New Dynamic Multiples of 5)
-                const type = Math.random() > 0.5 ? 'neighborhood' : 'linguistic';
-
                 // Check if in Tutorial Mode (first 2 questions of Phase 1)
                 const isTutorialMode = (state.phaseProgress < 2);
+
+                // Phase 1: Reinforce Quiz Mode — pick question type
+                const typeRoll = Math.random();
+                const type = isTutorialMode
+                    ? (typeRoll < 0.35 ? 'neighborhood' : typeRoll < 0.65 ? 'linguistic' : 'minuteHand')
+                    : (typeRoll < 0.25 ? 'neighborhood' : typeRoll < 0.5 ? 'linguistic' : typeRoll < 0.75 ? 'minuteHand' : 'minuteBetween');
 
                 if (type === 'neighborhood') {
                     // Hour position & Rainbow Float Trick questions
@@ -2598,10 +2668,14 @@
                     let correctDesc = "";
                     if (mins === 0) {
                         correctDesc = `Exactly on the ${hour}`;
-                    } else if (mins > 0 && mins < 20) {
+                    } else if (mins >= 1 && mins <= 14) {
                         correctDesc = `A little bit past the ${hour}, heading towards ${nextHour}`;
-                    } else if (mins >= 28 && mins <= 32) {
-                        correctDesc = `Exactly halfway between ${hour} and ${nextHour}`;
+                    } else if (mins >= 15 && mins <= 24) {
+                        correctDesc = `About a quarter of the way from ${hour} to ${nextHour}`;
+                    } else if (mins >= 25 && mins <= 35) {
+                        correctDesc = `About halfway between ${hour} and ${nextHour}`;
+                    } else if (mins >= 36 && mins <= 49) {
+                        correctDesc = `Past halfway, getting closer to ${nextHour}`;
                     } else {
                         correctDesc = `Almost at the ${nextHour} — but the hour is still ${hour}!`;
                     }
@@ -2610,16 +2684,17 @@
                     const allPossible = [
                         `Exactly on the ${hour}`,
                         `A little bit past the ${hour}, heading towards ${nextHour}`,
-                        `Exactly halfway between ${hour} and ${nextHour}`,
+                        `About a quarter of the way from ${hour} to ${nextHour}`,
+                        `About halfway between ${hour} and ${nextHour}`,
+                        `Past halfway, getting closer to ${nextHour}`,
                         `Almost at the ${nextHour} — but the hour is still ${hour}!`,
-                        `Exactly on the ${nextHour}`,
-                        `Exactly halfway between ${nextHour} and ${nextHour === 12 ? 1 : nextHour + 1}`
+                        `Exactly on the ${nextHour}`
                     ];
                     let distractors = shuffle(allPossible.filter(o => o !== correctDesc));
                     while (distractors.length < 3) distractors.push(distractors[0]); // safety pad (shouldn't happen)
                     options = shuffle([correctDesc, distractors[0], distractors[1], distractors[2]]);
                     hint = "Remember, Rainbow Float 🌈 floats slowly from one number to the next. At 00 sharp she points right at the number, and near 50 she is almost touching the next number — but the hour doesn't change until Rainbow Zoom completes the full lap!";
-                } else {
+                } else if (type === 'linguistic') {
                     // Linguistic translation time translation questions
                     // If in Tutorial Mode (first 2 questions), keep it simple with quarters (15, 30, 45).
                     // Otherwise, provide 5-minute multiples and a few trickier single minutes (12, 23, 37, 48)!
@@ -2691,7 +2766,7 @@
                             'Bottomley Potts',
                             'Schnitzel von Krumm',
                             'Rainbow Doggy',
-                            'Kind Dog'
+                            'Rainbow Doggy'
                         ];
                         const charName = characters[Math.floor(Math.random() * characters.length)];
                         qText = `<strong>${charName}</strong> says: "It's <strong>${phrase}</strong>." What will the digital display show?`;
@@ -2711,6 +2786,87 @@
                         options = shuffle([correctDigital, uniqueDigitalDists[0], uniqueDigitalDists[1], uniqueDigitalDists[2]]);
                     }
                     hint = "Remember: the green side is the PAST zone (minutes 1 to 30), and the blue side is the TO zone (minutes 31 to 59). In the 'to' zone, we countdown to the next upcoming hour!";
+                } else if (type === 'minuteHand') {
+                    // Minute hand position — which number does it point at? (multiples of 5 only)
+                    const minsPool = isTutorialMode
+                        ? [15, 30, 45]
+                        : [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+                    const mins = minsPool[Math.floor(Math.random() * minsPool.length)];
+                    setupH = hour;
+                    setupM = mins;
+                    const pointsAt = mins === 0 ? 12 : mins / 5;
+                    const displayM = mins < 10 ? '0' + mins : mins;
+
+                    // Mascot characters for flavour
+                    const mhChars = ['Hairy Maclary', 'Slinky Malinki', 'Bitzer Maloney', 'Hercules Morse', 'Muffin McLay', 'Bottomley Potts', 'Schnitzel von Krumm', 'Rainbow Doggy', 'Rainbow Doggy'];
+                    const mhChar = mhChars[Math.floor(Math.random() * mhChars.length)];
+
+                    // Question phrasing variants
+                    const mhVariants = [
+                        `<strong>${mhChar}</strong> is checking the clock — it reads <strong>${hour}:${displayM}</strong>. Which number is <strong>Rainbow Zoom ⚡</strong> (the minute hand) pointing at?`,
+                        `The digital display shows <strong>${hour}:${displayM}</strong>. <strong>${mhChar}</strong> asks: "Where is <strong>Rainbow Zoom ⚡</strong> pointing right now?"`,
+                        `<strong>${mhChar}</strong> says: "It's <strong>${hour}:${displayM}</strong> — quick! Which number on the clock is <strong>Rainbow Zoom ⚡</strong> (the minute hand) touching?"`,
+                        `Rainbow Zoom ⚡ (the speedy minute hand) has zoomed to a number! The time is <strong>${hour}:${displayM}</strong>. <strong>${mhChar}</strong> wants to know — which number?`
+                    ];
+                    qText = mhVariants[Math.floor(Math.random() * mhVariants.length)];
+                    qText = injectInlineIcons(qText);
+
+                    correctAnswer = `${pointsAt}`;
+                    const allNums = [1,2,3,4,5,6,7,8,9,10,11,12].filter(n => n !== pointsAt);
+                    const shuffledNums = shuffle(allNums);
+                    options = shuffle([`${pointsAt}`, `${shuffledNums[0]}`, `${shuffledNums[1]}`, `${shuffledNums[2]}`]);
+                    hint = "Rainbow Zoom ⚡ zooms around the clock once every hour! Each number is worth 5 minutes — the 1 means 5 minutes, the 2 means 10, the 3 means 15… all the way to the 12 which means 0 (or 60) minutes.";
+                } else if (type === 'minuteBetween') {
+                    // Harder: minute hand is between two numbers (non-multiples of 5)
+                    const nonFiveMins = [1,2,3,4,6,7,8,9,11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29,31,32,33,34,36,37,38,39,41,42,43,44,46,47,48,49,51,52,53,54,56,57,58,59];
+                    const mins = nonFiveMins[Math.floor(Math.random() * nonFiveMins.length)];
+                    setupH = hour;
+                    setupM = mins;
+                    const lowerNum = Math.floor(mins / 5) || 12;
+                    const upperNum = Math.ceil(mins / 5);
+                    const displayM = mins < 10 ? '0' + mins : mins;
+
+                    // Mascot characters for flavour
+                    const mbChars = ['Hairy Maclary', 'Slinky Malinki', 'Bitzer Maloney', 'Hercules Morse', 'Muffin McLay', 'Bottomley Potts', 'Schnitzel von Krumm', 'Rainbow Doggy', 'Rainbow Doggy'];
+                    const mbChar = mbChars[Math.floor(Math.random() * mbChars.length)];
+
+                    // Question phrasing variants
+                    const mbVariants = [
+                        `<strong>${mbChar}</strong> spots the clock at <strong>${hour}:${displayM}</strong>. <strong>Rainbow Zoom ⚡</strong> (the minute hand) isn't exactly on a number — which two numbers is it between?`,
+                        `The time is <strong>${hour}:${displayM}</strong>. <strong>${mbChar}</strong> notices <strong>Rainbow Zoom ⚡</strong> is sneaking between two numbers. Which ones?`,
+                        `<strong>Rainbow Zoom ⚡</strong> is mid-zoom! The clock reads <strong>${hour}:${displayM}</strong>. <strong>${mbChar}</strong> asks: "Which two numbers is the minute hand stuck between?"`,
+                        `<strong>${mbChar}</strong> sees the time is <strong>${hour}:${displayM}</strong>. <strong>Rainbow Zoom ⚡</strong> hasn't reached the next number yet — which two numbers is it travelling between?`
+                    ];
+                    qText = mbVariants[Math.floor(Math.random() * mbVariants.length)];
+                    qText = injectInlineIcons(qText);
+
+                    // Nuanced position within the 5-minute range
+                    const remainder = mins % 5;
+                    let correctDesc = "";
+                    if (remainder === 1) {
+                        correctDesc = `Just past the ${lowerNum}, barely left it`;
+                    } else if (remainder === 2) {
+                        correctDesc = `Between ${lowerNum} and ${upperNum}, closer to ${lowerNum}`;
+                    } else if (remainder === 3) {
+                        correctDesc = `About halfway between ${lowerNum} and ${upperNum}`;
+                    } else {
+                        correctDesc = `Between ${lowerNum} and ${upperNum}, almost at ${upperNum}`;
+                    }
+                    correctAnswer = correctDesc;
+
+                    // Build distractors from other number pairs with varied positions
+                    const allOptions = [];
+                    for (let i = 1; i <= 12; i++) {
+                        const next = i === 12 ? 1 : i + 1;
+                        if (i === lowerNum && next === upperNum) continue;
+                        allOptions.push(`Just past the ${i}, barely left it`);
+                        allOptions.push(`Between ${i} and ${next}, closer to ${i}`);
+                        allOptions.push(`About halfway between ${i} and ${next}`);
+                        allOptions.push(`Between ${i} and ${next}, almost at ${next}`);
+                    }
+                    const shuffledOptions = shuffle(allOptions);
+                    options = shuffle([correctDesc, shuffledOptions[0], shuffledOptions[1], shuffledOptions[2]]);
+                    hint = "Rainbow Zoom ⚡ doesn't always land exactly on a number — sometimes it's in between! Look carefully: is it just past one number, almost at the next, or right in the middle? Each number is 5 minutes apart!";
                 }
             }
             else if (phase === 2) {
@@ -2855,8 +3011,8 @@
                     fn:(sH,sM,d)=>({ qText:`She entered the long un-mowed grass field at <strong>${sH}:${pad(sM)}</strong> and bounded through it for <strong>${d} minutes</strong>. What time did she pop out onto the path?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
 
                   // ── BACKWARD stories ──
-                  { dir:'back', title:'🎂 Kind Dog\'s Birthday',
-                    fn:(eH,eM,d,d2)=>({ qText:`The birthday party for <strong>Kind Dog</strong> starts at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Hairy Maclary</strong> to walk there and <strong>${d2} minutes</strong> to wrap the present. When do they start preparing?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🎂 Rainbow Doggy\'s Birthday',
+                    fn:(eH,eM,d,d2)=>({ qText:`The birthday party for <strong>Rainbow Doggy</strong> starts at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Hairy Maclary</strong> to walk there and <strong>${d2} minutes</strong> to wrap the present. When do they start preparing?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
                   { dir:'back', title:'🚂 Train to Grandma\'s',
                     fn:(eH,eM,d,d2)=>({ qText:`The train to Grandma's leaves at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Muffin McLay</strong> to walk to the station and <strong>${d2} minutes</strong> to buy a ticket. When does he leave the house?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
                   { dir:'back', title:'🌳 Forest Trek',
@@ -2866,7 +3022,7 @@
                   { dir:'back', title:'🍦 Ice Cream Truck Meet',
                     fn:(eH,eM,d,d2)=>({ qText:`The ice cream truck arrives at the park at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Schnitzel von Krumm</strong> to stroll there and <strong>${d2} minutes</strong> to count his coins. When does he start walking?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
                   { dir:'back', title:'🐕 Puppy Playdate',
-                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Kind Dog</strong> arrives at the park gate at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Rainbow Doggy</strong> to trot down the street and <strong>${d2} minutes</strong> to find the tennis ball to bring. When does she start getting ready?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Rainbow Doggy</strong> needs to be at the park gate by <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to trot down the street and <strong>${d2} minutes</strong> to find the tennis ball to bring. When does she need to start getting ready?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
                   { dir:'back', title:'🌊 Splash Pool Party',
                     fn:(eH,eM,d,d2)=>({ qText:`The backyard sprinklers turn on at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Bottomley Potts</strong> to stretch out the hose and <strong>${d2} minutes</strong> to put on his sun bandana. When does he start setting up?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
                   { dir:'back', title:'🐈‍⬛ Midnight Loot Clutter',
@@ -2894,7 +3050,7 @@
                   { dir:'back', title:'🧑‍⚕️ Vet Checkup',
                     fn:(eH,eM,d,d2)=>({ qText:`The vet appointment for <strong>Bitzer Maloney</strong> is at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to ride the bus and <strong>${d2} minutes</strong> to check in and weigh him. When do they walk to the bus stop?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
                   { dir:'back', title:'🎈 Birthday Balloon Party',
-                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Kind Dog</strong> arrives for his party at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Muffin McLay</strong> to blow up the balloons and <strong>${d2} minutes</strong> to scatter them across the rug. When does he start pumping?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Rainbow Doggy</strong> arrives for his party at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Muffin McLay</strong> to blow up the balloons and <strong>${d2} minutes</strong> to scatter them across the rug. When does he start pumping?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
                   { dir:'back', title:'🍵 Doggy Tea Party',
                     fn:(eH,eM,d,d2)=>({ qText:`The chamomile bowls are served for <strong>Hercules Morse</strong> at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to steep the herbs and <strong>${d2} minutes</strong> to chill in the fridge. When do we boil the kettle?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
                   { dir:'back', title:'🪁 Kite Flying Match',
@@ -3013,6 +3169,10 @@
                     const zoneClass = fb.isPast ? 'zone-past' : 'zone-to';
                     const zoneWord = fb.isPast ? 'past' : 'to';
 
+                    // Override grid so fib-wrap spans full width as a column
+                    choicesContainer.style.display = 'flex';
+                    choicesContainer.style.flexDirection = 'column';
+
                     const wrap = document.createElement('div');
                     wrap.className = 'fib-wrap';
                     wrap.innerHTML = `
@@ -3035,7 +3195,9 @@
                         [m, h].forEach(el => { if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') checkFillBlank(); }); });
                     }, 80);
                 } else {
-                    // Standard multiple-choice
+                    // Standard multiple-choice — restore grid layout
+                    choicesContainer.style.display = '';
+                    choicesContainer.style.flexDirection = '';
                     options = shuffle(options);
                     options.forEach(opt => {
                         const btn = document.createElement('button');
@@ -3134,7 +3296,7 @@
                       'Slinky Malinki': 'slinky.png',
                       'Scarface Claw': 'scarface.png',
                       'Rainbow Doggy': 'head.png',
-                      'Kind Dog': 'head.png'
+                      'Rainbow Doggy': 'head.png'
                     };
                     const mascotGreetings = {
                       'Hairy Maclary': "Woof! I'm Hairy Maclary from Donaldson's Dairy! Let's solve this time quest! 🐾",
@@ -3147,7 +3309,7 @@
                       'Slinky Malinki': "Meow! I'm Slinky Malinki! Can you help me trace the time of my night-time raid? 🐾",
                       'Scarface Claw': "Hiss! I'm Scarface Claw, the toughest tom in town! Solve this clock quest if you dare! 🐾",
                       'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's solve this time quest! 🐾",
-                      'Kind Dog': "Avvavavava! I'm Kind Dog! Let's solve this time quest! 🐾"
+                      'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's solve this time quest! 🐾"
                     };
                     let featuredName = 'Rainbow Doggy';
                     for (const name of Object.keys(charImages)) {
@@ -3167,11 +3329,11 @@
                     bubbleImg.style.objectFit = 'contain';
                     
                     const defaultTexts = {
-                      0: "Hi explorer! Let's explore how to read the clock together! ⏰",
-                      1: "Hi explorer! Look at the clock and pick the right time! 📖🐾",
-                      2: "Hi explorer! Move the sliders or drag the hands to show the correct time! 🛠️⏰"
+                      0: "Hi! Let's explore how to read the clock together! ⏰",
+                      1: "Hi! Look at the clock and pick the right time! 📖🐾",
+                      2: "Hi! Move the sliders or drag the hands to show the correct time! 🛠️⏰"
                     };
-                    bubbleText.innerHTML = defaultTexts[phase] || "Hi explorer! Let's learn to read the clock together! ⏰";
+                    bubbleText.innerHTML = defaultTexts[phase] || "Hi! Let's learn to read the clock together! ⏰";
                 }
             }
 
@@ -3182,7 +3344,9 @@
                 2: "Drag the hands to match the time shown!",
                 3: "Read the story and work out the answer!"
             };
-            const missionText = missionTexts[phase] || missionTexts[1];
+            const missionText = (window._fibNext === undefined && state.activeQuestion && state.activeQuestion.fillBlank)
+                ? "Fill in the blanks to say the time the correct way!"
+                : (missionTexts[phase] || missionTexts[1]);
             const missionHtml = `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: ${missionText}</div>`;
             document.getElementById('quizText').innerHTML = missionHtml + qText;
             document.getElementById('questNumber').textContent = `Quest Phase ${phase}`;
@@ -3222,7 +3386,7 @@
                 awardCorrect(fb);
                 state.phaseProgress += 1;
                 playSound('correct');
-                triggerConfetti(); if(window.rpjSuccess) rpjSuccess();
+                triggerConfetti();
 
                 let extraHtml = '';
                 if (state.questPhase === 2 && state.phaseProgress >= 5) {
@@ -3280,7 +3444,7 @@
                 awardCorrect(feedbackEl);
                 state.phaseProgress += 1;
                 playSound('correct');
-                triggerConfetti(); if(window.rpjSuccess) rpjSuccess();
+                triggerConfetti();
                 showAnswerModal(true, `<div>It IS <strong>${fb.blankMins} minutes ${zoneWord} ${fb.blankHour}</strong>! 🌈</div>` + generateTimeStory(fb.displayH, fb.displayM), state.usedHelp);
             } else {
                 let msg = '';
@@ -3318,7 +3482,7 @@
                 awardCorrect(fb);
                 state.phaseProgress += 1;
                 playSound('correct');
-                triggerConfetti(); if(window.rpjSuccess) rpjSuccess();
+                triggerConfetti();
 
                 let extraHtml = '';
                 if (state.questPhase === 1 && state.phaseProgress >= 5) {
@@ -3474,74 +3638,6 @@
             }
         }
     </script>
-  <!-- Floating Rainbow PJ mascot -->
-  <div id="rpj" onclick="rpjClick()" title="🐾 Click me!" style="
-    position:fixed; bottom:18px; right:18px;
-    width:80px; height:80px;
-    z-index:200; cursor:pointer;
-    transition: opacity .4s ease, transform .5s cubic-bezier(.175,.885,.32,1.8), bottom .5s ease, right .5s ease, width .5s cubic-bezier(.175,.885,.32,1.8), height .5s cubic-bezier(.175,.885,.32,1.8);
-    opacity: 0.22;
-  ">
-    <img src="rainbow-pj.png" style="width:100%;height:100%;object-fit:contain;border-radius:50%;
-      filter:drop-shadow(0 0 8px rgba(249,115,22,.5));pointer-events:none;" alt="Rainbow PJ">
-  </div>
-  <script>
-  (function(){
-    const rpj = document.getElementById('rpj');
-    let hideTimer = null;
-
-    function rpjShow() {
-      clearTimeout(hideTimer);
-      rpj.style.opacity = '0.22';
-    }
-    function rpjHide() {
-      rpj.style.opacity = '0';
-      hideTimer = setTimeout(rpjShow, 4000);
-    }
-
-    window.rpjClick = function() {
-      playNextAva(0.75);
-      rpj.style.opacity = '0.9';
-      rpj.style.transform = 'scale(1.3) rotate(12deg)';
-      setTimeout(() => {
-        rpj.style.transform = '';
-        rpjHide();
-      }, 600);
-    };
-
-    window.rpjSuccess = function() {
-      clearTimeout(hideTimer);
-      // expand to centre
-      const vw = window.innerWidth, vh = window.innerHeight;
-      const size = Math.min(vw, vh) * 0.45;
-      rpj.style.transition = 'opacity .3s ease, transform .5s cubic-bezier(.175,.885,.32,1.8), bottom .5s ease, right .5s ease, width .5s cubic-bezier(.175,.885,.32,1.8), height .5s cubic-bezier(.175,.885,.32,1.8)';
-      rpj.style.width = size + 'px';
-      rpj.style.height = size + 'px';
-      rpj.style.bottom = ((vh - size) / 2) + 'px';
-      rpj.style.right = ((vw - size) / 2) + 'px';
-      rpj.style.opacity = '0.95';
-      rpj.style.transform = 'rotate(-8deg) scale(1.05)';
-      // wobble
-      setTimeout(() => { rpj.style.transform = 'rotate(8deg) scale(1.08)'; }, 300);
-      setTimeout(() => { rpj.style.transform = 'rotate(-8deg) scale(1.05)'; }, 700);
-      setTimeout(() => { rpj.style.transform = 'rotate(6deg) scale(1.07)'; }, 1100);
-      setTimeout(() => { rpj.style.transform = 'rotate(-6deg) scale(1.04)'; }, 1500);
-      setTimeout(() => { rpj.style.transform = 'rotate(0deg) scale(1)'; }, 1900);
-      // shrink back
-      setTimeout(() => {
-        rpj.style.width = '80px';
-        rpj.style.height = '80px';
-        rpj.style.bottom = '18px';
-        rpj.style.right = '18px';
-        rpj.style.transform = '';
-        rpjHide();
-      }, 2500);
-    };
-
-    rpj.addEventListener('mouseover', () => { if (rpj.style.opacity !== '0') { rpj.style.opacity='0.85'; rpj.style.transform='scale(1.15) rotate(8deg)'; }});
-    rpj.addEventListener('mouseout',  () => { if (parseFloat(rpj.style.opacity||0) < 0.9) { rpj.style.opacity='0.22'; rpj.style.transform=''; }});
-  })();
-  </script>
-
+  <img id="rpj" src="rainbow-pj.png" alt="Rainbow PJ" onclick="rpjClick()">
 </body>
 </html>

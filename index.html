@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rainbow Learning Academy 🌈 — Time &amp; Fractions for Kids</title>
-  <meta name="description" content="Learn to tell the time and explore fractions with Rainbow Doggy! Fun interactive maths for kids.">
+  <title>Rainbow's Explorer Academy 🌈 — Maths for Kids</title>
+  <meta name="description" content="Learn numbers, times tables, fractions, and time with Rainbow Doggy! Four fun interactive maths adventures for kids.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -13,394 +13,245 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
-      background: linear-gradient(135deg, #0e0414 0%, #1e0921 40%, #1a0805 75%, #050518 100%);
-      color: #f8fafc;
+      background: var(--bg);
+      color: var(--text1);
       min-height: 100vh;
       font-family: 'Inter', sans-serif;
       overflow-x: hidden;
     }
 
-    /* ── STARFIELD ── */
-    #starCanvas {
-      position: fixed; inset: 0;
-      width: 100%; height: 100%;
-      z-index: 0; pointer-events: none;
-    }
+    /* Ambient blobs */
+    .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+    .blob-a { width: 500px; height: 500px; background: rgba(56,189,248,.10); top: -150px; right: -100px; }
+    .blob-b { width: 420px; height: 420px; background: rgba(251,113,133,.09); bottom: -100px; left: -100px; }
+    .blob-c { width: 350px; height: 350px; background: rgba(251,191,36,.07); top: 40%; left: 40%; transform: translate(-50%,-50%); }
 
-    /* ── AMBIENT BLOBS ── */
-    .blob {
-      position: fixed; border-radius: 50%;
-      filter: blur(120px); pointer-events: none; z-index: 0;
-    }
-    .blob-purple { width: 500px; height: 500px; background: rgba(124,58,237,.18); top: -150px; right: -100px; }
-    .blob-orange { width: 420px; height: 420px; background: rgba(234,88,12,.14); bottom: -100px; left: -100px; }
-    .blob-pink   { width: 350px; height: 350px; background: rgba(244,63,94,.1);  top: 40%; left: 40%; transform: translate(-50%,-50%); }
+    /* Starfield */
+    #starCanvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
 
-    /* ── PAGE WRAPPER ── */
-    .page {
-      position: relative; z-index: 1;
-      display: flex; flex-direction: column; align-items: center;
-      padding: 0 16px 60px;
-      gap: 0;
-    }
+    /* Page wrapper */
+    .page { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding: 0 16px 60px; }
 
-    /* ── NAV BAR ── */
+    /* Nav */
     nav {
-      width: 100%; max-width: 1080px;
+      width: 100%; max-width: 1100px;
       display: flex; justify-content: space-between; align-items: center;
-      padding: 18px 24px;
-      margin-bottom: 0;
+      padding: 18px 24px; margin-bottom: 0;
+      flex-wrap: wrap; gap: 10px;
     }
     .nav-logo {
       display: flex; align-items: center; gap: 10px;
-      font-family: 'Outfit', sans-serif; font-weight: 900;
-      font-size: 1.15rem;
-      background: linear-gradient(to right, #c084fc, #f472b6, #f97316);
+      font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.15rem;
+      background: linear-gradient(to right in oklch, var(--candy-lemon), var(--candy-apple), var(--candy-lagoon), var(--candy-blueberry), var(--candy-grape), var(--candy-strawberry));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-    .nav-logo img { width: 34px; height: 34px; object-fit: contain; filter: drop-shadow(0 0 8px rgba(192,132,252,.7)); }
-    .nav-stats {
-      display: flex; gap: 10px; align-items: center;
-    }
-    .stat-pill {
-      background: rgba(30,41,59,.75);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 20px;
-      padding: 7px 14px;
-      font-family: 'Outfit', sans-serif; font-weight: 700;
-      font-size: 0.88rem;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .stat-pill.stars { color: #facc15; }
-    .stat-pill.streak { color: #f43f5e; }
+    .nav-logo img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 8px var(--area-num)); }
+    .nav-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-    /* ── HERO ── */
+    /* Hero */
     .hero {
-      width: 100%; max-width: 1080px;
+      width: 100%; max-width: 1100px;
       display: flex; flex-direction: column; align-items: center;
-      text-align: center;
-      padding: 20px 0 40px;
-      gap: 18px;
+      text-align: center; padding: 30px 0 20px; gap: 14px;
     }
     .hero h1 {
       font-family: 'Outfit', sans-serif; font-weight: 900;
-      font-size: clamp(2.4rem, 7vw, 4.2rem);
-      line-height: 1.15;
-      padding-bottom: 0.1em;
-      background: linear-gradient(100deg, #c084fc 0%, #f472b6 30%, #f97316 60%, #facc15 100%);
+      font-size: clamp(2.2rem, 6vw, 3.8rem); line-height: 1.15;
+      background: linear-gradient(100deg in oklch,
+        var(--candy-lemon) 0%,
+        var(--candy-apple) 20%,
+        var(--candy-lagoon) 40%,
+        var(--candy-blueberry) 60%,
+        var(--candy-grape) 80%,
+        var(--candy-strawberry) 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 40px rgba(192,132,252,.3));
+      filter: drop-shadow(0 0 30px oklch(70% 0.15 200 / .3));
     }
-    .hero p {
-      font-size: clamp(1rem, 2.5vw, 1.2rem);
-      color: #94a3b8; max-width: 560px; line-height: 1.65;
-    }
-
-    /* ── SHOWCASE: CLOCK + DOGGY + FRACTIONS ── */
-    .showcase {
-      width: 100%; max-width: 1080px;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: 20px;
-      align-items: center;
-      padding: 10px 0 50px;
-    }
-    @media (max-width: 700px) {
-      .showcase { grid-template-columns: 1fr; justify-items: center; gap: 24px; }
-    }
-
-    /* Decorative Clock */
-    .deco-clock-wrap {
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-    }
-    .deco-clock-svg {
-      width: 210px; height: 210px;
-      filter: drop-shadow(0 0 30px rgba(192,132,252,.5));
-    }
-    .deco-clock-label {
-      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1rem;
-      color: #c084fc;
-      display: flex; align-items: center; gap: 6px;
-    }
+    .hero p { font-size: clamp(.95rem, 2.2vw, 1.15rem); color: var(--text2); max-width: 580px; line-height: 1.65; }
 
     /* Mascot */
-    .mascot-wrap {
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
-    }
-    .mascot-sway-outer {
-      display: inline-block;
-      animation: mascotFloatY 5s ease-in-out infinite alternate;
+    .mascot-row {
+      display: flex; align-items: center; gap: 18px;
+      margin-bottom: 32px;
     }
     .mascot-img {
-      width: 160px; height: 160px; object-fit: contain;
-      animation: mascotSwayX 3s ease-in-out infinite alternate;
-      filter: drop-shadow(0 0 40px rgba(192,132,252,.9));
-    }
-    @media (max-width: 700px) { .mascot-img { width: 130px; height: 130px; } }
-    .mascot-bubble {
-      background: rgba(15,23,42,.85);
-      backdrop-filter: blur(10px);
-      border: 1.5px solid rgba(192,132,252,.3);
-      border-radius: 16px;
-      padding: 10px 16px;
-      font-size: 0.88rem; font-weight: 700;
-      color: #e2e8f0; text-align: center;
-      max-width: 200px; line-height: 1.45;
-      position: relative;
-    }
-    .mascot-bubble::before {
-      content: '';
-      position: absolute; top: -9px; left: 50%;
-      transform: translateX(-50%) rotate(45deg);
-      width: 14px; height: 14px;
-      background: rgba(15,23,42,.85);
-      border-left: 1.5px solid rgba(192,132,252,.3);
-      border-top: 1.5px solid rgba(192,132,252,.3);
-    }
-
-    /* Decorative Fraction Bars */
-    .deco-fracs-wrap {
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-    }
-    .deco-fracs {
-      display: flex; flex-direction: column; gap: 7px; width: 200px;
-    }
-    .df-row {
-      display: flex; align-items: center; gap: 8px;
-    }
-    .df-lbl {
-      font-family: 'Outfit', sans-serif; font-weight: 800;
-      font-size: 0.78rem; color: #94a3b8;
-      width: 28px; text-align: right; flex-shrink: 0;
-    }
-    .df-track {
-      flex: 1; height: 26px; border-radius: 6px;
-      background: rgba(15,23,42,.5); border: 1px solid rgba(255,255,255,.07);
-      overflow: hidden; display: flex; gap: 2px;
-    }
-    .df-seg {
-      flex: 1; height: 100%; border-radius: 4px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.52rem; font-weight: 800; color: rgba(255,255,255,.9);
-    }
-    .deco-fracs-label {
-      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1rem;
-      color: #f97316;
-      display: flex; align-items: center; gap: 6px;
-    }
-
-    /* ── PORTAL CARDS ── */
-    .portals {
-      width: 100%; max-width: 900px;
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 22px; margin-bottom: 40px;
-    }
-    @media (max-width: 640px) { .portals { grid-template-columns: 1fr; } }
-
-    .portal-card {
-      position: relative;
-      background: rgba(15,23,42,.6);
-      backdrop-filter: blur(16px);
-      border-radius: 28px;
-      border: 1px solid rgba(255,255,255,.07);
-      padding: 34px 26px 28px;
-      display: flex; flex-direction: column; align-items: center;
-      gap: 16px;
-      text-decoration: none; color: inherit;
-      overflow: hidden;
-      transition: transform .3s cubic-bezier(.175,.885,.32,1.275), box-shadow .3s ease, border-color .3s;
+      width: 130px; height: 130px; object-fit: contain;
+      animation: mascotBob 3s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 30px var(--area-num));
       cursor: pointer;
     }
-    .portal-card::before {
-      content: ''; position: absolute; top: 0; left: 0;
-      width: 100%; height: 4px;
+    @keyframes mascotBob {
+      0% { transform: translateY(0) rotate(-3deg); }
+      100% { transform: translateY(-14px) rotate(3deg); }
     }
-    .portal-card.time::before {
-      background: linear-gradient(to right, #7c3aed, #c084fc, #f472b6);
+    .mascot-bubble {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 18px; padding: 12px 18px;
+      font-size: .9rem; font-weight: 700; line-height: 1.5;
+      max-width: 260px; position: relative;
     }
-    .portal-card.frac::before {
-      background: linear-gradient(to right, #ea580c, #f97316, #facc15);
-    }
-    .portal-card:hover { transform: translateY(-12px) scale(1.055); }
-    .portal-card.time:hover {
-      box-shadow: 0 32px 70px rgba(124,58,237,.35);
-      border-color: rgba(192,132,252,.3);
-    }
-    .portal-card.frac:hover {
-      box-shadow: 0 32px 70px rgba(234,88,12,.3);
-      border-color: rgba(249,115,22,.3);
+    .mascot-bubble::before {
+      content: ''; position: absolute; left: -8px; top: 50%;
+      transform: translateY(-50%) rotate(45deg);
+      width: 12px; height: 12px;
+      background: var(--card); border-left: 1px solid var(--border); border-bottom: 1px solid var(--border);
     }
 
-    .portal-icon {
-      font-size: 4rem;
-      animation: pop 2.8s ease-in-out infinite;
+    /* Portal grid */
+    .portals {
+      width: 100%; max-width: 1100px;
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 22px; margin-bottom: 40px;
     }
-    .portal-card.frac .portal-icon { animation-delay: .6s; }
 
-    .portal-title {
-      font-family: 'Outfit', sans-serif; font-weight: 900;
-      font-size: 1.6rem; text-align: center;
-    }
-    .portal-card.time .portal-title {
-      background: linear-gradient(to right, #c084fc, #f472b6);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .portal-card.frac .portal-title {
-      background: linear-gradient(to right, #f97316, #facc15);
-      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    }
-    .portal-desc {
-      font-size: 0.9rem; color: #94a3b8; text-align: center; line-height: 1.6;
-    }
-    .portal-tags {
-      display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
-    }
-    .portal-tag {
-      background: rgba(30,41,59,.8);
-      border: 1px solid rgba(255,255,255,.09);
-      border-radius: 10px; padding: 4px 10px;
-      font-size: 0.68rem; font-weight: 700; color: #94a3b8;
-    }
-    .portal-btn {
-      width: 100%; padding: 14px;
-      border-radius: 16px; border: none;
-      font-family: 'Outfit', sans-serif; font-weight: 800;
-      font-size: 1rem; cursor: pointer;
-      transition: all .2s ease; margin-top: 4px;
-    }
-    .portal-card.time .portal-btn {
-      background: linear-gradient(135deg, #7c3aed, #c084fc);
-      color: white; box-shadow: 0 4px 18px rgba(124,58,237,.4);
-    }
-    .portal-card.frac .portal-btn {
-      background: linear-gradient(135deg, #ea580c, #f97316);
-      color: white; box-shadow: 0 4px 18px rgba(234,88,12,.4);
-    }
-    .portal-btn:hover { transform: scale(1.04); filter: brightness(1.1); }
-
-    /* ── ANIMATIONS ── */
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(-2deg); }
-      50% { transform: translateY(-18px) rotate(2deg); }
-    }
-    /* Mathematical Aperiodic Motion (Fibonacci co-prime cycle 5s/8s) */
-    @keyframes mascotFloatY {
-      0% { transform: translateY(4px) rotate(-5deg); }
-      100% { transform: translateY(-16px) rotate(4deg); }
-    }
-    @keyframes mascotSwayX {
-      0% { transform: translateX(-12px) scale(0.96); }
-      100% { transform: translateX(12px) scale(1.04); }
-    }
+    /* Portal card overrides for home (from shared.css .portal-card + per-area) */
+    .portal-card .portal-icon { font-size: 3.5rem; animation: pop 2.8s ease-in-out infinite; }
+    .portal-card.calc .portal-icon { animation-delay: .5s; }
+    .portal-card.frac .portal-icon { animation-delay: 1s; }
+    .portal-card.time .portal-icon { animation-delay: 1.5s; }
     @keyframes pop {
-      0%, 100% { transform: scale(1); filter: drop-shadow(0 0 6px rgba(255,255,255,.15)); }
-      50% { transform: scale(1.1); filter: drop-shadow(0 0 18px rgba(255,255,255,.4)); }
+      0%,100% { transform: scale(1); }
+      50% { transform: scale(1.12); }
     }
-    @keyframes spin-hour {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+    .portal-title {
+      font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.45rem; text-align: center;
     }
-    @keyframes spin-minute {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
+    .portal-card.num  .portal-title { background: var(--grad-num,  linear-gradient(to right, var(--area-num-a),  var(--area-num-b)));  -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .portal-card.calc .portal-title { background: var(--grad-calc, linear-gradient(to right, var(--area-calc-a), var(--area-calc-b))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .portal-card.frac .portal-title { background: var(--grad-frac, linear-gradient(to right, var(--area-frac-a), var(--area-frac-b))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .portal-card.time .portal-title { background: var(--grad-time, linear-gradient(to right, var(--area-time-a), var(--area-time-b))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .portal-desc { font-size: .88rem; color: var(--text2); text-align: center; line-height: 1.6; }
+    .portal-btn {
+      width: 100%; padding: 13px; border-radius: 14px; border: none;
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: .95rem; cursor: pointer;
+      color: white; transition: all .2s ease; margin-top: 4px;
+    }
+    .portal-card.num  .portal-btn { background: var(--grad-num,  linear-gradient(135deg in oklch, var(--area-num-a),  var(--area-num-b)));  box-shadow: 0 4px 18px oklch(70% .15 200 / .3); }
+    .portal-card.calc .portal-btn { background: var(--grad-calc, linear-gradient(135deg in oklch, var(--area-calc-a), var(--area-calc-b))); box-shadow: 0 4px 18px oklch(70% .15 260 / .3); }
+    .portal-card.frac .portal-btn { background: var(--grad-frac, linear-gradient(135deg in oklch, var(--area-frac-a), var(--area-frac-b))); box-shadow: 0 4px 18px oklch(70% .15 95  / .3); }
+    .portal-card.time .portal-btn { background: var(--grad-time, linear-gradient(135deg in oklch, var(--area-time-a), var(--area-time-b))); box-shadow: 0 4px 18px oklch(70% .15 150 / .3); }
+    .portal-btn:hover { transform: scale(1.04); filter: brightness(1.1); }
+    .portal-btn:active { transform: scale(.96); }
+
+    /* Stats bar */
+    .stats-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    /* Showcase (decorative clock + doggy + fraction bars, compressed) */
+    .showcase {
+      width: 100%; max-width: 1100px;
+      display: grid; grid-template-columns: 1fr auto 1fr;
+      gap: 20px; align-items: center; padding: 0 0 36px;
+    }
+    @media (max-width: 700px) { .showcase { display: none; } }
+
+    .deco-clock-wrap, .deco-fracs-wrap {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      transition: transform .25s cubic-bezier(.175,.885,.32,1.275), filter .25s;
+      text-decoration: none;
+    }
+    .deco-clock-wrap:hover, .deco-fracs-wrap:hover { transform: scale(1.05) translateY(-4px); filter: brightness(1.15); }
+    .deco-clock-svg { width: 180px; height: 180px; filter: drop-shadow(0 0 24px rgba(52,211,153,.4)); }
+    .deco-clock-label { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: .95rem; color: var(--area-time); display: flex; align-items: center; gap: 6px; }
+    .deco-fracs-label { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: .95rem; color: var(--area-frac); display: flex; align-items: center; gap: 6px; }
+
+    .deco-fracs { display: flex; flex-direction: column; gap: 6px; width: 190px; }
+    .df-row { display: flex; align-items: center; gap: 8px; }
+    .df-lbl { font-family: 'Outfit', sans-serif; font-weight: 800; font-size: .75rem; color: var(--text2); width: 28px; text-align: right; flex-shrink: 0; }
+    .df-track { flex: 1; height: 24px; border-radius: 6px; background: rgba(15,23,42,.5); border: 1px solid var(--border); overflow: hidden; display: flex; gap: 2px; }
+    .df-seg { flex: 1; height: 100%; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: .5rem; font-weight: 800; color: rgba(255,255,255,.9); }
+
+    .mascot-center { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .mascot-sway { animation: mascotBob 3s ease-in-out infinite alternate; }
+    .mascot-center img.main { width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 0 35px rgba(56,189,248,.6)); }
+    .mascot-center .bubble {
+      background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+      padding: 10px 16px; font-size: .84rem; font-weight: 700; color: var(--text1); text-align: center;
+      max-width: 210px; line-height: 1.45;
     }
 
-    /* Hand pivot origin trick using transform-origin in SVG */
-    #deco-hour   { transform-origin: 100px 100px; animation: spin-hour   43200s linear infinite; }
-    #deco-minute { transform-origin: 100px 100px; animation: spin-minute  3600s linear infinite; }
+    #deco-hour   { transform-origin: 100px 100px; }
+    #deco-minute { transform-origin: 100px 100px; }
+
+    footer {
+      position: relative; z-index: 1; width: 100%; text-align: center;
+      padding: 24px 16px 40px; font-family: 'Outfit', sans-serif;
+      font-size: .8rem; color: var(--text2); line-height: 1.8;
+    }
+
+    /* Splash */
+    #splash {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
+      background: var(--bg); cursor: pointer; user-select: none;
+    }
+    @keyframes splashBob { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-12px) scale(1.03)} }
+    @keyframes splashPulse { 0%,100%{box-shadow:0 0 30px rgba(56,189,248,.4)} 50%{box-shadow:0 0 50px rgba(56,189,248,.7)} }
 
     @media (max-width: 600px) {
-      .deco-fracs { width: 170px; }
-      .deco-clock-svg { width: 170px; height: 170px; }
+      .portals { grid-template-columns: 1fr; }
       nav { padding: 14px 16px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Ambient blobs -->
-  <div class="blob blob-purple"></div>
-  <div class="blob blob-orange"></div>
-  <div class="blob blob-pink"></div>
-
-  <!-- Starfield -->
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+  <div class="blob blob-c"></div>
   <canvas id="starCanvas"></canvas>
+
+  <!-- SPLASH -->
+  <div id="splash">
+    <div id="splashDoggy" style="position:relative;width:min(200px,50vw);height:min(200px,50vw);">
+      <img id="doggyHead" src="head.png" alt="Rainbow Doggy"
+        style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 40px rgba(56,189,248,.6));animation:splashBob 2s ease-in-out infinite;">
+    </div>
+    <h1 style="font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(1.8rem,5vw,3rem);background:linear-gradient(100deg in oklch,var(--candy-lemon),var(--candy-apple),var(--candy-lagoon),var(--candy-blueberry),var(--candy-grape),var(--candy-strawberry));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;padding:0 20px;">
+      Rainbow's Explorer Academy! 🌈
+    </h1>
+    <p id="splashHint" style="color:var(--text2);font-size:.95rem;font-family:'Inter',sans-serif;">🐶 Click Doggy to enter!</p>
+    <div style="background:linear-gradient(135deg,var(--area-num),var(--purple));border:none;border-radius:50px;padding:14px 36px;font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;color:#fff;animation:splashPulse 1.6s ease-in-out infinite;">
+      Avvavavava! ✨ Let's Explore!
+    </div>
+  </div>
 
   <div class="page">
 
-    <!-- ── NAV ── -->
+    <!-- NAV -->
     <nav>
       <div class="nav-logo">
         <img src="head.png" alt="Rainbow Doggy">
-        Rainbow Learning Academy
+        Rainbow's Explorer Academy 🌈
       </div>
-      <div class="nav-stats">
-        <button id="muteBtn" onclick="toggleMusic()" style="background:rgba(30,41,59,.75);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:7px 14px;font-family:'Outfit',sans-serif;font-weight:700;font-size:.88rem;color:#e2e8f0;cursor:pointer;display:flex;align-items:center;gap:6px;">🎵 Music</button>
-        <div class="stat-pill streak">🔥 <span id="streakCount">0</span></div>
-        <div class="stat-pill stars">⭐ <span id="starsCount">0</span></div>
+      <div class="nav-controls">
+        <button id="themeToggleBtn" class="tool-btn" onclick="toggleTheme()">☀️ Light</button>
+        <button id="muteBtn" class="tool-btn" onclick="toggleMute()">🔊 Sound</button>
+        <div class="stat-badge stars">⭐ <span id="starsCount">0</span></div>
+        <div class="stat-badge streak">🔥 <span id="streakCount">0</span></div>
       </div>
     </nav>
 
-    <audio id="bgMusic" loop preload="auto">
-      <source src="output.mp3" type="audio/mpeg">
-      <source src="output.ogg" type="audio/ogg">
-    </audio>
-
-    <!-- ── SPLASH OVERLAY ── -->
-    <div id="splash" style="
-      position:fixed;inset:0;z-index:9999;
-      display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
-      background:linear-gradient(135deg, #0e0414 0%, #1c0821 40%, #1f0b06 75%, #050518 100%);
-      cursor:pointer;user-select:none;
-    ">
-      <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;">
-        <div style="position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(244,63,94,.13);filter:blur(100px);top:-80px;right:-80px;"></div>
-        <div style="position:absolute;width:360px;height:360px;border-radius:50%;background:rgba(250,204,21,.09);filter:blur(100px);bottom:-60px;left:-60px;"></div>
-      </div>
-      <div id="splashDoggy" style="position:relative;width:min(220px,55vw);height:min(220px,55vw);cursor:grab;flex-shrink:0;">
-        <img id="doggyHead" src="head.png" alt="Rainbow Doggy" style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 40px rgba(244,63,94,.5));transform-origin:center center;transition:transform .08s ease-out;animation:splashBob 2s ease-in-out infinite;">
-      </div>
-      <h1 style="font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(1.8rem,6vw,3.2rem);background:linear-gradient(100deg,#c084fc,#f472b6,#f97316,#facc15);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;padding:0 20px;">Learning with Rainbow Doggy!</h1>
-      <p id="splashHint" style="color:rgba(255,255,255,.5);font-size:clamp(.9rem,2.5vw,1.05rem);font-family:'Inter',sans-serif;">🐶 Grab Doggy's face to enter!</p>
-      <div style="margin-top:8px;background:linear-gradient(135deg,#f43f5e,#f97316);border:none;border-radius:50px;padding:14px 40px;font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;color:#fff;box-shadow:0 0 30px rgba(244,63,94,.4);animation:splashPulse 1.6s ease-in-out infinite;">
-        Avvavavava! ✨ Let's Go!
-      </div>
-    </div>
-    <style>
-      @keyframes splashBob { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-12px) scale(1.03)} }
-      @keyframes splashPulse { 0%,100%{box-shadow:0 0 30px rgba(244,63,94,.4)} 50%{box-shadow:0 0 50px rgba(244,63,94,.7)} }
-      #splashDoggy:active { cursor:grabbing; }
-    </style>
-
-    <!-- ── HERO ── -->
+    <!-- HERO -->
     <div class="hero">
-      <h1>Learning with Rainbow Doggy!</h1>
-      <p>Two fun, interactive adventures to learn reading the clock and understanding fractions — with Rainbow Doggy guiding you every step of the way! 🐶✨</p>
+      <h1>Welcome to Explorer Academy! 🐾</h1>
+      <p>Four amazing adventures await — discover numbers, master times tables, share fractions, and travel through time with Rainbow Doggy and friends! 🐶✨</p>
     </div>
 
-    <!-- ── SHOWCASE ── -->
+    <!-- SHOWCASE (decorative) -->
     <div class="showcase">
-
-      <!-- Decorative animated clock -->
-      <div class="deco-clock-wrap">
+      <!-- Decorative animated clock → Time -->
+      <a href="time.html" class="deco-clock-wrap" title="Time Travellers">
         <svg class="deco-clock-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <radialGradient id="clockBg" cx="50%" cy="50%" r="50%">
               <stop offset="0%" stop-color="#1e293b"/>
               <stop offset="100%" stop-color="#0f172a"/>
             </radialGradient>
-            <filter id="glow">
-              <feGaussianBlur stdDeviation="3" result="blur"/>
-              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-            </filter>
+            <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           </defs>
-          <!-- Face -->
           <circle cx="100" cy="100" r="97" fill="#0a0f1e" stroke="#1e293b" stroke-width="2"/>
-          <circle cx="100" cy="100" r="94" fill="url(#clockBg)" stroke="rgba(192,132,252,.4)" stroke-width="1.5"/>
-          <!-- Purple glow ring -->
-          <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(192,132,252,.12)" stroke-width="10"/>
-          <!-- Hour ticks -->
+          <circle cx="100" cy="100" r="94" fill="url(#clockBg)" stroke="rgba(52,211,153,.4)" stroke-width="1.5"/>
+          <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(52,211,153,.1)" stroke-width="10"/>
           <g stroke="#475569" stroke-width="2" stroke-linecap="round">
             <line x1="100" y1="12" x2="100" y2="22" transform="rotate(0,100,100)"/>
             <line x1="100" y1="12" x2="100" y2="22" transform="rotate(30,100,100)"/>
@@ -415,425 +266,153 @@
             <line x1="100" y1="12" x2="100" y2="22" transform="rotate(300,100,100)"/>
             <line x1="100" y1="12" x2="100" y2="22" transform="rotate(330,100,100)"/>
           </g>
-          <!-- Numbers -->
           <text x="100" y="32" text-anchor="middle" dominant-baseline="middle" fill="#e2e8f0" font-family="Outfit" font-weight="800" font-size="14">12</text>
           <text x="156" y="56" text-anchor="middle" dominant-baseline="middle" fill="#cbd5e1" font-family="Outfit" font-weight="800" font-size="12">3</text>
           <text x="100" y="172" text-anchor="middle" dominant-baseline="middle" fill="#cbd5e1" font-family="Outfit" font-weight="800" font-size="12">6</text>
           <text x="44" y="56" text-anchor="middle" dominant-baseline="middle" fill="#cbd5e1" font-family="Outfit" font-weight="800" font-size="12">9</text>
-          <!-- Left/right zones -->
-          <path d="M100,100 L100,14 A86,86,0,0,1,100,186 Z" fill="rgba(52,152,219,.06)" pointer-events="none"/>
-          <path d="M100,100 L100,14 A86,86,0,0,0,100,186 Z" fill="rgba(46,204,113,.06)" pointer-events="none"/>
-          <!-- Hour hand -->
-          <g id="deco-hour" style="transform-origin:100px 100px;">
-            <line x1="100" y1="100" x2="100" y2="58" stroke="#e2e8f0" stroke-width="7" stroke-linecap="round" filter="url(#glow)"/>
-            <circle cx="100" cy="58" r="5" fill="#c084fc"/>
-          </g>
-          <!-- Minute hand -->
-          <g id="deco-minute" style="transform-origin:100px 100px;">
-            <line x1="100" y1="100" x2="100" y2="34" stroke="#f97316" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/>
-            <circle cx="100" cy="34" r="4" fill="#facc15"/>
-          </g>
-          <!-- Center pin (doggy face) -->
-          <circle cx="100" cy="100" r="10" fill="#3b82f6" stroke="white" stroke-width="1.5"/>
-          <ellipse cx="100" cy="103" rx="6" ry="4" fill="#facc15"/>
-          <circle cx="97" cy="98" r="1.8" fill="white"/>
-          <circle cx="103" cy="98" r="1.8" fill="white"/>
-          <circle cx="97" cy="98" r=".9" fill="#1e293b"/>
-          <circle cx="103" cy="98" r=".9" fill="#1e293b"/>
-          <circle cx="100" cy="101" r="1.2" fill="#ef4444"/>
+          <g id="deco-hour"><line x1="100" y1="100" x2="100" y2="58" stroke="#34d399" stroke-width="7" stroke-linecap="round" filter="url(#glow)"/><circle cx="100" cy="58" r="5" fill="#34d399"/></g>
+          <g id="deco-minute"><line x1="100" y1="100" x2="100" y2="34" stroke="#6ee7b7" stroke-width="4" stroke-linecap="round" filter="url(#glow)"/><circle cx="100" cy="34" r="4" fill="#a7f3d0"/></g>
+          <circle cx="100" cy="100" r="8" fill="#34d399" stroke="white" stroke-width="1.5"/>
         </svg>
-        <div class="deco-clock-label">⏰ Time Explorer</div>
-      </div>
+        <div class="deco-clock-label">⏰ Time Travellers</div>
+      </a>
 
       <!-- Mascot centre -->
-      <div class="mascot-wrap">
-        <div class="mascot-sway-outer">
-          <img src="head.png" class="mascot-img" alt="Rainbow Doggy">
+      <div class="mascot-center">
+        <div class="mascot-sway">
+          <img src="head.png" class="main" alt="Rainbow Doggy" onclick="playNextAva(0.75)">
         </div>
-        <img src="rainbow-pj.png" id="rpjMascot"
-          style="width:72px;height:72px;object-fit:contain;animation:float 3.8s ease-in-out infinite;animation-delay:.8s;
-                 filter:drop-shadow(0 0 18px rgba(192,132,252,.6));cursor:pointer;
-                 transition:transform .18s cubic-bezier(.175,.885,.32,1.8);"
-          onmouseover="this.style.transform='scale(1.18) rotate(-6deg)'"
-          onmouseout="this.style.transform=''"
-          onclick="rpjClick()" title="🐾 Click Rainbow PJ!" alt="Rainbow PJ">
-        <div class="mascot-bubble">
-          Arrrva! 🐾 I'm Rainbow Doggy!<br>Pick an adventure and let's learn together! 🎉
-        </div>
+        <div class="bubble">Arrrva! 🐾 Pick an adventure and let's explore! 🎉</div>
       </div>
 
-      <!-- Decorative fraction bars -->
-      <div class="deco-fracs-wrap">
+      <!-- Decorative fraction bars → Fractions -->
+      <a href="fractions.html" class="deco-fracs-wrap" title="Fraction Friends">
         <div class="deco-fracs">
-          <!-- 1 whole -->
-          <div class="df-row">
-            <div class="df-lbl">1</div>
-            <div class="df-track">
-              <div class="df-seg" style="background:#e2e8f0;color:#1e293b;">whole</div>
-            </div>
-          </div>
-          <!-- 1/2 -->
-          <div class="df-row">
-            <div class="df-lbl">½</div>
-            <div class="df-track">
-              <div class="df-seg" style="background:#ef4444;">½</div>
-              <div class="df-seg" style="background:#ef4444;opacity:.6;">½</div>
-            </div>
-          </div>
-          <!-- 1/3 -->
-          <div class="df-row">
-            <div class="df-lbl">⅓</div>
-            <div class="df-track">
-              <div class="df-seg" style="background:#f97316;">⅓</div>
-              <div class="df-seg" style="background:#f97316;opacity:.7;">⅓</div>
-              <div class="df-seg" style="background:#f97316;opacity:.5;">⅓</div>
-            </div>
-          </div>
-          <!-- 1/4 -->
-          <div class="df-row">
-            <div class="df-lbl">¼</div>
-            <div class="df-track">
-              <div class="df-seg" style="background:#eab308;color:#1e293b;">¼</div>
-              <div class="df-seg" style="background:#eab308;opacity:.75;color:#1e293b;">¼</div>
-              <div class="df-seg" style="background:#eab308;opacity:.55;color:#1e293b;">¼</div>
-              <div class="df-seg" style="background:#eab308;opacity:.4;color:#1e293b;">¼</div>
-            </div>
-          </div>
-          <!-- 1/5 -->
-          <div class="df-row">
-            <div class="df-lbl">⅕</div>
-            <div class="df-track">
-              <div class="df-seg" style="background:#22c55e;">⅕</div>
-              <div class="df-seg" style="background:#22c55e;opacity:.8;">⅕</div>
-              <div class="df-seg" style="background:#22c55e;opacity:.65;">⅕</div>
-              <div class="df-seg" style="background:#22c55e;opacity:.5;">⅕</div>
-              <div class="df-seg" style="background:#22c55e;opacity:.4;">⅕</div>
-            </div>
-          </div>
-          <!-- 1/8 -->
-          <div class="df-row">
-            <div class="df-lbl">⅛</div>
-            <div class="df-track">
-              <div class="df-seg" style="background:#6366f1;"></div>
-              <div class="df-seg" style="background:#6366f1;opacity:.88;"></div>
-              <div class="df-seg" style="background:#6366f1;opacity:.76;"></div>
-              <div class="df-seg" style="background:#6366f1;opacity:.64;"></div>
-              <div class="df-seg" style="background:#6366f1;opacity:.52;"></div>
-              <div class="df-seg" style="background:#6366f1;opacity:.42;"></div>
-              <div class="df-seg" style="background:#6366f1;opacity:.32;"></div>
-              <div class="df-seg" style="background:#6366f1;opacity:.22;"></div>
-            </div>
-          </div>
-          <!-- 1/16 -->
-          <div class="df-row">
-            <div class="df-lbl" style="font-size:.65rem;">1/16</div>
-            <div class="df-track" style="gap:1px;">
-              <div class="df-seg" style="background:#c084fc;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.85;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.7;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.6;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.5;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.42;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.35;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.28;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.22;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.18;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.15;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.12;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.1;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.08;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.06;"></div>
-              <div class="df-seg" style="background:#c084fc;opacity:.04;"></div>
-            </div>
-          </div>
+          <div class="df-row"><div class="df-lbl">1</div><div class="df-track"><div class="df-seg" style="background:#e2e8f0;color:#1e293b;">whole</div></div></div>
+          <div class="df-row"><div class="df-lbl">½</div><div class="df-track"><div class="df-seg" style="background:var(--area-calc);">½</div><div class="df-seg" style="background:var(--area-calc);opacity:.6;">½</div></div></div>
+          <div class="df-row"><div class="df-lbl">⅓</div><div class="df-track"><div class="df-seg" style="background:var(--area-frac);">⅓</div><div class="df-seg" style="background:var(--area-frac);opacity:.7;">⅓</div><div class="df-seg" style="background:var(--area-frac);opacity:.5;">⅓</div></div></div>
+          <div class="df-row"><div class="df-lbl">¼</div><div class="df-track"><div class="df-seg" style="background:#eab308;color:#1e293b;">¼</div><div class="df-seg" style="background:#eab308;opacity:.7;color:#1e293b;">¼</div><div class="df-seg" style="background:#eab308;opacity:.5;color:#1e293b;">¼</div><div class="df-seg" style="background:#eab308;opacity:.35;color:#1e293b;">¼</div></div></div>
+          <div class="df-row"><div class="df-lbl">⅕</div><div class="df-track"><div class="df-seg" style="background:var(--area-time);">⅕</div><div class="df-seg" style="background:var(--area-time);opacity:.8;">⅕</div><div class="df-seg" style="background:var(--area-time);opacity:.65;">⅕</div><div class="df-seg" style="background:var(--area-time);opacity:.5;">⅕</div><div class="df-seg" style="background:var(--area-time);opacity:.38;">⅕</div></div></div>
+          <div class="df-row"><div class="df-lbl">⅛</div><div class="df-track"><div class="df-seg" style="background:var(--area-num);"></div><div class="df-seg" style="background:var(--area-num);opacity:.85;"></div><div class="df-seg" style="background:var(--area-num);opacity:.7;"></div><div class="df-seg" style="background:var(--area-num);opacity:.55;"></div><div class="df-seg" style="background:var(--area-num);opacity:.4;"></div><div class="df-seg" style="background:var(--area-num);opacity:.3;"></div><div class="df-seg" style="background:var(--area-num);opacity:.2;"></div><div class="df-seg" style="background:var(--area-num);opacity:.12;"></div></div></div>
         </div>
-        <div class="deco-fracs-label">🍕 Fraction Explorer</div>
-      </div>
+        <div class="deco-fracs-label">🍕 Fraction Friends</div>
+      </a>
     </div>
 
-    <!-- ── PORTAL CARDS ── -->
+    <!-- PORTAL CARDS -->
     <div class="portals">
-      <a href="time.html" class="portal-card time">
-        <div class="portal-icon">⏰</div>
-        <div class="portal-title">Time Explorer Academy</div>
-        <p class="portal-desc">Join <strong>Hairy Maclary</strong>, <strong>Rainbow Doggy</strong>, and friends on a race against time! Drag the magic clock hands to solve tricky challenges before mischievous <strong>Slinky Malinki</strong> swipes all the dairy keys!</p>
-        <button class="portal-btn">🚀 Launch Time Explorer</button>
+      <a href="numbers.html" class="portal-card num">
+        <div class="portal-icon">🔢</div>
+        <div class="portal-title">Number Explorers</div>
+        <p class="portal-desc">Discover the secrets of every number from 1 to 120 — primes, squares, triangles, and real chemical elements! With <strong>Scarface</strong>, <strong>Hercules</strong>, and the whole crew! 🐾</p>
+        <button class="portal-btn">🔭 Explore Numbers</button>
+      </a>
+
+      <a href="calculation.html" class="portal-card calc">
+        <div class="portal-icon">✖️</div>
+        <div class="portal-title">Calculation Crew</div>
+        <p class="portal-desc">Master times tables 1–20 with <strong>Hairy Maclary</strong>! Learn arrays, race the clock in Time Trial, and challenge the mixed board for Champion trophies! 🏆</p>
+        <button class="portal-btn">✖️ Join the Crew</button>
       </a>
 
       <a href="fractions.html" class="portal-card frac">
         <div class="portal-icon">🍕</div>
-        <div class="portal-title">Fraction Explorer Academy</div>
-        <p class="portal-desc">Help cheerful <strong>Kind Dog</strong> share delicious pizza slices and sweet treats fairly! Match shapes, compare slices, and solve fraction puzzles before tough <strong>Scarface Claw</strong> can swipe them for himself!</p>
-        <button class="portal-btn">🍕 Launch Fraction Explorer</button>
+        <div class="portal-title">Fraction Friends</div>
+        <p class="portal-desc">Help cheerful <strong>Kind Dog</strong> share pizza slices and sweet treats fairly! Match shapes, compare fractions, and outsmart <strong>Scarface Claw</strong>! 🍕</p>
+        <button class="portal-btn">🍕 Share the Fun</button>
+      </a>
+
+      <a href="time.html" class="portal-card time">
+        <div class="portal-icon">⏰</div>
+        <div class="portal-title">Time Travellers</div>
+        <p class="portal-desc">Race against time with <strong>Hairy Maclary</strong> and <strong>Rainbow Doggy</strong>! Drag clock hands to solve tricky challenges before <strong>Slinky Malinki</strong> swipes the keys! ⏰</p>
+        <button class="portal-btn">⏰ Travel in Time</button>
       </a>
     </div>
 
-
   </div>
 
+  <footer>
+    <div>🐾 Created by <span style="background:linear-gradient(to right in oklch,var(--candy-lemon),var(--candy-apple),var(--candy-lagoon),var(--candy-blueberry),var(--candy-grape),var(--candy-strawberry));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;">Rainbow Doggy</span> with help from an old mate 🤝✨</div>
+  </footer>
+
+  <script src="shared.js"></script>
   <script>
-    // ── STARFIELD ──
+    // Starfield
     const starCanvas = document.getElementById('starCanvas');
     const sCtx = starCanvas.getContext('2d');
     const stars = [];
-
-    function resizeStars() {
-      starCanvas.width = window.innerWidth;
-      starCanvas.height = window.innerHeight;
-    }
+    function resizeStars() { starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight; }
     resizeStars();
     window.addEventListener('resize', resizeStars);
-
-    for (let i = 0; i < 200; i++) {
-      stars.push({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        r: Math.random() * 1.6 + 0.3,
-        twinkle: Math.random() * Math.PI * 2,
-        speed: Math.random() * 0.04 + 0.01
-      });
+    for (let i = 0; i < 180; i++) {
+      stars.push({ x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, r: Math.random()*1.5+0.3, t: Math.random()*Math.PI*2, s: Math.random()*0.04+0.01 });
     }
-
     (function animStars() {
-      sCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+      sCtx.clearRect(0,0,starCanvas.width,starCanvas.height);
       stars.forEach(s => {
-        s.twinkle += s.speed;
-        const alpha = 0.35 + 0.45 * Math.sin(s.twinkle);
-        sCtx.beginPath();
-        sCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        sCtx.fillStyle = `rgba(255,255,255,${alpha})`;
-        sCtx.fill();
+        s.t += s.s;
+        const a = 0.3+0.4*Math.sin(s.t);
+        sCtx.beginPath(); sCtx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        sCtx.fillStyle = `rgba(255,255,255,${a})`; sCtx.fill();
       });
       requestAnimationFrame(animStars);
     })();
 
-    // ── CLOCK REAL-TIME ──
+    // Real-time clock
     function setClockToNow() {
       const now = new Date();
-      const h = now.getHours() % 12, m = now.getMinutes(), s = now.getSeconds();
-      const hourDeg   = h * 30 + m * 0.5;
-      const minuteDeg = m * 6  + s * 0.1;
-      const hourEl   = document.getElementById('deco-hour');
-      const minuteEl = document.getElementById('deco-minute');
-      if (hourEl)   hourEl.style.transform   = `rotate(${hourDeg}deg)`;
-      if (minuteEl) minuteEl.style.transform = `rotate(${minuteDeg}deg)`;
+      const h = now.getHours()%12, m = now.getMinutes(), s = now.getSeconds();
+      const hEl = document.getElementById('deco-hour');
+      const mEl = document.getElementById('deco-minute');
+      if (hEl) hEl.style.transform = `rotate(${h*30+m*0.5}deg)`;
+      if (mEl) mEl.style.transform = `rotate(${m*6+s*0.1}deg)`;
     }
-    // Override the CSS animation with real time
     setClockToNow();
     setInterval(setClockToNow, 1000);
 
-    // ── SHARED STATS ──
-    document.getElementById('starsCount').textContent  = localStorage.getItem('time_stars')  || '0';
-    document.getElementById('streakCount').textContent = localStorage.getItem('time_streak') || '0';
-
-    // ── BACKGROUND MUSIC ──
-    const bgMusic = document.getElementById('bgMusic');
-    const muteBtn = document.getElementById('muteBtn');
-    let musicStarted = false;
-    let musicMuted = localStorage.getItem('rla_muted') === 'true';
-
-    bgMusic.volume = 0;
-    bgMusic.playbackRate = 1 + (Math.random() * 0.06 - 0.03);
-
-    let currentMaxVol = musicMuted ? 0 : 0.28;
-    let volumeFadeInterval = null;
-    let musicPlaying = false;
-
-    function fadeMaxVolume(target, durationMs) {
-      if (volumeFadeInterval) clearInterval(volumeFadeInterval);
-      const start = currentMaxVol;
-      const startTime = performance.now();
-      volumeFadeInterval = setInterval(() => {
-        const elapsed = performance.now() - startTime;
-        const t = Math.min(elapsed / durationMs, 1);
-        currentMaxVol = start + (target - start) * t;
-        updateVolume();
-        if (t >= 1) {
-          clearInterval(volumeFadeInterval);
-          volumeFadeInterval = null;
-        }
-      }, 30);
-    }
-
-    function updateVolume() {
-      if (musicMuted || !musicPlaying) {
-        bgMusic.volume = 0;
-        return;
-      }
-      const duration = bgMusic.duration;
-      if (!duration || isNaN(duration)) {
-        bgMusic.volume = currentMaxVol;
-        return;
-      }
-      const currentTime = bgMusic.currentTime;
-      const fadeSecs = 4.0; // 4 seconds fade-in/fade-out window on loop
-
-      if (currentTime < fadeSecs) {
-        // Fade in at the start of the loop
-        bgMusic.volume = (currentTime / fadeSecs) * currentMaxVol;
-      } else if (currentTime > duration - fadeSecs) {
-        // Fade out at the end of the loop
-        bgMusic.volume = Math.max(0, ((duration - currentTime) / fadeSecs) * currentMaxVol);
-      } else {
-        // Normal playing volume
-        bgMusic.volume = currentMaxVol;
-      }
-    }
-
-    bgMusic.addEventListener('timeupdate', updateVolume);
-
-    function startMusic() {
-      if (musicPlaying || musicMuted) return;
-      bgMusic.play().then(() => {
-        musicPlaying = true;
-        fadeMaxVolume(0.28, 1200);
-      }).catch(() => {});
-    }
-
-    function toggleMusic() {
-      if (!musicPlaying && !musicMuted) {
-        bgMusic.play().then(() => { musicPlaying = true; }).catch(() => {});
-      }
-      musicMuted = !musicMuted;
-      localStorage.setItem('rla_muted', musicMuted);
-      muteBtn.textContent = musicMuted ? '🔇 Muted' : '🎵 Music';
-      if (musicMuted) {
-        fadeMaxVolume(0, 600);
-      } else {
-        if (!musicPlaying) {
-          bgMusic.play().then(() => {
-            musicPlaying = true;
-            fadeMaxVolume(0.28, 800);
-          }).catch(() => {});
-        } else {
-          fadeMaxVolume(0.28, 800);
-        }
-      }
-    }
-
-    if (musicMuted) muteBtn.textContent = '🔇 Muted';
-
-    // Splash — stretch Doggy's head toward the cursor (Mario 64 style), click to enter
+    // Splash
     const splash = document.getElementById('splash');
     const doggyHead = document.getElementById('doggyHead');
-    const splashHint = document.getElementById('splashHint');
-    let grabbed = false;
+    doggyHead.src = Math.random() < 0.5 ? 'head.png' : 'rainbow-pj.png';
 
     function dismissSplash() {
       if (!splash.parentNode) return;
-      startMusic();
-      // Elastic snap back: overshoot → compress → settle, then fade
       doggyHead.style.animation = 'none';
       doggyHead.style.transition = 'transform .18s cubic-bezier(.4,0,.2,1)';
-      doggyHead.style.transform = 'translate(0,0) scaleX(1.35) scaleY(0.7)'; // squash on impact
-      setTimeout(() => {
-        doggyHead.style.transition = 'transform .22s cubic-bezier(.175,.885,.32,1.8)';
-        doggyHead.style.transform = 'translate(0,0) scaleX(0.82) scaleY(1.25)'; // overshoot tall
-      }, 180);
-      setTimeout(() => {
-        doggyHead.style.transition = 'transform .18s cubic-bezier(.4,0,.2,1)';
-        doggyHead.style.transform = 'translate(0,0) scaleX(1.1) scaleY(0.92)'; // back wide
-      }, 400);
-      setTimeout(() => {
-        doggyHead.style.transition = 'transform .14s cubic-bezier(.4,0,.2,1)';
-        doggyHead.style.transform = 'translate(0,0) scaleX(1) scaleY(1)'; // settle
-      }, 560);
-      setTimeout(() => {
-        splash.style.transition = 'opacity .4s';
-        splash.style.opacity = '0';
-      }, 600);
-      setTimeout(() => splash.remove(), 1050);
+      doggyHead.style.transform = 'scaleX(1.9) scaleY(0.4)';
+      setTimeout(() => { doggyHead.style.transition='transform .22s cubic-bezier(.175,.885,.32,1.8)'; doggyHead.style.transform='scaleX(0.6) scaleY(1.7)'; }, 180);
+      setTimeout(() => { doggyHead.style.transition='transform .18s cubic-bezier(.4,0,.2,1)'; doggyHead.style.transform='scaleX(1)scaleY(1)'; }, 400);
+      setTimeout(() => { splash.style.transition='opacity .4s'; splash.style.opacity='0'; }, 550);
+      setTimeout(() => splash.remove(), 1000);
     }
 
     splash.addEventListener('mousemove', e => {
       const rect = doggyHead.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      const maxDist = 340;
-      const pull = Math.min(dist, maxDist) / maxDist; // 0→1
-      const maxShift = 55;
-      const tx = (dx / dist || 0) * pull * maxShift;
-      const ty = (dy / dist || 0) * pull * maxShift;
-      // Stretch: skew toward cursor, squish perpendicular
-      const scaleX = 1 + pull * 0.45;
-      const scaleY = 1 - pull * 0.28;
-      doggyHead.style.animation = 'none';
-      doggyHead.style.transition = 'transform .08s ease-out';
-      doggyHead.style.transform = `translate(${tx}px,${ty}px) scaleX(${scaleX}) scaleY(${scaleY})`;
-      if (dist < 120) splashHint.textContent = '🐶 Click to grab!';
-      else splashHint.textContent = '🐶 Grab Doggy\'s face to enter!';
+      const cx = rect.left+rect.width/2, cy = rect.top+rect.height/2;
+      const dx = e.clientX-cx, dy = e.clientY-cy;
+      const dist = Math.sqrt(dx*dx+dy*dy)||1;
+      const pull = Math.min(dist,300)/300;
+      const tx = (dx/dist)*pull*100, ty = (dy/dist)*pull*100;
+      doggyHead.style.animation='none';
+      doggyHead.style.transition='transform .06s ease-out';
+      doggyHead.style.transform=`translate(${tx}px,${ty}px) scaleX(${1+pull*1.1}) scaleY(${1-pull*0.6})`;
     });
-
-    splash.addEventListener('mouseleave', () => {
-      doggyHead.style.animation = 'splashBob 2s ease-in-out infinite';
-      doggyHead.style.transform = '';
-      splashHint.textContent = '🐶 Grab Doggy\'s face to enter!';
-    });
-
-    // Touch: drag stretches the head
+    splash.addEventListener('mouseleave', () => { doggyHead.style.animation='splashBob 2s ease-in-out infinite'; doggyHead.style.transform=''; });
+    splash.addEventListener('click', dismissSplash);
+    splash.addEventListener('touchend', dismissSplash, { passive: true });
     splash.addEventListener('touchmove', e => {
       const t = e.touches[0];
       const rect = doggyHead.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = t.clientX - cx, dy = t.clientY - cy;
-      const dist = Math.sqrt(dx*dx + dy*dy) || 1;
-      const pull = Math.min(dist, 240) / 240;
-      const tx = (dx/dist) * pull * 50;
-      const ty = (dy/dist) * pull * 50;
-      doggyHead.style.animation = 'none';
-      doggyHead.style.transition = 'transform .05s ease-out';
-      doggyHead.style.transform = `translate(${tx}px,${ty}px) scaleX(${1+pull*.4}) scaleY(${1-pull*.25})`;
+      const cx = rect.left+rect.width/2, cy = rect.top+rect.height/2;
+      const dx = t.clientX-cx, dy = t.clientY-cy;
+      const dist = Math.sqrt(dx*dx+dy*dy)||1;
+      const pull = Math.min(dist,200)/200;
+      doggyHead.style.animation='none';
+      doggyHead.style.transition='transform .05s ease-out';
+      doggyHead.style.transform=`translate(${(dx/dist)*pull*50}px,${(dy/dist)*pull*50}px) scaleX(${1+pull*1.1}) scaleY(${1-pull*0.6})`;
     }, { passive: true });
 
-    splash.addEventListener('click', dismissSplash);
-    splash.addEventListener('touchend', dismissSplash, { passive: true });
-
-    // ── RAINBOW PJ AVA SOUNDS ──
-    const RPJ_AVA = ['ava.mp3','ava2.mp3','ava3.mp3','ava4.mp3','ava5.mp3','ava6.mp3','ava66.mp3','avav5.mp3'];
-    function shuffleArr(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
-    let rpjDeck = shuffleArr([...RPJ_AVA]), rpjPos = 0;
-    function rpjClick() {
-      if (rpjPos >= rpjDeck.length) { rpjDeck = shuffleArr([...RPJ_AVA]); rpjPos = 0; }
-      const a = new Audio(rpjDeck[rpjPos++]);
-      a.volume = 0.75; a.play().catch(()=>{});
-      const el = document.getElementById('rpjMascot');
-      if (el) { el.style.transform='scale(1.35) rotate(12deg)'; setTimeout(()=>el.style.transform='',300); }
-    }
-
-  </script>
-
-  <!-- Floating Rainbow PJ watermark on landing -->
-  <div id="rpj" onclick="rpjClick()" title="🐾 Click me!" style="
-    position:fixed; bottom:18px; right:18px;
-    width:80px; height:80px;
-    z-index:200; cursor:pointer; opacity:0.22;
-    transition: opacity .4s ease, transform .5s cubic-bezier(.175,.885,.32,1.8);
-  ">
-    <img src="rainbow-pj.png" style="width:100%;height:100%;object-fit:contain;border-radius:50%;
-      filter:drop-shadow(0 0 10px rgba(192,132,252,.5));pointer-events:none;" alt="Rainbow PJ">
-  </div>
-  <script>
-  (function(){
-    const rpj = document.getElementById('rpj');
-    let hideTimer = null;
-    const origRpjClick = window.rpjClick;
-    window.rpjClick = function() {
-      if (origRpjClick) origRpjClick();
-      rpj.style.opacity = '0.9';
-      rpj.style.transform = 'scale(1.3) rotate(12deg)';
-      setTimeout(() => {
-        rpj.style.transform = '';
-        rpj.style.opacity = '0';
-        hideTimer = setTimeout(() => { rpj.style.opacity = '0.22'; }, 4000);
-      }, 600);
-    };
-    rpj.addEventListener('mouseover', () => { if (parseFloat(rpj.style.opacity||0) > 0) { rpj.style.opacity='0.85'; rpj.style.transform='scale(1.15) rotate(8deg)'; }});
-    rpj.addEventListener('mouseout',  () => { if (parseFloat(rpj.style.opacity||0) < 0.9) { rpj.style.opacity='0.22'; rpj.style.transform=''; }});
-  })();
   </script>
 </body>
 </html>
