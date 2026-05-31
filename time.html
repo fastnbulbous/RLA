@@ -14,10 +14,10 @@
         :root {
             --accent: var(--accent-purple);
             --accent2: var(--accent-pink);
-            --past-bg: rgba(46, 204, 113, 0.1);
+            --past-bg: var(--past-half-bg);
             --past-border: #2ecc71;
             --past-glow: rgba(46, 204, 113, 0.4);
-            --to-bg: rgba(52, 152, 219, 0.1);
+            --to-bg: var(--to-half-bg);
             --to-border: #3498db;
             --to-glow: rgba(52, 152, 219, 0.4);
         }
@@ -54,7 +54,7 @@
             align-items: center;
             padding: 10px 20px;
             margin-bottom: 20px;
-            background: rgba(15, 23, 42, 0.4);
+            background: var(--card);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             border: 1px solid var(--card-border);
@@ -93,7 +93,7 @@
         }
 
         .stat-badge {
-            background: rgba(30, 41, 59, 0.9);
+            background: var(--card);
             border: 1px solid var(--card-border);
             padding: 8px 14px;
             border-radius: 12px;
@@ -232,7 +232,7 @@
             .tab-btn {
                 padding: 6px 3px;
                 font-size: 0.65rem;
-                border-radius: 10px;
+                border-radius: 20px;
             }
             .tab-btn strong {
                 font-size: 0.6rem;
@@ -252,7 +252,7 @@
             .choice-btn {
                 padding: 10px 12px;
                 font-size: 0.85rem;
-                border-radius: 10px;
+                border-radius: 24px;
             }
             .feedback-message {
                 font-size: 0.95rem;
@@ -283,17 +283,17 @@
             .tool-btn {
                 padding: 6px 10px;
                 font-size: 0.8rem;
-                border-radius: 10px;
+                border-radius: 20px;
             }
             .primary-btn {
                 padding: 10px 18px;
                 font-size: 0.9rem;
-                border-radius: 10px;
+                border-radius: 24px;
             }
         }
 
         .panel {
-            background: radial-gradient(circle at top left, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
+            background: var(--card);
             backdrop-filter: blur(12px);
             border-radius: 24px;
             border: 1px solid var(--card-border);
@@ -331,13 +331,13 @@
             position: relative;
             width: 340px;
             height: 340px;
-            background: #0f172a;
+            background: var(--clock-face);
             border-radius: 50%;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 12px solid #334155;
+            border: 12px solid var(--clock-border);
             user-select: none;
         }
 
@@ -391,18 +391,18 @@
         }
 
         .clock-ticks {
-            stroke: #475569;
+            stroke: var(--clock-tick);
             stroke-width: 2;
             stroke-linecap: round;
         }
 
         .clock-ticks.five-min {
-            stroke: #94a3b8;
+            stroke: var(--clock-five-min);
             stroke-width: 4;
         }
 
         .clock-number {
-            fill: #f8fafc;
+            fill: var(--clock-number);
             font-size: 24px;
             font-family: 'Outfit', sans-serif;
             font-weight: 800;
@@ -449,7 +449,7 @@
         }
 
         .slider-wrapper {
-            background: rgba(15, 23, 42, 0.3);
+            background: var(--inline-panel-bg);
             border: 1px solid var(--card-border);
             padding: 15px;
             border-radius: 16px;
@@ -589,12 +589,12 @@
         }
 
         .tab-btn {
-            background: rgba(15, 23, 42, 0.5);
+            background: var(--card);
             border: 1px solid var(--card-border);
             color: var(--text-secondary);
             padding: 10px 5px;
             font-size: 0.75rem;
-            border-radius: 12px;
+            border-radius: 24px;
             cursor: pointer;
             font-weight: 700;
             transition: all 0.2s ease;
@@ -614,12 +614,12 @@
         }
 
         .tab-btn:hover:not(.active) {
-            background: rgba(30, 41, 59, 0.8);
+            background: var(--surface-inset);
             color: var(--text-primary);
         }
 
         .challenge-card {
-            background: radial-gradient(circle at top left, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.8));
+            background: var(--card);
             border: 1px solid var(--card-border);
             padding: 20px;
             border-radius: 18px;
@@ -669,11 +669,11 @@
         }
 
         .choice-btn {
-            background: rgba(15, 23, 42, 0.6);
+            background: var(--card);
             border: 2px solid var(--card-border);
             padding: 14px 18px;
             color: var(--text-primary);
-            border-radius: 14px;
+            border-radius: 30px;
             cursor: pointer;
             font-size: 1rem;
             font-weight: 700;
@@ -686,7 +686,7 @@
         }
 
         .choice-btn:hover:not(:disabled) {
-            background: rgba(30, 41, 59, 0.9);
+            background: var(--surface-inset);
             border-color: var(--accent-purple);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
@@ -754,7 +754,7 @@
         .fib-check-btn {
             width: 100%;
             padding: 13px;
-            border-radius: 12px;
+            border-radius: 24px;
             border: none;
             background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
             color: white;
@@ -804,7 +804,7 @@
             border: 1px solid var(--card-border);
             color: var(--text-primary);
             padding: 8px 14px;
-            border-radius: 12px;
+            border-radius: 22px;
             cursor: pointer;
             font-size: 0.85rem;
             font-weight: 700;
@@ -843,7 +843,7 @@
             padding: 12px 24px;
             font-weight: bold;
             font-size: 1rem;
-            border-radius: 14px;
+            border-radius: 30px;
             color: white;
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
@@ -1245,9 +1245,9 @@
                       style="width: 40px; height: 40px; object-fit: contain; opacity: 0.92; cursor: pointer; transition: transform .18s cubic-bezier(.175,.885,.32,1.8), filter .18s;"
                       onmouseover="this.style.transform='scale(1.2) rotate(-6deg)'" onmouseout="this.style.transform=''" alt="Rainbow PJ">
                 </div>
-                <div style="position: relative; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--card-border); padding: 8px 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; line-height: 1.45; color: var(--text-primary); flex-grow: 1;">
+                <div style="position: relative; background: var(--card); border: 1px solid var(--card-border); padding: 8px 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; line-height: 1.45; color: var(--text-primary); flex-grow: 1;">
                     <!-- Triangle pointer for bubble -->
-                    <div style="position: absolute; left: -6px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 10px; height: 10px; background: #0f172a; border-left: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border);"></div>
+                    <div style="position: absolute; left: -6px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 10px; height: 10px; background: var(--card); border-left: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border);"></div>
                     <span id="mascotSpeechText">Hi! I'm Rainbow Doggy 🌈 Let's learn to read the clock together!</span>
                 </div>
             </div>

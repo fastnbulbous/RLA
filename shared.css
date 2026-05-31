@@ -276,7 +276,7 @@ body {
   font-weight: 800;
   font-size: .95rem;
   font-family: 'Outfit', sans-serif;
-  border-radius: var(--radius, 13px);
+  border-radius: 30px;
   color: white;
   cursor: pointer;
   touch-action: manipulation;
@@ -295,7 +295,7 @@ body {
   border: 2px solid var(--border);
   padding: 13px 16px;
   color: var(--text1);
-  border-radius: var(--radius, 13px);
+  border-radius: 30px;
   cursor: pointer;
   touch-action: manipulation;
   font-size: .95rem;
@@ -364,7 +364,7 @@ button:active, .tab-btn:active, .tool-btn:active, .home-btn:active, .kp-btn:acti
   border: 1px solid var(--border);
   color: var(--text1);
   padding: 7px 13px;
-  border-radius: 11px;
+  border-radius: 22px;
   cursor: pointer;
   touch-action: manipulation;
   font-size: .83rem;
@@ -383,7 +383,7 @@ button:active, .tab-btn:active, .tool-btn:active, .home-btn:active, .kp-btn:acti
   border: 1px solid var(--border);
   color: var(--text2);
   padding: 7px 12px;
-  border-radius: 10px;
+  border-radius: 20px;
   cursor: pointer;
   touch-action: manipulation;
   font-size: .82rem;
@@ -418,7 +418,7 @@ button:active, .tab-btn:active, .tool-btn:active, .home-btn:active, .kp-btn:acti
   background: var(--card);
   border: 1px solid var(--border);
   padding: 8px 12px;
-  border-radius: 14px;
+  border-radius: 20px;
   font-size: .84rem;
   font-weight: 600;
   line-height: 1.45;

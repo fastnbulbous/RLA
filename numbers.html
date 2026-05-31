@@ -41,11 +41,11 @@
       display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
       gap: 7px; margin-bottom: 10px;
       background: var(--surface-inset); backdrop-filter: blur(10px);
-      border-radius: 18px; border: 1px solid var(--border); padding: 6px;
+      border-radius: 28px; border: 1px solid var(--border); padding: 6px;
     }
     .tab-btn {
       background: transparent; border: 1px solid transparent;
-      color: var(--text2); padding: 10px 8px; border-radius: 13px;
+      color: var(--text2); padding: 10px 8px; border-radius: 22px;
       cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700;
       font-size: .82rem; text-align: center;
       display: flex; align-items: center; justify-content: center; gap: 5px;
@@ -61,7 +61,7 @@
       display: grid; grid-template-columns: repeat(4, 1fr);
       gap: 6px; margin-bottom: 14px;
     }
-    .diff-btn { background: var(--card); border: 1px solid var(--border); color: var(--text2); padding: 8px 6px; border-radius: 12px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: .75rem; transition: all .2s; text-align: center; }
+    .diff-btn { background: var(--card); border: 1px solid var(--border); color: var(--text2); padding: 8px 6px; border-radius: 20px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: .75rem; transition: all .2s; text-align: center; }
     .diff-btn small { display: block; font-size: .62rem; font-weight: 600; opacity: .7; margin-top: 2px; }
     .diff-btn:hover:not(.active) { background: var(--surface-inset); color: var(--text1); }
     .diff-btn.active { background: linear-gradient(135deg, #0369a1, var(--area-num)); color: var(--on-accent); border-color: transparent; box-shadow: 0 4px 12px rgba(56,189,248,.3); }
@@ -73,14 +73,14 @@
     }
     .tint-btn {
       background: var(--card); border: 1px solid var(--border);
-      color: var(--text2); padding: 7px 14px; border-radius: 10px;
+      color: var(--text2); padding: 7px 14px; border-radius: 18px;
       cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: .8rem;
       transition: all .2s;
     }
     .tint-btn.active { background: var(--area-num); color: var(--on-accent); border-color: transparent; }
     .explore-badge {
       margin-left: auto; font-size: .82rem; color: var(--area-num); font-weight: 700;
-      background: rgba(56,189,248,.1); border: 1px solid rgba(56,189,248,.25); border-radius: 10px; padding: 5px 12px;
+      background: rgba(56,189,248,.1); border: 1px solid rgba(56,189,248,.25); border-radius: 18px; padding: 5px 12px;
     }
 
     /* Legend */
@@ -367,16 +367,17 @@
     }
 
     /* Keypad for sequences */
+    .keypad-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 12px; }
     #seqKeypad .keypad-answer-display {
       background: var(--card); border: 2px solid var(--area-num-a, var(--area-num));
-      border-radius: 14px; padding: 12px 24px;
+      border-radius: 20px; padding: 12px 24px;
       font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2.4rem;
       color: var(--area-num-a, var(--area-num)); min-width: 120px; text-align: center;
     }
     #seqKeypad .keypad-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; width: 240px; }
     #seqKeypad .kp-btn {
       background: var(--card); border: 1px solid var(--border);
-      border-radius: 12px; padding: 14px 8px;
+      border-radius: 18px; padding: 14px 8px;
       font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem;
       color: var(--text1); cursor: pointer; touch-action: manipulation;
       transition: all .15s cubic-bezier(.175,.885,.32,1.275);
@@ -1375,8 +1376,28 @@
 
   function updateBitDisplay() {
     const val = bitState.reduce((s, b, i) => s + b * Math.pow(2, 7-i), 0);
-    document.getElementById('bitResult').textContent = val;
-    document.getElementById('bitBinary').textContent = bitState.join('');
+    
+    // Update decimal result styling based on active bits
+    const resultEl = document.getElementById('bitResult');
+    resultEl.textContent = val;
+    if (val > 0) {
+      resultEl.style.textShadow = '0 0 16px oklch(70% 0.15 244 / 0.55), 0 0 4px var(--area-num)';
+      resultEl.style.color = 'var(--area-num)';
+    } else {
+      resultEl.style.textShadow = 'none';
+      resultEl.style.color = 'var(--text1)';
+    }
+
+    // Color-coded active/inactive 1s and 0s
+    const binarySpans = bitState.map(bit => {
+      if (bit === 1) {
+        return `<span style="color: var(--area-num); text-shadow: 0 0 10px var(--area-num-b), 0 0 2px var(--area-num); font-weight: 900;">1</span>`;
+      } else {
+        return `<span style="color: var(--text2); opacity: 0.35; font-weight: 500;">0</span>`;
+      }
+    }).join('');
+    document.getElementById('bitBinary').innerHTML = binarySpans;
+
     const pc = bitState.reduce((s,b) => s+b, 0);
     document.getElementById('bitPopcount').textContent = pc;
     document.getElementById('evilOdious').textContent = pc % 2 === 0 ? '😈 Evil (even bits)' : '😇 Odious (odd bits)';
