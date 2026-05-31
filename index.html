@@ -298,14 +298,25 @@
     const starCanvas = document.getElementById('starCanvas');
     const sCtx = starCanvas.getContext('2d');
     const stars = [];
-    function resizeStars() { starCanvas.width = window.innerWidth; starCanvas.height = window.innerHeight; }
+    function resizeStars() {
+      const dpr = window.devicePixelRatio || 1;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      starCanvas.width = w * dpr;
+      starCanvas.height = h * dpr;
+      starCanvas.style.width = w + 'px';
+      starCanvas.style.height = h + 'px';
+      sCtx.scale(dpr, dpr);
+    }
     resizeStars();
     window.addEventListener('resize', resizeStars);
     for (let i = 0; i < 180; i++) {
       stars.push({ x: Math.random()*window.innerWidth, y: Math.random()*window.innerHeight, r: Math.random()*1.5+0.3, t: Math.random()*Math.PI*2, s: Math.random()*0.04+0.01 });
     }
     (function animStars() {
-      sCtx.clearRect(0,0,starCanvas.width,starCanvas.height);
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      sCtx.clearRect(0,0,w,h);
       stars.forEach(s => {
         s.t += s.s;
         const a = 0.3+0.4*Math.sin(s.t);

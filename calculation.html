@@ -203,7 +203,16 @@
     .slider-opt.active { background: var(--area-calc); color: var(--on-accent); border-color: transparent; }
 
     @media (max-width: 600px) {
-      .tab-bar { grid-template-columns: 1fr; }
+      .tab-bar {
+        grid-template-columns: repeat(3, 1fr);
+        border-radius: 20px;
+        padding: 5px;
+      }
+      .tab-btn {
+        font-size: 0.72rem;
+        padding: 8px 4px;
+        border-radius: 14px;
+      }
       .table-picker-grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
       .keypad-grid { width: 210px; }
     }

@@ -263,15 +263,21 @@ function triggerConfetti() {
     confC.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:1000;';
     document.body.appendChild(confC);
   }
-  confC.width = window.innerWidth;
-  confC.height = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  confC.width = w * dpr;
+  confC.height = h * dpr;
+  confC.style.width = w + 'px';
+  confC.style.height = h + 'px';
   const cCtx = confC.getContext('2d');
+  cCtx.scale(dpr, dpr);
   // Bubblegum candy palette (lemon/apple/lagoon/blueberry/grape/strawberry)
   const cols = ['#d4e04a','#5ec975','#4ab8d4','#7b8fec','#c07de8','#f5634a'];
   const parts = [];
   for (let i = 0; i < 80; i++) {
     parts.push({
-      x: Math.random() * confC.width, y: -10,
+      x: Math.random() * w, y: -10,
       sx: Math.random() * 4 - 2,     sy: Math.random() * 5 + 4,
       rot: Math.random() * 360,       rs: Math.random() * 6 - 3,
       sz: Math.random() * 8 + 4,     col: cols[Math.floor(Math.random() * cols.length)]

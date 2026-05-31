@@ -318,8 +318,34 @@
 
     @media (max-width: 600px) {
       .choices-grid { grid-template-columns: 1fr; }
-      .tab-bar { grid-template-columns: 1fr 1fr; }
+      .tab-bar {
+        grid-template-columns: repeat(6, 1fr);
+        border-radius: 20px;
+        padding: 5px;
+      }
+      .tab-btn {
+        font-size: 0.72rem;
+        padding: 8px 4px;
+        border-radius: 14px;
+      }
+      #tabGallery { grid-column: span 2; }
+      #tabQuiz { grid-column: span 2; }
+      #tabBuild { grid-column: span 2; }
+      #tabSequences { grid-column: span 3; }
+      #tabGuide { grid-column: span 3; }
+
       .diff-bar { grid-template-columns: 1fr 1fr; }
+      .diff-btn { padding: 6px 4px; border-radius: 14px; }
+
+      .bit-row { gap: 4px; }
+      .bit-light {
+        width: clamp(34px, 10.5vw, 56px);
+        height: clamp(34px, 10.5vw, 56px);
+        border-radius: 10px;
+      }
+      .bit-light .bit-icon { font-size: clamp(0.95rem, 3.2vw, 1.25rem); }
+      .bit-light .bit-val { font-size: clamp(0.48rem, 1.8vw, 0.65rem); }
+      .bit-result { font-size: 2.2rem; }
     }
 
     /* ── SEQUENCE SCREEN ── */
@@ -1826,9 +1852,15 @@
   function drawSeqGraph(terms, answerVal) {
     const canvas = document.getElementById('seqGraph');
     const ctx = canvas.getContext('2d');
-    canvas.width = canvas.offsetWidth || 560;
-    canvas.height = 200;
-    const W = canvas.width, H = canvas.height;
+    const dpr = window.devicePixelRatio || 1;
+    const cssW = canvas.offsetWidth || 560;
+    const cssH = 200;
+    canvas.width = cssW * dpr;
+    canvas.height = cssH * dpr;
+    canvas.style.width = cssW + 'px';
+    canvas.style.height = cssH + 'px';
+    ctx.scale(dpr, dpr);
+    const W = cssW, H = cssH;
     const pad = 28;
 
     // All values including the open-circle next position

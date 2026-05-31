@@ -104,8 +104,26 @@
     @media(max-width:900px) {
       .main-grid { grid-template-columns:1fr; }
       .span2 { grid-column:1; }
-      .mode-selector { grid-template-columns:repeat(3,1fr); }
+      .mode-selector {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        border-radius: 24px;
+        padding: 6px;
+      }
+      .mode-btn {
+        flex: 1 1 calc(25% - 8px);
+        min-width: 95px;
+        padding: 8px 4px;
+        font-size: 0.68rem;
+      }
       .diff-selector { grid-template-columns:repeat(2,1fr); }
+    }
+    @media(max-width:500px) {
+      .mode-btn {
+        flex: 1 1 calc(33.333% - 6px);
+        min-width: 75px;
+      }
     }
 
     /* ── PANEL ── */
@@ -880,7 +898,13 @@
         seg.style.background = col;
         seg.style.setProperty('--seg-color', col);
         if (den===1||den===4) seg.style.color='#1e293b';
-        if (showLbl && den<=16) seg.textContent = den===1?'1':`1/${den}`;
+        if (showLbl && den<=16) {
+          if (window.innerWidth < 500 && den > 8) {
+            seg.textContent = i === 0 ? `1/${den}` : '';
+          } else {
+            seg.textContent = den===1?'1':`1/${den}`;
+          }
+        }
         seg.dataset.key = `${den}-${i}`;
         seg.addEventListener('click',()=>{
           const k=seg.dataset.key;
