@@ -1,0 +1,3547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Explorer Academy 🚀</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="shared.css">
+
+    <style>
+        :root {
+            --past-bg: rgba(46, 204, 113, 0.1);
+            --past-border: #2ecc71;
+            --past-glow: rgba(46, 204, 113, 0.4);
+            --to-bg: rgba(52, 152, 219, 0.1);
+            --to-border: #3498db;
+            --to-glow: rgba(52, 152, 219, 0.4);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background: var(--theme-bg-gradient);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-x: hidden;
+            padding: 20px 10px;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+        }
+
+        header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            margin-bottom: 20px;
+            background: rgba(15, 23, 42, 0.4);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            font-size: 2.2rem;
+            animation: pulse-glow 2s infinite ease-in-out;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #c084fc, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo-text p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .stats-bar {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-badge {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid var(--card-border);
+            padding: 8px 14px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .stat-badge.stars {
+            color: var(--accent-yellow);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.2);
+        }
+
+        .stat-badge.streak {
+            color: var(--accent-pink);
+            box-shadow: 0 0 10px rgba(244, 63, 94, 0.2);
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        #questPanel {
+            grid-column: 1;
+            grid-row: 1;
+        }
+
+        #clockPanel {
+            grid-column: 2;
+            grid-row: 1;
+        }
+
+        #decoderPanel {
+            grid-column: 1 / span 2;
+            grid-row: 2;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                gap: 15px;
+            }
+            #questPanel {
+                grid-column: 1;
+                grid-row: 1;
+            }
+            #clockPanel {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            #decoderPanel {
+                grid-column: 1;
+                grid-row: 3;
+            }
+            .panel {
+                max-width: 100%;
+                width: 100%;
+                margin: 0 auto;
+            }
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px 6px;
+            }
+            header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 12px 10px;
+                border-radius: 16px;
+                margin-bottom: 12px;
+            }
+            .logo-section {
+                gap: 8px;
+            }
+            .logo-icon {
+                font-size: 1.8rem;
+            }
+            .logo-text h1 {
+                font-size: 1.25rem;
+            }
+            .stats-bar {
+                width: 100%;
+                justify-content: space-around;
+                gap: 5px;
+            }
+            .stat-badge {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+                border-radius: 10px;
+            }
+            .panel {
+                padding: 14px;
+                border-radius: 18px;
+                gap: 12px;
+                max-width: 100%;
+            }
+            .panel h2 {
+                font-size: 1.2rem;
+            }
+            .clock-workspace p {
+                font-size: 0.8rem;
+            }
+            .clock-container {
+                width: 270px;
+                height: 270px;
+                max-width: 90vw;
+                max-height: 90vw;
+                border-width: 8px;
+            }
+            .board-controls {
+                margin-top: 6px;
+            }
+            .controls-grid {
+                gap: 8px;
+            }
+            .slider-wrapper {
+                padding: 8px 10px;
+            }
+            .slider-header .current-val {
+                font-size: 0.95rem;
+            }
+            .level-tabs {
+                gap: 4px;
+                margin-bottom: 8px;
+            }
+            .tab-btn {
+                padding: 6px 3px;
+                font-size: 0.65rem;
+                border-radius: 10px;
+            }
+            .tab-btn strong {
+                font-size: 0.6rem;
+            }
+            .challenge-card {
+                padding: 12px;
+                gap: 10px;
+            }
+            .challenge-text {
+                font-size: 0.95rem;
+                line-height: 1.4;
+            }
+            .choices-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .choice-btn {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+                border-radius: 10px;
+            }
+            .feedback-message {
+                font-size: 0.95rem;
+            }
+            .digital-clock-display {
+                padding: 6px 10px;
+            }
+            .digital-digits-input {
+                font-size: 2rem;
+                width: 48px;
+            }
+            .digital-digits {
+                font-size: 2rem;
+            }
+            #digitalColon {
+                font-size: 2rem;
+            }
+            .card-body {
+                font-size: 0.9rem;
+            }
+            .interpretation-card {
+                padding: 8px 12px;
+            }
+            .neighborhood-tracker {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+            .tool-btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+                border-radius: 10px;
+            }
+            .primary-btn {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+                border-radius: 10px;
+            }
+        }
+
+        .panel {
+            background: radial-gradient(circle at top left, rgba(30, 41, 59, 0.85), rgba(15, 23, 42, 0.95));
+            backdrop-filter: blur(12px);
+            border-radius: 24px;
+            border: 1px solid var(--card-border);
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-purple), var(--accent-pink));
+        }
+
+        /* Interactive Clock Box */
+        .clock-workspace {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* Outer Frame with Glowing Theme and Color-Coded Zones */
+        .clock-container {
+            position: relative;
+            width: 340px;
+            height: 340px;
+            background: #0f172a;
+            border-radius: 50%;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 12px solid #334155;
+            user-select: none;
+        }
+
+        /* Colorful Split Background Overlay */
+        .clock-zones-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            pointer-events: none;
+            opacity: 0.15;
+            transition: opacity 0.3s;
+        }
+
+        .clock-zones-overlay.active {
+            opacity: 0.6;
+        }
+
+        .past-half {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--past-bg);
+            border-left: 2px dashed var(--past-border);
+        }
+
+        .to-half {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: var(--to-bg);
+            border-right: 2px dashed var(--to-border);
+        }
+
+        /* SVG clock elements */
+        .clock-svg {
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+        }
+
+        .clock-face {
+            fill: transparent;
+        }
+
+        .clock-ticks {
+            stroke: #475569;
+            stroke-width: 2;
+            stroke-linecap: round;
+        }
+
+        .clock-ticks.five-min {
+            stroke: #94a3b8;
+            stroke-width: 4;
+        }
+
+        .clock-number {
+            fill: #f8fafc;
+            font-size: 24px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        .clock-hand {
+            stroke-linecap: round;
+            transform-origin: 150px 150px;
+            transition: transform 0.05s linear;
+            cursor: grab;
+        }
+
+        .clock-hand:active {
+            cursor: grabbing;
+        }
+
+        .hour-hand-line {
+            stroke: #e2e8f0;
+            stroke-width: 8;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.5));
+        }
+
+        .minute-hand-line {
+            stroke: #ff4757;
+            stroke-width: 5;
+            filter: drop-shadow(0 2px 5px rgba(255,71,87,0.3));
+        }
+
+        .clock-center-pin {
+            fill: #ff4757;
+            stroke: #e2e8f0;
+            stroke-width: 3;
+        }
+
+        /* Controls Sandbox Panel */
+        .controls-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .slider-wrapper {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--card-border);
+            padding: 15px;
+            border-radius: 16px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .slider-header span {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .slider-header .current-val {
+            color: var(--accent-purple);
+            font-size: 1.1rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .slider-wrapper input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
+            background: #334155;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        .slider-wrapper input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #c084fc, #a855f7);
+            border: 2px solid #ffffff;
+            box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+            transition: transform 0.1s;
+        }
+
+        .slider-wrapper input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        /* Beautiful Digital Interface Output */
+        .digital-clock-display {
+            background: #020617;
+            border: 2px solid #1e293b;
+            border-radius: 16px;
+            padding: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+            position: relative;
+            margin-bottom: 10px;
+        }
+
+        .digital-digits {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2.8rem;
+            color: #00ff66;
+            letter-spacing: 4px;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+        }
+
+        /* Explanation Box & Zone Alerts */
+        .linguistic-box {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .interpretation-card {
+            background: rgba(15, 23, 42, 0.4);
+            border-left: 5px solid #64748b;
+            padding: 14px 18px;
+            border-radius: 8px 16px 16px 8px;
+            transition: all 0.3s ease;
+        }
+
+        .interpretation-card.past {
+            border-left-color: var(--past-border);
+            background: rgba(46, 204, 113, 0.04);
+        }
+
+        .interpretation-card.to {
+            border-left-color: var(--to-border);
+            background: rgba(52, 152, 219, 0.04);
+        }
+
+        .card-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .card-body {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .neighborhood-tracker {
+            background: rgba(168, 85, 247, 0.08);
+            border-left: 5px solid var(--accent-purple);
+            padding: 14px;
+            border-radius: 8px 16px 16px 8px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Interactive Quiz Segment */
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border-top: 1px solid var(--card-border);
+            padding-top: 20px;
+        }
+
+        .level-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 5px;
+        }
+
+        .tab-btn {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 10px 5px;
+            font-size: 0.75rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(30, 41, 59, 0.8);
+            color: var(--text-primary);
+        }
+
+        .challenge-card {
+            background: radial-gradient(circle at top left, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0.8));
+            border: 1px solid var(--card-border);
+            padding: 20px;
+            border-radius: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .challenge-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .difficulty-badge {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .difficulty-badge.easy { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .difficulty-badge.medium { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+        .difficulty-badge.hard { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .difficulty-badge.scenario { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+
+        .challenge-text {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .choices-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        @media (max-width: 500px) {
+            .choices-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .choice-btn {
+            background: rgba(15, 23, 42, 0.6);
+            border: 2px solid var(--card-border);
+            padding: 14px 18px;
+            color: var(--text-primary);
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 700;
+            text-align: left;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            outline: none;
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            background: rgba(30, 41, 59, 0.9);
+            border-color: var(--accent-purple);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+        }
+
+        .choice-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .choice-btn.correct {
+            background: rgba(46, 204, 113, 0.2) !important;
+            border-color: #2ecc71 !important;
+            color: #2ecc71 !important;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.2);
+        }
+
+        .choice-btn.incorrect {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: #ef4444 !important;
+            color: #ef4444 !important;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Fill-in-the-blank sentence inputs */
+        .fib-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            width: 100%;
+        }
+        .fib-sentence {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 14px;
+            padding: 14px 16px;
+        }
+        .fib-sentence .zone-past { color: #2ecc71; }
+        .fib-sentence .zone-to   { color: #3498db; }
+        .fib-sentence .fib-input {
+            width: 56px;
+            background: rgba(255,255,255,.08);
+            border: 2px solid rgba(255,255,255,.25);
+            border-radius: 8px;
+            color: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            text-align: center;
+            padding: 6px 4px;
+            outline: none;
+            transition: border-color .2s;
+        }
+        .fib-input:focus { border-color: var(--accent-purple); }
+        .fib-input.correct { border-color: #2ecc71; background: rgba(46,204,113,.15); }
+        .fib-input.incorrect { border-color: #ef4444; background: rgba(239,68,68,.15); }
+        .fib-check-btn {
+            width: 100%;
+            padding: 13px;
+            border-radius: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+            color: white;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+        .fib-check-btn:hover { filter: brightness(1.1); transform: scale(1.02); }
+
+        /* Overlay Canvas Draw Board (Scratchpad) */
+        .scratchpad-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            z-index: 8;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .scratchpad-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+        }
+
+        .scratchpad-canvas.drawing-active {
+            pointer-events: auto;
+            cursor: crosshair;
+        }
+
+        .board-controls {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 12px;
+            width: 100%;
+        }
+
+        .tool-btn {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 8px 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .tool-btn:hover {
+            background: rgba(47, 55, 69, 0.9);
+            border-color: var(--accent-purple);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+        }
+
+        .tool-btn.active {
+            background: linear-gradient(135deg, var(--accent-pink), #e11d48);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3);
+        }
+
+        /* Floating action overlay buttons */
+        .action-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--accent-purple) 0%, #7c3aed 50%, var(--accent-pink) 100%);
+            background-size: 200% auto;
+            border: none;
+            padding: 12px 24px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 14px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            background-position: right center;
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.5);
+        }
+
+        .feedback-message {
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-align: center;
+            min-height: 28px;
+            margin-top: 5px;
+            transition: all 0.3s;
+        }
+
+        /* Confetti Canvas Overlay */
+        #confettiCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* Badges Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: #1e293b;
+            border: 1px solid var(--card-border);
+            max-width: 500px;
+            width: 100%;
+            border-radius: 28px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            position: relative;
+            animation: modalSlide 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .modal-close:hover {
+            color: white;
+        }
+
+        /* Help Page Info Section */
+        .guide-section {
+            background: rgba(15, 23, 42, 0.3);
+            border: 1px solid var(--card-border);
+            border-radius: 18px;
+            padding: 20px;
+            margin-top: 10px;
+        }
+
+        .guide-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            color: var(--accent-purple);
+        }
+
+        .guide-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .guide-list li {
+            position: relative;
+            padding-left: 20px;
+            line-height: 1.4;
+        }
+
+        .guide-list li::before {
+            content: '✦';
+            position: absolute;
+            left: 0;
+            color: var(--accent-pink);
+        }
+
+        /* Animations */
+        @keyframes float-hover {
+            0%, 100% { transform: translate(-50%, -50%) translateY(0px); }
+            50% { transform: translate(-50%, -50%) translateY(-6px); }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(168, 85, 247, 0.4)); }
+            50% { transform: scale(1.08); filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.8)); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes modalSlide {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        /* Toggle zone utility checkbox styling */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 22px;
+            background: #334155;
+            border-radius: 11px;
+            transition: background 0.2s;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        input[type="checkbox"] {
+            display: none;
+        }
+
+        input[type="checkbox"]:checked + .toggle-switch {
+            background: var(--accent-purple);
+        }
+
+        input[type="checkbox"]:checked + .toggle-switch::after {
+            transform: translateX(22px);
+        }
+
+        /* Hide spinner controls on digital inputs */
+        .digital-digits-input::-webkit-outer-spin-button,
+        .digital-digits-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .digital-digits-input {
+            -moz-appearance: textfield;
+            background: transparent;
+            border: none;
+            color: #00ff66;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2.8rem;
+            width: 70px;
+            outline: none;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+            border-bottom: 2px dashed rgba(0, 255, 102, 0.1);
+            transition: border-color 0.2s;
+        }
+        .digital-digits-input:focus {
+            border-bottom-color: #00ff66;
+            background: rgba(0, 255, 102, 0.05);
+            border-radius: 4px;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        /* ── Character Inline Avatar Pop-up Hover Styles ── */
+        .char-inline-span {
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            vertical-align: middle;
+        }
+
+        .char-inline-img {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            background: #fff;
+            display: inline-block;
+            vertical-align: middle;
+            margin: 0 2px;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.25s, border-color 0.25s;
+            cursor: pointer;
+            position: relative;
+            z-index: 1;
+        }
+
+        .char-inline-span:hover .char-inline-img {
+            transform: scale(1.2) translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+            border-color: var(--accent-purple);
+        }
+
+        /* Mascot Center Card Hover Pop-up */
+        .mascot-center-card {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0.6);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 1500;
+            background: radial-gradient(circle at top left, rgba(20, 16, 45, 0.98), rgba(10, 8, 25, 0.99));
+            border: 2px solid rgba(192, 132, 252, 0.35);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), 0 0 40px rgba(168, 85, 247, 0.35);
+            border-radius: 32px;
+            padding: 34px;
+            width: min(380px, 90vw);
+            text-align: center;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .mascot-center-card.show {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+        .mcc-avatar {
+            width: 200px; height: 200px;
+            border-radius: 24px;
+            object-fit: contain;
+            padding: 12px;
+            border: 2px solid rgba(192, 132, 252, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 
+                        inset 0 0 24px rgba(192, 132, 252, 0.25);
+            margin: 0 auto 20px;
+            display: block;
+            animation: mcc-float 3s ease-in-out infinite;
+        }
+        .mcc-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #c084fc, #f472b6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .mcc-quote {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            font-style: italic;
+        }
+        @keyframes mcc-float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+
+        /* Combined Home Avatar Button hover styles */
+        .home-avatar-btn:hover .logo-icon {
+            transform: scale(1.18) rotate(-8deg);
+            filter: drop-shadow(0 0 12px var(--accent-purple));
+        }
+        .home-avatar-btn:hover span {
+            color: var(--text-primary) !important;
+            border-color: var(--accent-purple) !important;
+            background: rgba(30, 41, 59, 0.9) !important;
+            box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Premium Background Ambient Glow Blobs -->
+    <div style="position: fixed; width: 300px; height: 300px; background: var(--accent-purple); opacity: 0.15; filter: blur(120px); border-radius: 50%; top: -50px; right: -50px; z-index: -1; pointer-events: none; transition: background 0.5s;"></div>
+    <div style="position: fixed; width: 400px; height: 400px; background: var(--accent-pink); opacity: 0.12; filter: blur(150px); border-radius: 50%; bottom: -100px; left: -100px; z-index: -1; pointer-events: none; transition: background 0.5s;"></div>
+
+    <!-- Confetti canvas overlay for correct answers -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Answer result modal -->
+    <div id="answerModal" style="display:none;position:fixed;inset:0;background:rgba(10,15,30,.88);backdrop-filter:blur(10px);z-index:1100;align-items:center;justify-content:center;padding:20px;">
+      <div style="background:#1e293b;border:1px solid var(--card-border);max-width:420px;width:100%;border-radius:28px;padding:28px 24px;box-shadow:0 25px 50px rgba(0,0,0,.5);animation:modalSlide .3s cubic-bezier(.175,.885,.32,1.275);text-align:center;">
+        <div id="answerModalIcon" style="font-size:2.4rem;margin-bottom:8px;"></div>
+        <div id="answerModalBody" style="font-size:.95rem;line-height:1.6;color:var(--text-secondary);text-align:left;"></div>
+        <button id="answerModalNext" onclick="dismissAnswerModal()" style="margin-top:18px;width:100%;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3);">🎲 Next!</button>
+      </div>
+    </div>
+
+    <header>
+        <div class="logo-section" style="gap:16px;">
+            <a href="index.html" class="home-avatar-btn" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;">
+                <img id="logoMascotImg" src="head.png" class="logo-icon" style="width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 0 6px var(--accent-purple)); opacity:0.95; transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0;" alt="Mascot Mascot">
+                <span style="font-size:0.65rem;font-weight:800;color:var(--text-secondary);font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:0.3px;background:rgba(30,41,59,0.6);border:1px solid var(--card-border);padding:2px 8px;border-radius:8px;transition:all 0.2s;white-space:nowrap;">🏠 Home avavav! 🐾</span>
+            </a>
+            <div class="logo-text">
+                <h1>Rainbow Time Explorer 🌈</h1>
+                <p>Learn time with Rainbow Doggy 🐶</p>
+            </div>
+        </div>
+        <div class="stats-bar">
+            <button class="tool-btn" id="muteBtn" onclick="toggleMute()">🔊 Sound On</button>
+            <div class="stat-badge streak" title="Daily Streak">
+                🔥 <span id="streakCount">0</span>
+            </div>
+            <div class="stat-badge stars" title="Total Stars">
+                ⭐ <span id="starsCount">0</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        
+        <!-- Quest Panel (Visually ordered at the top on mobile, right on desktop) -->
+        <div class="panel" id="questPanel">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <h2>Quest Progression 🗺️</h2>
+                <span style="font-size: 0.85rem; font-weight:700; color: var(--accent-pink);" id="levelScore">Phase 1: 0/5 Stars</span>
+            </div>
+            
+            <!-- Progression Journey Tabs Map -->
+            <div class="level-tabs" style="margin-bottom: 5px;">
+                <button class="tab-btn active" id="tab0" onclick="selectQuestPhase(0)" style="flex: 1;">
+                    <span>Phase 0 🎓</span>
+                    <strong>Explore & Learn</strong>
+                    <small id="progStars0" style="font-size: 0.7rem; color: var(--accent-yellow);">⭐ Unlocked</small>
+                </button>
+                <button class="tab-btn" id="tab1" onclick="selectQuestPhase(1)" style="flex: 1;">
+                    <span>Phase 1 📖</span>
+                    <strong>Reinforce Q&A</strong>
+                    <small id="progStars1" style="font-size: 0.7rem; color: var(--text-secondary);">⚪ ⚪ ⚪ ⚪ ⚪</small>
+                </button>
+                <button class="tab-btn" id="tab2" onclick="selectQuestPhase(2)" style="flex: 1;">
+                    <span>Phase 2 🛠️</span>
+                    <strong>Set Hands</strong>
+                    <small id="progStars2" style="font-size: 0.7rem; color: var(--text-secondary);">⚪ ⚪ ⚪ ⚪ ⚪</small>
+                </button>
+                <button class="tab-btn" id="tab3" onclick="selectQuestPhase(3)" style="flex: 1;">
+                    <span>Phase 3 👑</span>
+                    <strong>Rainbow Quest</strong>
+                    <small id="progStars3" style="font-size: 0.7rem; color: var(--text-secondary);">⚪ ⚪ ⚪ ⚪ ⚪</small>
+                </button>
+            </div>
+
+            <!-- Mascot Speaking HUD -->
+            <div id="mascotSpeechHUD" style="display: flex; align-items: center; gap: 12px; background: rgba(168, 85, 247, 0.1); border: 1px dashed var(--accent-purple); padding: 10px 14px; border-radius: 18px; margin-bottom: 8px; animation: fadeIn 0.4s ease;">
+                <div style="position: relative; display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                    <img src="head.png" id="mascotBubbleImg" style="width: 44px; height: 44px; border-radius: 50%; object-fit: contain; background: rgba(255,255,255,0.1); border: 2px solid var(--accent-purple); padding: 2px; opacity:0.95; mix-blend-mode:screen;" alt="Rainbow Doggy Head">
+                    <img src="rainbow-pj.png" onclick="playNextAva(0.8)" title="Rainbow PJ — click for a surprise! 🐾"
+                      style="width: 40px; height: 40px; object-fit: contain; opacity: 0.92; cursor: pointer; transition: transform .18s cubic-bezier(.175,.885,.32,1.8), filter .18s;"
+                      onmouseover="this.style.transform='scale(1.2) rotate(-6deg)'" onmouseout="this.style.transform=''" alt="Rainbow PJ">
+                </div>
+                <div style="position: relative; background: rgba(15, 23, 42, 0.8); border: 1px solid var(--card-border); padding: 8px 12px; border-radius: 14px; font-size: 0.85rem; font-weight: 600; line-height: 1.45; color: var(--text-primary); flex-grow: 1;">
+                    <!-- Triangle pointer for bubble -->
+                    <div style="position: absolute; left: -6px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 10px; height: 10px; background: #0f172a; border-left: 1px solid var(--card-border); border-bottom: 1px solid var(--card-border);"></div>
+                    <span id="mascotSpeechText">Hi explorer! I'm Rainbow Doggy 🌈 Let's learn to read the clock together!</span>
+                </div>
+            </div>
+            
+            <!-- Challenge Card -->
+            <div class="challenge-card" id="quizCard" style="position: relative; overflow: hidden;">
+                <!-- Decorative background overlay of the drawing puppy -->
+                <div style="position: absolute; inset: 0; background: url('doggy-watermark.png') center/contain no-repeat; opacity: 0.08; mix-blend-mode: screen; pointer-events: none; z-index: 0;"></div>
+                
+                <div class="challenge-title" style="position: relative; z-index: 1;">
+                    <span class="difficulty-badge easy" id="quizDiffBadge">EASY</span>
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);" id="questNumber">Quest #1</span>
+                </div>
+                <div class="challenge-text" id="quizText" style="position: relative; z-index: 1;">
+                    Click the button below to load your first quest challenge!
+                </div>
+                
+                <div class="choices-grid" id="quizChoices" style="position: relative; z-index: 1;">
+                    <!-- Choices injected here -->
+                </div>
+
+                <div class="feedback-message" id="quizFeedback" style="position: relative; z-index: 1;"></div>
+
+                <div class="action-footer" style="position: relative; z-index: 1; display: flex; gap: 10px; justify-content: flex-end; align-items: center;">
+                    <button class="tool-btn" id="hintBtn" onclick="giveQuestHint()" style="display:none; align-items: center; gap: 5px; border-color: var(--accent-purple); color: var(--accent-purple); background: rgba(168, 85, 247, 0.1);"><img src="rainbow-pj.png" style="width:20px;height:20px;object-fit:contain;vertical-align:middle;margin-right:2px;" alt="">💡 Ask Rainbow PJ for a hint!</button>
+                    <button class="primary-btn" onclick="generateChallenge()" id="nextBtn">
+                        🎲 Load Challenge
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Clock Panel (Left on desktop, middle on mobile) -->
+        <div class="panel" id="clockPanel">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h2>Clock Sandbox</h2>
+                <label class="toggle-container">
+                    <input type="checkbox" id="zoneToggle" checked onchange="toggleZones()">
+                    <div class="toggle-switch"></div>
+                    <span>Show Past/To Zones</span>
+                </label>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: -10px;">
+                Drag the hands, scribble to count by 5s, or slide the hours & minutes!
+            </p>
+
+            <div class="clock-workspace">
+                <!-- Glowing Interactive Clock -->
+                <div class="clock-container" id="clockBox">
+                    <!-- Past/To Background Overlay -->
+                    <div class="clock-zones-overlay active" id="zonesOverlay">
+                        <div class="past-half"></div>
+                        <div class="to-half"></div>
+                    </div>
+                    
+                    <!-- Canvas scratchpad for doodles -->
+                    <div class="scratchpad-container" id="scratchContainer">
+                        <canvas class="scratchpad-canvas" id="scratchCanvas"></canvas>
+                    </div>
+
+                    <!-- Core SVG Analogue Graphics -->
+                    <svg class="clock-svg" id="clockSvg" viewBox="0 0 300 300">
+                        <!-- Clock Outer Rim Cover -->
+                        <circle class="clock-face" cx="150" cy="150" r="142" />
+                        
+                        <!-- Translucent Pizza Slices Visualizer Segment Overlay -->
+                        <path id="svgPizzaSlice" fill="rgba(46, 204, 113, 0.12)" stroke="rgba(46, 204, 113, 0.5)" stroke-width="2.5" stroke-dasharray="4,4" d="M 150,150 Z" style="pointer-events: none;" />
+                        
+                        <!-- Dynamically populated numbers & ticks go here -->
+                        <g id="clockTicksG"></g>
+                        <g id="clockNumbersG"></g>
+
+                        <!-- Hands Groups (Equipped with touch/mouse grab handles and large invisible overlays) -->
+                        <g class="clock-hand" id="svgHourHand" style="transform-origin: 150px 150px; cursor: grab;">
+                            <line class="hour-hand-line" x1="150" y1="150" x2="150" y2="92" />
+                            <polygon points="150,72 140,92 150,88 160,92" fill="#e2e8f0" stroke="#334155" stroke-width="2" />
+                            <!-- Transparent large touch overlay circle! -->
+                            <circle cx="150" cy="92" r="22" fill="transparent" style="cursor: grab;" />
+                            <circle cx="150" cy="92" r="9" fill="#e2e8f0" stroke="#334155" stroke-width="2.5" />
+                            <!-- Rainbow doggy at hour hand tip -->
+                            <image href="doggy-watermark.png" x="136" y="58" width="28" height="28" style="pointer-events:none;" />
+                        </g>
+                        <g class="clock-hand" id="svgMinuteHand" style="transform-origin: 150px 150px; cursor: grab;">
+                            <line class="minute-hand-line" x1="150" y1="150" x2="150" y2="62" />
+                            <polygon points="150,42 141,62 150,58 159,62" fill="#ff4757" stroke="#ffffff" stroke-width="2" />
+                            <!-- Transparent large touch overlay circle! -->
+                            <circle cx="150" cy="62" r="22" fill="transparent" style="cursor: grab;" />
+                            <circle cx="150" cy="62" r="9" fill="#ff4757" stroke="#ffffff" stroke-width="2.5" />
+                            <!-- Rainbow Zoom doggy head at minute hand tip -->
+                            <image id="svgMinuteMascotImg" href="head.png" x="139" y="31" width="22" height="22" style="pointer-events:none;" />
+                        </g>
+                        
+                        <!-- Core Center Pivot Button styled like Rainbow's face! -->
+                        <g id="svgCenterFace" style="pointer-events: none;">
+                            <!-- Outer blue head circle -->
+                            <circle cx="150" cy="150" r="12" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5" />
+                            <!-- Yellow snout overlay -->
+                            <ellipse cx="150" cy="153" rx="7" ry="5" fill="#facc15" />
+                            <!-- Black stitched smile (simple curve) -->
+                            <path d="M 147.5,153 Q 150,155.5 152.5,153" stroke="#000000" stroke-width="1.2" fill="none" />
+                            <!-- Red tiny nose -->
+                            <circle cx="150" cy="150.5" r="1.5" fill="#ef4444" />
+                            <!-- White tiny eyes with black pupils -->
+                            <circle cx="146.5" cy="147.5" r="2" fill="#ffffff" />
+                            <circle cx="153.5" cy="147.5" r="2" fill="#ffffff" />
+                            <circle cx="146.5" cy="147.5" r="0.9" fill="#000000" />
+                            <circle cx="153.5" cy="147.5" r="0.9" fill="#000000" />
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Paint Scratchpad tools -->
+                <div class="board-controls">
+                    <button class="tool-btn" id="doodleBtn" onclick="toggleDrawingMode()">✏️ Draw Board</button>
+                    <button class="tool-btn" onclick="clearCanvas()">🧹 Clear Drawings</button>
+                </div>
+            </div>
+
+            <!-- Togglable Sliders Hint Button -->
+            <button class="tool-btn" id="slidersHintBtn" onclick="toggleSlidersHint()" style="display:none; justify-content:center; width:100%; font-size:0.85rem; padding:8px; border-color:var(--card-border);">⚙️ Reveal Sliders Hint</button>
+
+            <!-- Manual Slider Controls Container -->
+            <div class="controls-grid" id="slidersContainer">
+                <div class="slider-wrapper">
+                    <div class="slider-header">
+                        <label for="hourSlider">Rainbow Float 🌈 (the hour hand)</label>
+                        <span class="current-val" id="hourLabel">8</span>
+                    </div>
+                    <input type="range" id="hourSlider" min="1" max="12" value="8" step="1">
+                </div>
+
+                <div class="slider-wrapper">
+                    <div class="slider-header">
+                        <label for="minuteSlider">Rainbow Zoom ⚡ (the minute hand)</label>
+                        <span class="current-val" id="minuteLabel">37</span>
+                    </div>
+                    <input type="range" id="minuteSlider" min="0" max="59" value="37">
+                </div>
+            </div>
+        </div>
+
+        <!-- Decoder Panel (Bottom of right side on desktop, bottom of stack on mobile) -->
+        <div class="panel" id="decoderPanel" style="position: relative;">
+            <h2>🕐 Clock Display</h2>
+            <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 4px; margin-bottom: 12px;">
+                This panel shows you the time! Click show hint if you get stuck.
+            </p>
+
+            <!-- Decoder Inner Box (Can be blurred) -->
+            <div id="decoderInner" style="transition: filter 0.3s ease;">
+                <!-- Digital Panel with direct input -->
+                <div class="digital-clock-display" style="gap: 5px; justify-content: center; align-items: center;">
+                    <input type="text" class="digital-digits-input" id="digitalHourInput" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="8" style="text-align: right;">
+                    <span id="digitalColon" style="color: #00ff66; font-family: 'Share Tech Mono', monospace; font-size: 2.8rem; text-shadow: 0 0 10px rgba(0, 255, 102, 0.4); animation: blink 1.5s infinite;">:</span>
+                    <input type="text" class="digital-digits-input" id="digitalMinuteInput" inputmode="numeric" pattern="[0-9]*" maxlength="2" value="37" style="text-align: left;">
+                </div>
+
+                <!-- Descriptive translations -->
+                <div class="linguistic-box">
+                    <div class="interpretation-card past" id="phrasePastCard">
+                        <div class="card-title">Right-Side (Past) Track</div>
+                        <div class="card-body" id="phrasePast">37 minutes past 8</div>
+                    </div>
+                    
+                    <div class="interpretation-card to" id="phraseToCard">
+                        <div class="card-title">Left-Side (To) Track</div>
+                        <div class="card-body" id="phraseTo">23 minutes to 9</div>
+                    </div>
+
+                    <div class="neighborhood-tracker" id="neighbourhoodDesc">
+                        🌈 <strong>Hour position:</strong> Rainbow Float is between 8 and 9. The hour is still 8!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Decoder Lock Overlay (The premium hint overlay!) -->
+            <div id="decoderOverlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.96); border-radius: 20px; border: 1px solid var(--card-border); z-index: 100; text-align: center; padding: 20px; transition: all 0.3s ease;">
+                <span style="font-size: 2.2rem; margin-bottom: 10px; animation: pulse-glow 2s infinite ease-in-out;">🔒</span>
+                <h4 style="margin-bottom: 6px; font-size: 0.95rem; color: var(--text-primary);">Decoder is Locked!</h4>
+                <p style="font-size: 0.75rem; color: var(--text-secondary); max-width: 250px; margin-bottom: 12px; line-height: 1.4;">
+                    Solve the quest using the hands on the clock face! Tap below if you need a decoder hint.
+                </p>
+                <button class="primary-btn" onclick="revealDecoderReadouts()" style="font-size: 0.8rem; padding: 8px 16px;">💡 Reveal Decoder Hint</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Guide Toggle Button -->
+    <button id="guideToggleBtn" onclick="toggleGuide()" style="
+      position:fixed; right:0; top:50%; transform:translateY(-50%);
+      z-index:200;
+      background:linear-gradient(135deg,#c084fc,#f43f5e);
+      color:white; border:none; border-radius:12px 0 0 12px;
+      padding:14px 10px; font-size:1.1rem; cursor:pointer;
+      writing-mode:vertical-rl; text-orientation:mixed;
+      font-family:'Outfit',sans-serif; font-weight:800; letter-spacing:1px;
+      box-shadow:-3px 0 16px rgba(192,132,252,.4);
+    ">🐾 Guide</button>
+
+    <!-- Floating Guide Drawer -->
+    <div id="guideDrawer" style="
+      position:fixed; right:-420px; top:0; height:100vh; width:min(420px,92vw);
+      z-index:199; overflow-y:auto;
+      background:rgba(10,8,25,.97); backdrop-filter:blur(16px);
+      border-left:1.5px solid rgba(192,132,252,.3);
+      box-shadow:-8px 0 40px rgba(0,0,0,.6);
+      padding:20px 18px 40px; transition:right .35s cubic-bezier(.175,.885,.32,1.1);
+    ">
+      <button onclick="toggleGuide()" style="position:sticky;top:0;float:right;background:none;border:none;color:#94a3b8;font-size:1.5rem;cursor:pointer;margin-bottom:8px;">✕</button>
+      <div class="panel" style="margin-top:0; background:transparent; border:none; padding:0;">
+        <div class="guide-title">
+                <span>🐾</span>
+                <h3>Rainbow Doggy's Time Guide</h3>
+            </div>
+            <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 14px;">
+                Woof! I'm Rainbow Doggy, and I'm SO excited to show you around the clock! These are my best tips — let's sniff them out together! 🌈🐶
+            </p>
+            <ul class="guide-list">
+                <li style="margin-bottom: 12px; line-height: 1.6;">
+                    <strong>Rainbow Zoom ⚡ (the minute hand):</strong> That's my speedy best friend! Rainbow Zoom zooms all the way around the track — 60 steps — every single hour. Zoom zoom! 🐾
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="playDemoLap()">🏃 Watch a Full Lap!</button>
+                </li>
+                <li style="margin-bottom: 12px; line-height: 1.6;">
+                    <strong>Rainbow Float 🌈 (the hour hand):</strong> Rainbow Float is like me on a leisurely walkies — she takes her sweet time! She floats slowly between the numbers for the whole time Rainbow Zoom is zooming the lap. She only moves to the next number once Rainbow Zoom zooms all the way round!
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="demoWalkerMovement()">🚶 🌈 Watch Rainbow Float!</button>
+                </li>
+                <li style="margin-bottom: 12px; line-height: 1.6;">
+                    <strong>O'Clock Sharp (Start of the Hour):</strong> When Rainbow Zoom points straight up at the 12 — a brand new hour starts! We both go "WOOF!" and the minutes display resets to exactly <strong>00</strong>. Fresh start!
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="setClockDemo(8, 0)">⏰ Show 8:00 Sharp</button>
+                </li>
+                <li style="margin-bottom: 12px; line-height: 1.6;">
+                    <strong>The Quarter-Pizza Slices (Fractions 15, 30, 45):</strong> Imagine we're sharing a pizza! At 15 minutes we've eaten one quarter (1/4) — that's <strong>quarter past</strong>! At 30 minutes we've eaten half (1/2) — that's <strong>half past</strong>! At 45 minutes there's just one quarter slice left to go — that's <strong>quarter to</strong>!
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="setClockDemo(8, 15)">🍕 Quarter Past (:15)</button>
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="setClockDemo(8, 30)">🌓 Half Past (:30)</button>
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="setClockDemo(8, 45)">🍕 Quarter To (:45)</button>
+                </li>
+                <li style="margin-bottom: 12px; line-height: 1.6;">
+                    <strong>The "PAST" Zone (Minutes 1 to 30):</strong> The green side — this is where Rainbow Zoom runs away from the last hour! We look back and say how many minutes have gone PAST. It's like counting how many steps I've run since the park gate!
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="setClockDemo(8, 10)">🟢 Show 8:10 (Past)</button>
+                </li>
+                <li style="margin-bottom: 12px; line-height: 1.6;">
+                    <strong>The "TO" Zone (Minutes 31 to 59):</strong> The blue side — now Rainbow Zoom is racing towards the next hour! We count down how many steps are left TO go. At 8:40, there are 20 steps still TO reach 9 o'clock — nearly there!
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="setClockDemo(8, 40)">🔵 Show 8:40 (To)</button>
+                </li>
+                <li style="margin-bottom: 12px; line-height: 1.6;">
+                    <strong>The Rainbow Float Trick! 🐾</strong> At 8:50, Rainbow Float is almost at the 9 — so close it looks like 9 o'clock! But the hour only changes when Rainbow Zoom finishes the whole lap and gets back to 12. Until then, it's still 8! Don't be fooled by how close Rainbow Float looks!
+                    <button class="tool-btn" style="display:inline-flex; padding:3px 8px; font-size:0.75rem; vertical-align:middle; margin-left: 8px;" onclick="setClockDemo(8, 50)">👀 Show the Sneaky Hour (8:50)</button>
+                </li>
+            </ul>
+            
+            <!-- Dynamic Master Case Study -->
+            <div style="background: rgba(168, 85, 247, 0.08); border: 2px dashed var(--accent-purple); padding: 18px; border-radius: 18px; margin-top: 20px;">
+                <h4 style="color: var(--accent-purple); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-family:'Outfit', sans-serif;">
+                    <span>🐾</span> <span class="char-inline-span"><img class="char-inline-img" src="head.png"><strong>Rainbow Doggy</strong></span>'s Tricky Time Challenge: 8:40!
+                </h4>
+                <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 15px;">
+                    Let's sniff out one single time together — <strong>8:40</strong> — and see what Rainbow Zoom, Rainbow Float, and all the zones have to say about it! Hit the button, then we'll nose through it step by step. (Psst — one of these ways sounds really funny in real life!)
+                </p>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                    <button class="primary-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="setClockDemo(8, 40)">🕒 Load 8:40 Live Case Study</button>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 10px; font-size: 0.9rem; line-height: 1.5; color: var(--text-primary);">
+                    <p>🕒 <strong>Digital Screen:</strong> Displays exactly <strong>08:40</strong>.</p>
+                    <p>🏃 <strong>Rainbow Zoom ⚡ (the minute hand):</strong> Has run exactly 40 steps around the racetrack (pointing at the number 8).</p>
+                    <p>🚶 <strong>Rainbow Float 🌈 (the hour hand):</strong> Has floated 66% of the way from the 8 towards the 9. She looks very close to 9, but because Rainbow Zoom hasn't finished the lap yet, the hour is still <strong>8 o'clock</strong>! The hour only changes when Rainbow Zoom reaches 12.</p>
+                    <p>🟢 <strong>The "PAST" Zone Way:</strong> We say it is <strong>"40 minutes past 8"</strong>. 
+                        <span style="display: block; padding: 6px 12px; margin-top: 6px; background: rgba(244, 63, 94, 0.15); border-left: 3px solid var(--accent-pink); border-radius: 6px; color: var(--text-primary); font-size: 0.85rem;">
+                            ⚠️ <strong>The Weird One!</strong> Saying "40 minutes past 8" is 100% correct, but it feels <em>extremely weird</em> to say in real life! Because Rainbow Zoom has crossed into the left-side blue track, humans prefer counting down to the next hour instead.
+                        </span>
+                </div>
+            </div>
+            
+            <!-- Dynamic Daily Scheduling Adventure Set -->
+            <div style="background: rgba(244, 63, 94, 0.05); border: 2px dashed var(--accent-pink); padding: 18px; border-radius: 18px; margin-top: 20px;">
+                <h4 style="color: var(--accent-pink); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-family:'Outfit', sans-serif;">
+                    <span>🎒</span> Daily Scheduling: Time Prep Adventures!
+                </h4>
+                <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 15px;">
+                    How do we work out when to leave so we are perfectly on time? Let's explore four awesome daily adventures throughout the day that use the exact same mathematical pattern! Click the buttons to load them on the clock sandbox:
+                </p>
+                
+                <!-- School Adventure -->
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid var(--card-border); padding: 14px; border-radius: 12px; margin-bottom: 15px;">
+                    <h5 style="color: var(--accent-purple); font-size: 0.95rem; margin-bottom: 8px;">🏫 Morning: Walking to School</h5>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
+                        It is <strong>9:30 AM</strong> right now. School starts at <strong>10:00 AM</strong> sharp. Your walk to school with <span class="char-inline-span"><img class="char-inline-img" src="hairy_maclary.png"><strong>Hairy Maclary</strong></span> takes exactly <strong>10 minutes</strong>.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                        <button class="tool-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--accent-purple);" onclick="setClockDemo(9, 30)">⏰ Show Current Time (9:30)</button>
+                        <button class="tool-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--accent-pink);" onclick="setClockDemo(9, 50)">🚶 Show Departure Time (9:50)</button>
+                    </div>
+                    <ul style="list-style-type: '⚡'; padding-left: 20px; font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+                        <li><strong>When to leave?</strong> Count backward 10 minutes from 10:00. Leave at <strong>9:50 AM</strong> (10 minutes to 10)!</li>
+                        <li><strong>Free time:</strong> From 9:30 to 9:50, you have <strong>20 minutes</strong> of spare time to practice tricks!</li>
+                    </ul>
+                </div>
+
+                <!-- Shopping Adventure -->
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid var(--card-border); padding: 14px; border-radius: 12px; margin-bottom: 15px;">
+                    <h5 style="color: #60a5fa; font-size: 0.95rem; margin-bottom: 8px;">🐾 Afternoon: Walk to the Treat Shop</h5>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
+                        It is <strong>2:30 PM</strong> right now. You are meeting <span class="char-inline-span"><img class="char-inline-img" src="bitzer_maloney.png"><strong>Bitzer Maloney</strong></span> for an afternoon walk to the treat shop at <strong>3:00 PM</strong> sharp. It takes exactly <strong>10 minutes</strong> to find your lead and fill the water bowl.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                        <button class="tool-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: #60a5fa;" onclick="setClockDemo(2, 30)">⏰ Show Current Time (2:30)</button>
+                        <button class="tool-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--accent-pink);" onclick="setClockDemo(2, 50)">📦 Show Setup Time (2:50)</button>
+                    </div>
+                    <ul style="list-style-type: '⚡'; padding-left: 20px; font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+                        <li><strong>When to set up?</strong> Count backward 10 minutes from 3:00. Start setting up at <strong>2:50 PM</strong> (10 minutes to 3)!</li>
+                        <li><strong>Free time:</strong> From 2:30 to 2:50, you have <strong>20 minutes</strong> of spare time to pick a cute outfit!</li>
+                    </ul>
+                </div>
+
+                <!-- Dinner Adventure -->
+                <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid var(--card-border); padding: 14px; border-radius: 12px; margin-bottom: 15px;">
+                    <h5 style="color: var(--accent-yellow); font-size: 0.95rem; margin-bottom: 8px;">🍽️ Evening: Bone Dinner</h5>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
+                        It is <strong>5:30 PM</strong> right now. You are meeting <span class="char-inline-span"><img class="char-inline-img" src="hercules_morse.png"><strong>Hercules Morse</strong></span> for a gourmet organic bone dinner served at <strong>6:00 PM</strong> sharp. It takes exactly <strong>10 minutes</strong> to wash your paws and clean the bowl.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                        <button class="tool-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--accent-yellow);" onclick="setClockDemo(5, 30)">⏰ Show Current Time (5:30)</button>
+                        <button class="tool-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--accent-pink);" onclick="setClockDemo(5, 50)">🧼 Show Clean-up Time (5:50)</button>
+                    </div>
+                    <ul style="list-style-type: '⚡'; padding-left: 20px; font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+                        <li><strong>When to clean up?</strong> Count backward 10 minutes from 6:00. Clean up at <strong>5:50 PM</strong> (10 minutes to 6)!</li>
+                        <li><strong>Free time:</strong> From 5:30 to 5:50, you have <strong>20 minutes</strong> to finish drawing!</li>
+                    </ul>
+                </div>
+
+                <!-- K-Pop Choreography Adventure -->
+                <div style="background: rgba(168, 85, 247, 0.15); border: 1px solid var(--accent-purple); padding: 14px; border-radius: 12px;">
+                    <h5 style="color: var(--accent-pink); font-size: 0.95rem; margin-bottom: 8px;">💃 Epic Night: K-Pop Dance Practice!</h5>
+                    <p style="font-size: 0.85rem; line-height: 1.5; color: var(--text-secondary); margin-bottom: 10px;">
+                        It is <strong>6:30 PM</strong> right now. Your K-Pop Dance Studio session with <span class="char-inline-span"><img class="char-inline-img" src="head.png"><strong>Rainbow Doggy</strong></span> starts rocking at <strong>7:00 PM</strong> sharp. The magic teleport gate takes exactly <strong>10 minutes</strong> to load.
+                    </p>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                        <button class="tool-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--accent-pink);" onclick="setClockDemo(6, 30)">⏰ Show Current Time (6:30)</button>
+                        <button class="tool-btn" style="padding: 4px 10px; font-size: 0.75rem; border-color: var(--accent-purple);" onclick="setClockDemo(6, 50)">⚡ Show Teleport Departure (6:50)</button>
+                    </div>
+                    <ul style="list-style-type: '⚡'; padding-left: 20px; font-size: 0.85rem; color: var(--text-primary); line-height: 1.5; display: flex; flex-direction: column; gap: 4px;">
+                        <li><strong>When to enter the gate?</strong> Count backward 10 minutes from 7:00. Enter the gate at <strong>6:50 PM</strong> (10 minutes to 7)!</li>
+                        <li><strong>Free time:</strong> From 6:30 to 6:50, you have exactly <strong>20 minutes</strong> of preparation to select your neon lightstick!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+      </div><!-- end .panel inside drawer -->
+    </div><!-- end #guideDrawer -->
+
+    <script>
+        function injectInlineIcons(text) {
+          const charList = [
+            { name: 'Schnitzel von Krumm', img: 'schnitzel_von_krumm.png' },
+            { name: 'Bottomley Potts', img: 'bottomley_potts.png' },
+            { name: 'Scarface Claw', img: 'scarface.png' },
+            { name: 'Slinky Malinki', img: 'slinky.png' },
+            { name: 'Rainbow Doggy', img: 'head.png' },
+            { name: 'Hercules Morse', img: 'hercules_morse.png' },
+            { name: 'Bitzer Maloney', img: 'bitzer_maloney.png' },
+            { name: 'Hairy Maclary', img: 'hairy_maclary.png' },
+            { name: 'Muffin McLay', img: 'muffin_mclay.png' },
+            { name: 'Schnitzel', img: 'schnitzel_von_krumm.png' },
+            { name: 'Kind Dog', img: 'head.png' }
+          ];
+          let result = text;
+          charList.forEach(c => {
+            const inlineHTML = `<span class="char-inline-span"><img class="char-inline-img" src="${c.img}"><strong>${c.name}</strong></span>`;
+            const strongRegex = new RegExp(`<strong>${c.name}</strong>`, 'g');
+            result = result.replace(strongRegex, inlineHTML);
+          });
+          return result;
+        }
+
+        function initMascotCenterHover() {
+          let card = document.getElementById('mascotCenterCard');
+          if (!card) {
+            card = document.createElement('div');
+            card.id = 'mascotCenterCard';
+            card.className = 'mascot-center-card';
+            document.body.appendChild(card);
+          }
+          
+          const charImages = {
+            'Hairy Maclary': 'hairy_maclary.png',
+            'Hercules Morse': 'hercules_morse.png',
+            'Bottomley Potts': 'bottomley_potts.png',
+            'Muffin McLay': 'muffin_mclay.png',
+            'Bitzer Maloney': 'bitzer_maloney.png',
+            'Schnitzel von Krumm': 'schnitzel_von_krumm.png',
+            'Schnitzel': 'schnitzel_von_krumm.png',
+            'Slinky Malinki': 'slinky.png',
+            'Scarface Claw': 'scarface.png',
+            'Rainbow Doggy': 'head.png',
+            'Kind Dog': 'head.png'
+          };
+          
+          const mascotQuotes = {
+            'Hairy Maclary': "Woof! I'm Hairy Maclary from Donaldson's Dairy! Let's sniff out some answers! 🐾",
+            'Hercules Morse': "Woof! I'm Hercules Morse, as big as a horse! I love tasty treats! 🐾",
+            'Bottomley Potts': "Woof! I'm Bottomley Potts, covered in spots! Ready for a playful puzzle? 🐾",
+            'Muffin McLay': "Woof! I'm Muffin McLay, like a bundle of hay! Can you solve this? 🐾",
+            'Bitzer Maloney': "Woof! I'm Bitzer Maloney, skinny and bony! Let's do some math! 🐾",
+            'Schnitzel von Krumm': "Woof! I'm Schnitzel von Krumm, with a very low tum! Can you help me? 🐾",
+            'Slinky Malinki': "Meow! I'm Slinky Malinki! A cheeky cat who loves shiny, glittering treasures! 🐾",
+            'Scarface Claw': "Hiss! I'm Scarface Claw, the toughest tomcat in town! Watch out! 🐾",
+            'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's play and learn together! 🐾",
+            'Kind Dog': "Avvavavava! I'm Kind Dog! Let's share some love and learning! 🐾"
+          };
+
+          document.body.addEventListener('mouseenter', e => {
+            const target = e.target.closest('.char-inline-span');
+            if (!target) return;
+            const name = target.querySelector('strong').textContent;
+            const img = charImages[name] || 'head.png';
+            const quote = mascotQuotes[name] || "Avvavava! Let's solve this! 🐾";
+            
+            card.innerHTML = `
+              <img class="mcc-avatar" src="${img}" alt="${name}">
+              <div class="mcc-name">${name}</div>
+              <div class="mcc-quote">"${quote}"</div>
+            `;
+            card.classList.add('show');
+          }, true);
+
+          document.body.addEventListener('mouseleave', e => {
+            const target = e.target.closest('.char-inline-span');
+            if (!target) return;
+            card.classList.remove('show');
+          }, true);
+        }
+
+        // ── BARK SOUNDS ──
+        const BARK_FILES = ['bark.mp3','bark2.mp3','bark3.mp3','bark4.mp3','bark5.mp3','bark6.mp3'];
+        let currentBark = null; // only the guide bark is tracked for stopping
+        function stopCurrentBark() {
+          if (currentBark) { currentBark.pause(); currentBark.currentTime = 0; currentBark = null; }
+        }
+        function playBark() {
+          if (state.isMuted) return;
+          const src = BARK_FILES[Math.floor(Math.random() * BARK_FILES.length)];
+          const a = new Audio(src);
+          a.volume = 0.55;
+          a.playbackRate = 0.9 + Math.random() * 0.2;
+          currentBark = a;
+          a.play().catch(() => {});
+        }
+
+        // ── AVA SOUNDS — shuffled cycle, play every 5–10 interactions ──
+        const AVA_FILES_RAW = ['ava.mp3','ava2.mp3','ava3.mp3','ava4.mp3','ava5.mp3','ava6.mp3','ava66.mp3','avav5.mp3'];
+        function shuffleArr(a) { for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a; }
+        let avaDeck = shuffleArr([...AVA_FILES_RAW]);
+        let avaPos = 0;
+        let interactionCount = 0;
+        let nextAvaAt = 5 + Math.floor(Math.random() * 6);
+        function playNextAva(vol) {
+          if (state.isMuted) return;
+          if (avaPos >= avaDeck.length) { avaDeck = shuffleArr([...AVA_FILES_RAW]); avaPos = 0; }
+          const a = new Audio(avaDeck[avaPos++]);
+          a.volume = vol || 0.7;
+          a.playbackRate = 0.9 + Math.random() * 0.2;
+          a.play().catch(() => {}); // let it finish naturally — not tracked for stopping
+        }
+        function tickInteraction() {
+          interactionCount++;
+          if (interactionCount >= nextAvaAt) {
+            interactionCount = 0;
+            nextAvaAt = 5 + Math.floor(Math.random() * 6);
+            playNextAva(0.7);
+          }
+        }
+        let idleAvaTimer = null;
+
+
+        function toggleGuide() {
+          const d = document.getElementById('guideDrawer');
+          const open = d.style.right === '0px';
+          stopCurrentBark();
+          d.style.right = open ? '-420px' : '0px';
+          playBark(); // little bark on open/close
+        }
+
+        // Web Audio Context for synthesized sound effects
+        let audioCtx = null;
+        function playSound(type) {
+            if (state.isMuted) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    // Delightful chime chord
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.15); // G5
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.4);
+                } else if (type === 'incorrect') {
+                    // Soft descending error tone
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(220.00, now); // A3
+                    osc.frequency.linearRampToValueAtTime(146.83, now + 0.25); // D3
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'levelup') {
+                    // Victory Fanfare
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(261.63, now); // C4
+                    osc.frequency.setValueAtTime(329.63, now + 0.1); // E4
+                    osc.frequency.setValueAtTime(392.00, now + 0.2); // G4
+                    osc.frequency.setValueAtTime(523.25, now + 0.3); // C5
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    osc.start(now);
+                    osc.stop(now + 0.55);
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked");
+            }
+        }
+
+        // Interactive Tutorial Companion Demos
+        let demoInterval = null;
+
+        function setClockDemo(h, m) {
+            if (countUpInterval) clearInterval(countUpInterval);
+            if (demoInterval) clearInterval(demoInterval);
+            
+            // Ensure readouts are revealed
+            revealDecoderReadouts();
+            hourSlider.value = h;
+            minuteSlider.value = m;
+            updateClockFaceVisuals();
+            playSound('correct');
+            
+            // Subtle flash highlight to clock face to draw visual attention
+            const cb = document.getElementById('clockBox');
+            cb.style.boxShadow = '0 0 40px rgba(168, 85, 247, 0.8)';
+            setTimeout(() => {
+                cb.style.boxShadow = '';
+            }, 1000);
+        }
+
+        function playDemoLap() {
+            if (countUpInterval) clearInterval(countUpInterval);
+            if (demoInterval) clearInterval(demoInterval);
+            revealDecoderReadouts();
+
+            let currentM = 0;
+            hourSlider.value = 12;
+            minuteSlider.value = 0;
+            updateClockFaceVisuals();
+
+            // Highlight red minute hand
+            const cb = document.getElementById('clockBox');
+            cb.style.boxShadow = '0 0 30px rgba(244, 63, 94, 0.6)';
+
+            demoInterval = setInterval(() => {
+                if (currentM < 60) {
+                    minuteSlider.value = currentM;
+                    updateClockFaceVisuals();
+                    playClockTickSound();
+                    currentM += 2; // rapid crawl
+                } else {
+                    clearInterval(demoInterval);
+                    cb.style.boxShadow = '';
+                    hourSlider.value = 1;
+                    minuteSlider.value = 0;
+                    updateClockFaceVisuals();
+                    playSound('levelup');
+                }
+            }, 55);
+        }
+
+        function demoWalkerMovement() {
+            if (countUpInterval) clearInterval(countUpInterval);
+            if (demoInterval) clearInterval(demoInterval);
+            revealDecoderReadouts();
+
+            let currentM = 0;
+            hourSlider.value = 3; // start at 3 o'clock sharp
+            minuteSlider.value = 0;
+            updateClockFaceVisuals();
+
+            // Highlight with soft amber glow
+            const cb = document.getElementById('clockBox');
+            cb.style.boxShadow = '0 0 30px rgba(245, 158, 11, 0.6)';
+
+            demoInterval = setInterval(() => {
+                if (currentM <= 60) {
+                    minuteSlider.value = currentM === 60 ? 0 : currentM;
+                    if (currentM === 60) {
+                        hourSlider.value = 4;
+                    }
+                    updateClockFaceVisuals();
+                    playClockTickSound();
+                    currentM += 1.5;
+                } else {
+                    clearInterval(demoInterval);
+                    cb.style.boxShadow = '';
+                    playSound('levelup');
+                }
+            }, 50);
+        }
+
+        // Safe localStorage helpers
+        function safeInt(key, fallback) {
+            const v = parseInt(localStorage.getItem(key), 10);
+            return isNaN(v) ? fallback : v;
+        }
+        function safeJSON(key, fallback) {
+            try { const v = JSON.parse(localStorage.getItem(key)); return (v !== null && v !== undefined) ? v : fallback; }
+            catch(e) { return fallback; }
+        }
+
+        // Award a correct answer: always +1 star; streak only extends if unaided
+        function awardCorrect(feedbackEl) {
+            state.stars += 1;
+            tickInteraction();
+            if (!state.usedHelp) {
+                state.streak += 1;
+            }
+        }
+
+        function showAnswerModal(isCorrect, summaryHtml, helpUsed) {
+            const modal = document.getElementById('answerModal');
+            const icon  = document.getElementById('answerModalIcon');
+            const body  = document.getElementById('answerModalBody');
+            const helpTag = helpUsed ? ' <span style="font-size:.72rem;background:rgba(249,115,22,.15);border:1px solid rgba(249,115,22,.3);border-radius:8px;padding:2px 7px;color:#f97316;margin-left:4px;">💡 helped</span>' : '';
+            if (isCorrect) {
+                icon.textContent = '🎉';
+                body.innerHTML = '<div style="color:#c084fc;font-weight:800;font-size:1rem;margin-bottom:8px;">Arrrva! Well done! 🐾' + helpTag + '</div>' + (summaryHtml || '');
+            } else {
+                icon.textContent = '🐾';
+                body.innerHTML = '<div style="color:#f97316;font-weight:800;font-size:1rem;margin-bottom:8px;">Aw aw! Not quite — try again!' + helpTag + '</div>' + (summaryHtml || '');
+                document.getElementById('answerModalNext').textContent = '🔄 Try Again!';
+                document.getElementById('answerModalNext').onclick = () => { dismissAnswerModal(); };
+            }
+            modal.style.display = 'flex';
+            document.addEventListener('keydown', _modalEscHandler);
+        }
+
+        function dismissAnswerModal() {
+            const modal = document.getElementById('answerModal');
+            modal.style.display = 'none';
+            document.getElementById('answerModalNext').textContent = '🎲 Next!';
+            document.getElementById('answerModalNext').onclick = dismissAnswerModal;
+            document.removeEventListener('keydown', _modalEscHandler);
+            generateChallenge();
+        }
+
+        function _modalEscHandler(e) {
+            if (e.key === 'Escape') dismissAnswerModal();
+        }
+
+        // Fair shuffle (Fisher-Yates)
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        // Global Game State
+        const state = {
+            stars:         0,
+            streak:        0,
+            isMuted:       localStorage.getItem('rla_muted') === 'true',
+
+            // Scaffolding Quest Progression State - All open by default
+            questPhase:    3,
+            phaseProgress: safeInt('time_phase_progress', 0),
+
+            currentDifficulty: -1,
+            activeQuestion: null,
+            usedHelp: false
+        };
+
+        function toggleMute() {
+            state.isMuted = !state.isMuted;
+            localStorage.setItem('rla_muted', state.isMuted);
+            if (state.isMuted) clearTimeout(idleAvaTimer);
+            updateMuteButton();
+        }
+
+        function updateMuteButton() {
+            const btn = document.getElementById('muteBtn');
+            if (state.isMuted) {
+                btn.textContent = '🔇 Muted';
+                btn.style.borderColor = 'var(--accent-pink)';
+            } else {
+                btn.textContent = '🔊 Sound On';
+                btn.style.borderColor = 'var(--card-border)';
+            }
+        }
+
+
+        // Canvas Doodling Setup
+        const canvas = document.getElementById('scratchCanvas');
+        const ctx = canvas.getContext('2d');
+        let isDrawing = false;
+        let drawingModeActive = false;
+
+        function resizeCanvas() {
+            const container = document.getElementById('scratchContainer');
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = '#f43f5e';
+            ctx.lineWidth = 4;
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            updateClockFaceVisuals();
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load and apply theme
+            const savedTheme = localStorage.getItem('time_theme') || 'default';
+            changeTheme(savedTheme);
+
+            resizeCanvas();
+            updateScoresDisplay();
+            drawStaticClock();
+            updateClockFaceVisuals();
+            updateMuteButton();
+
+            // Initialize the colossal center-screen mascot hover card!
+            initMascotCenterHover();
+
+            // Auto-load the first quest challenge so the screen is immediately interactive!
+            generateChallenge();
+        });
+
+        function toggleDrawingMode() {
+            drawingModeActive = !drawingModeActive;
+            const btn = document.getElementById('doodleBtn');
+            if (drawingModeActive) {
+                btn.classList.add('active');
+                canvas.classList.add('drawing-active');
+            } else {
+                btn.classList.remove('active');
+                canvas.classList.remove('drawing-active');
+            }
+        }
+
+        // Draw doodle events
+        canvas.addEventListener('mousedown', startDoodling);
+        canvas.addEventListener('mousemove', drawDoodle);
+        canvas.addEventListener('mouseup', stopDoodling);
+        canvas.addEventListener('mouseleave', stopDoodling);
+
+        canvas.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousedown', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+            e.preventDefault();
+        }, { passive: false });
+
+        canvas.addEventListener('touchmove', (e) => {
+            const touch = e.touches[0];
+            const mouseEvent = new MouseEvent('mousemove', {
+                clientX: touch.clientX,
+                clientY: touch.clientY
+            });
+            canvas.dispatchEvent(mouseEvent);
+            e.preventDefault();
+        }, { passive: false });
+
+        canvas.addEventListener('touchend', () => {
+            const mouseEvent = new MouseEvent('mouseup', {});
+            canvas.dispatchEvent(mouseEvent);
+        });
+
+        function startDoodling(e) {
+            if (!drawingModeActive) return;
+            isDrawing = true;
+            const rect = canvas.getBoundingClientRect();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+        }
+
+        function drawDoodle(e) {
+            if (!isDrawing || !drawingModeActive) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+        }
+
+        function stopDoodling() {
+            isDrawing = false;
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Build static ticks and labels inside SVG
+        function drawStaticClock() {
+            const ticksG = document.getElementById('clockTicksG');
+            const numsG = document.getElementById('clockNumbersG');
+            ticksG.innerHTML = '';
+            numsG.innerHTML = '';
+
+            // Draw ticks for all 60 minutes
+            for (let i = 0; i < 60; i++) {
+                const angle = i * 6 * (Math.PI / 180);
+                const isFive = i % 5 === 0;
+                
+                const rOuter = 135;
+                const rInner = isFive ? 122 : 129;
+                
+                const x1 = 150 + rOuter * Math.sin(angle);
+                const y1 = 150 - rOuter * Math.cos(angle);
+                const x2 = 150 + rInner * Math.sin(angle);
+                const y2 = 150 - rInner * Math.cos(angle);
+                
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.setAttribute('x1', x1);
+                line.setAttribute('y1', y1);
+                line.setAttribute('x2', x2);
+                line.setAttribute('y2', y2);
+                line.setAttribute('class', isFive ? 'clock-ticks five-min' : 'clock-ticks');
+                ticksG.appendChild(line);
+            }
+
+            // Draw large hours 1-12
+            for (let i = 1; i <= 12; i++) {
+                const angle = i * 30 * (Math.PI / 180);
+                const radius = 102;
+                const x = 150 + radius * Math.sin(angle);
+                const y = 150 - radius * Math.cos(angle);
+
+                const txt = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                txt.setAttribute('x', x);
+                txt.setAttribute('y', y);
+                txt.setAttribute('class', 'clock-number');
+                txt.textContent = i;
+                numsG.appendChild(txt);
+            }
+        }
+
+        // Controls binding
+        const hourSlider = document.getElementById('hourSlider');
+        const minuteSlider = document.getElementById('minuteSlider');
+        
+        const hourLabel = document.getElementById('hourLabel');
+        const minuteLabel = document.getElementById('minuteLabel');
+
+        const phrasePast = document.getElementById('phrasePast');
+        const phraseTo = document.getElementById('phraseTo');
+        const neighbourhoodDesc = document.getElementById('neighbourhoodDesc');
+
+        const clockBox = document.getElementById('clockBox');
+
+        function toggleSlidersHint() {
+            const container = document.getElementById('slidersContainer');
+            const btn = document.getElementById('slidersHintBtn');
+            if (container.style.display === 'none') {
+                container.style.display = 'flex';
+                btn.textContent = '🙈 Hide Sliders Hint';
+            } else {
+                container.style.display = 'none';
+                btn.textContent = '⚙️ Reveal Sliders Hint';
+            }
+        }
+
+        function updateClockFaceVisuals() {
+            const h = parseInt(hourSlider.value);
+            const m = parseInt(minuteSlider.value);
+
+            hourLabel.textContent = h;
+            minuteLabel.textContent = m;
+
+            // Formatted Digital Output
+            const hInput = document.getElementById('digitalHourInput');
+            const mInput = document.getElementById('digitalMinuteInput');
+            if (document.activeElement !== hInput) {
+                hInput.value = h < 10 ? '0' + h : h;
+            }
+            if (document.activeElement !== mInput) {
+                mInput.value = m < 10 ? '0' + m : m;
+            }
+
+            // Calculate exact visual hand rotations
+            const mDeg = m * 6; // 6 degrees per minute
+            const hDeg = (h * 30) + (m * 0.5); // 30 degrees per hour, plus smooth transition based on minutes
+
+            document.getElementById('svgMinuteHand').style.transform = `rotate(${mDeg}deg)`;
+            document.getElementById('svgHourHand').style.transform = `rotate(${hDeg}deg)`;
+
+            // Render Dynamic Pizza Slice Translucent Sector
+            const pizzaSlice = document.getElementById('svgPizzaSlice');
+            if (m === 0) {
+                pizzaSlice.style.display = 'none';
+            } else {
+                pizzaSlice.style.display = 'block';
+                const angleRad = (mDeg - 90) * (Math.PI / 180);
+                const endX = 150 + 135 * Math.cos(angleRad);
+                const endY = 150 + 135 * Math.sin(angleRad);
+                const largeArcFlag = m > 30 ? 1 : 0;
+                
+                if (m <= 30) {
+                    pizzaSlice.setAttribute('fill', 'rgba(46, 204, 113, 0.12)');
+                    pizzaSlice.setAttribute('stroke', 'rgba(46, 204, 113, 0.5)');
+                } else {
+                    pizzaSlice.setAttribute('fill', 'rgba(52, 152, 219, 0.12)');
+                    pizzaSlice.setAttribute('stroke', 'rgba(52, 152, 219, 0.5)');
+                }
+                
+                const pathData = `M 150,150 L 150,15 A 135,135 0 ${largeArcFlag} 1 ${endX},${endY} Z`;
+                pizzaSlice.setAttribute('d', pathData);
+            }
+
+            // Compute Hour Position & Zone Decoders
+            const nextHour = h === 12 ? 1 : h + 1;
+            
+            // Special Cases
+            let pastText = "";
+            let toText = "";
+
+            if (m === 0) {
+                pastText = `${h} o'clock sharp! ⏰`;
+                toText = `No steps to next hour yet.`;
+            } else if (m === 15) {
+                pastText = `Quarter PAST ${h} 🍕`;
+                toText = `45 minutes TO ${nextHour}`;
+            } else if (m === 30) {
+                pastText = `Half PAST ${h} 🌓`;
+                toText = `30 minutes TO ${nextHour} (Half TO)`;
+            } else if (m === 45) {
+                pastText = `45 minutes PAST ${h}`;
+                toText = `Quarter TO ${nextHour} 🍕`;
+            } else {
+                pastText = `${m} minutes PAST ${h}`;
+                toText = `${60 - m} minutes TO ${nextHour}`;
+            }
+
+            phrasePast.textContent = pastText;
+            phraseTo.textContent = toText;
+
+            // Past/To Zone highlight styles
+            const pCard = document.getElementById('phrasePastCard');
+            const tCard = document.getElementById('phraseToCard');
+            if (m === 0) {
+                pCard.className = "interpretation-card";
+                tCard.className = "interpretation-card";
+            } else if (m <= 30) {
+                pCard.className = "interpretation-card past";
+                tCard.className = "interpretation-card";
+            } else {
+                pCard.className = "interpretation-card";
+                tCard.className = "interpretation-card to";
+            }
+
+            // Hour position explanation logic
+            let neighborhoodText = "";
+            if (m === 0) {
+                neighborhoodText = `🌈 <strong>On the dot:</strong> Rainbow Float is pointing exactly at <strong>${h} o'clock</strong>!`;
+            } else if (m < 30) {
+                neighborhoodText = `🚶 <strong>Moving along:</strong> Rainbow Float has just passed the ${h} — the hour is still <strong>${h}</strong>.`;
+            } else if (m === 30) {
+                neighborhoodText = `⚖️ <strong>Halfway!</strong> Rainbow Float is <strong>exactly halfway</strong> between the ${h} and the ${nextHour} — the hour is still <strong>${h}</strong>!`;
+            } else {
+                neighborhoodText = `👀 <strong>Rainbow Float Trick! 🐾</strong> Almost at the ${nextHour} — but the hour is still ${h}! 🐾`;
+            }
+            neighbourhoodDesc.innerHTML = neighborhoodText;
+
+        }
+
+        hourSlider.addEventListener('input', updateClockFaceVisuals);
+        minuteSlider.addEventListener('input', updateClockFaceVisuals);
+
+        // Bind Direct Key/Input Entry for Digital Display
+        const hInputEl = document.getElementById('digitalHourInput');
+        const mInputEl = document.getElementById('digitalMinuteInput');
+
+        hInputEl.addEventListener('input', function() {
+            let val = parseInt(this.value);
+            if (!isNaN(val)) {
+                if (val < 1) val = 1;
+                if (val > 12) val = 12;
+                hourSlider.value = val;
+                updateClockFaceVisuals();
+            }
+        });
+
+        hInputEl.addEventListener('blur', function() {
+            let val = parseInt(this.value);
+            if (isNaN(val) || val < 1 || val > 12) val = 8;
+            this.value = val < 10 ? '0' + val : val;
+            hourSlider.value = val;
+            updateClockFaceVisuals();
+        });
+
+        mInputEl.addEventListener('input', function() {
+            let val = parseInt(this.value);
+            if (!isNaN(val)) {
+                if (val < 0) val = 0;
+                if (val > 59) val = 59;
+                minuteSlider.value = val;
+                updateClockFaceVisuals();
+            }
+        });
+
+        mInputEl.addEventListener('blur', function() {
+            let val = parseInt(this.value);
+            if (isNaN(val) || val < 0 || val > 59) val = 0;
+            this.value = val < 10 ? '0' + val : val;
+            minuteSlider.value = val;
+            updateClockFaceVisuals();
+        });
+
+        // Click-and-Drag Rotation Logic for Clock Hands
+        let activeDragHand = null;
+
+        function startHandDrag(e) {
+            if (drawingModeActive) return; // Don't drag while board drawing is active
+            e.preventDefault();
+            e.stopPropagation();
+
+            if (this.id === 'svgHourHand') {
+                activeDragHand = 'hour';
+            } else {
+                activeDragHand = 'minute';
+            }
+
+            document.addEventListener('mousemove', handleHandDrag);
+            document.addEventListener('mouseup', stopHandDrag);
+            document.addEventListener('touchmove', handleHandDrag, { passive: false });
+            document.addEventListener('touchend', stopHandDrag);
+        }
+
+        function handleHandDrag(e) {
+            if (!activeDragHand) return;
+            e.preventDefault();
+
+            const clockSvg = document.getElementById('clockSvg');
+            const rect = clockSvg.getBoundingClientRect();
+
+            let clientX = e.clientX;
+            let clientY = e.clientY;
+
+            if (e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            }
+
+            // Translate page coordinate to local SVG width coordinate space (0-300)
+            const svgX = ((clientX - rect.left) / rect.width) * 300;
+            const svgY = ((clientY - rect.top) / rect.height) * 300;
+
+            const dx = svgX - 150;
+            const dy = svgY - 150;
+
+            let angleRad = Math.atan2(dy, dx);
+            let angleDeg = angleRad * (180 / Math.PI) + 90; // offset 12 o'clock to 0 degrees
+            if (angleDeg < 0) angleDeg += 360;
+
+            if (activeDragHand === 'minute') {
+                let m = Math.round(angleDeg / 6) % 60;
+                minuteSlider.value = m;
+            } else if (activeDragHand === 'hour') {
+                let hFloat = angleDeg / 30;
+                let h = Math.round(hFloat);
+                if (h === 0 || h > 12) h = 12;
+                hourSlider.value = h;
+            }
+
+            updateClockFaceVisuals();
+        }
+
+        function stopHandDrag() {
+            activeDragHand = null;
+            document.removeEventListener('mousemove', handleHandDrag);
+            document.removeEventListener('mouseup', stopHandDrag);
+            document.removeEventListener('touchmove', handleHandDrag);
+            document.removeEventListener('touchend', stopHandDrag);
+        }
+
+        // Attach mouse and touch drag listeners to SVG hands groups
+        document.getElementById('svgHourHand').addEventListener('mousedown', startHandDrag);
+        document.getElementById('svgHourHand').addEventListener('touchstart', startHandDrag);
+        document.getElementById('svgMinuteHand').addEventListener('mousedown', startHandDrag);
+        document.getElementById('svgMinuteHand').addEventListener('touchstart', startHandDrag);
+
+        function toggleZones() {
+            const toggle = document.getElementById('zoneToggle');
+            const overlay = document.getElementById('zonesOverlay');
+            if (toggle.checked) {
+                overlay.classList.add('active');
+            } else {
+                overlay.classList.remove('active');
+            }
+        }
+
+        // --- DYNAMIC SCAFFOLDED QUEST SYSTEM ---
+        function autoTransitionToPhase(phase) {
+            selectQuestPhase(phase);
+            generateChallenge();
+        }
+
+        function selectQuestPhase(phase) {
+            tickInteraction();
+
+            state.currentDifficulty = phase - 1; // Map phase 0,1,2,3 to difficulty -1,0,1,2
+
+            // Toggle active tabs visually
+            for (let i = 0; i <= 3; i++) {
+                const btn = document.getElementById(`tab${i}`);
+                if (btn) {
+                    btn.classList.toggle('active', i === phase);
+                }
+            }
+
+            updateScoresDisplay();
+
+            // Load descriptive phase intro
+            const textEl = document.getElementById('quizText');
+            const choicesEl = document.getElementById('quizChoices');
+            const fbEl = document.getElementById('quizFeedback');
+            fbEl.textContent = '';
+
+            // Ensure readouts are unblurred initially
+            revealDecoderReadouts();
+
+            if (phase === 0) {
+                textEl.innerHTML = `👋 <strong>Explore Mode</strong><br>Woof! Drag the hands or move the sliders — the Clock Display shows you everything! Try some easy questions when you're ready!`;
+            } else if (phase === 1) {
+                textEl.innerHTML = `📖 <strong>Quiz Time!</strong><br>Pick the right time from the choices! The Clock Display is hidden to test you — ask Rainbow PJ for a hint if you get stuck!`;
+            } else if (phase === 2) {
+                textEl.innerHTML = `🛠️ <strong>Set the Clock! 🌈</strong><br>Move the rainbow hands to show the time below!`;
+            } else {
+                textEl.innerHTML = `👑 <strong>Phase 3: Rainbow Quest Stories</strong><br>Solve Rainbow Doggy's real-world adventures by working out the time and dragging the hands to set the clock!`;
+            }
+
+            document.getElementById('hintBtn').style.display = 'none';
+            generateChallenge();
+        }
+
+        let countUpInterval = null;
+
+        function playClockTickSound() {
+            if (state.isMuted) return;
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                const now = audioCtx.currentTime;
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1200, now);
+                osc.frequency.exponentialRampToValueAtTime(1, now + 0.02);
+                
+                gain.gain.setValueAtTime(0.02, now); // Very quiet, gentle click
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.02);
+                
+                osc.start(now);
+                osc.stop(now + 0.03);
+            } catch (e) {}
+        }
+
+        function animateCountUp() {
+            state.usedHelp = true;
+            if (!state.activeQuestion) return;
+
+            // Unblur display so they can see the visual match
+            revealDecoderReadouts();
+
+            if (countUpInterval) {
+                clearInterval(countUpInterval);
+            }
+
+            const targetH = state.activeQuestion.setupH;
+            const targetM = state.activeQuestion.setupM;
+
+            // Start at o'clock sharp
+            hourSlider.value = targetH;
+            minuteSlider.value = 0;
+            updateClockFaceVisuals();
+
+            let currentM = 0;
+
+            countUpInterval = setInterval(() => {
+                if (currentM < targetM) {
+                    currentM++;
+                    minuteSlider.value = currentM;
+                    updateClockFaceVisuals();
+                    playClockTickSound();
+                } else {
+                    clearInterval(countUpInterval);
+                    playSound('correct');
+                    
+                    // Render explanation story breakdown
+                    const fb = document.getElementById('quizFeedback');
+                    fb.innerHTML = `<div style="color:var(--accent-purple); font-weight:800; font-size:1.1rem; margin-bottom:10px;">✨ Watch the hands count up! Here is how we say this time:</div>` + generateTimeStory(targetH, targetM);
+                }
+            }, 60); // 60ms speed per tick is very smooth!
+        }
+
+        function revealDecoderReadouts() {
+            document.getElementById('digitalHourInput').style.filter = 'none';
+            document.getElementById('digitalMinuteInput').style.filter = 'none';
+            document.getElementById('digitalColon').style.filter = 'none';
+            document.getElementById('phrasePast').style.filter = 'none';
+            document.getElementById('phraseTo').style.filter = 'none';
+            document.getElementById('neighbourhoodDesc').style.filter = 'none';
+        }
+
+        function blurDecoderReadouts() {
+            document.getElementById('digitalHourInput').style.filter = 'blur(6px)';
+            document.getElementById('digitalMinuteInput').style.filter = 'blur(6px)';
+            document.getElementById('digitalColon').style.filter = 'blur(6px)';
+            document.getElementById('phrasePast').style.filter = 'blur(5px)';
+            document.getElementById('phraseTo').style.filter = 'blur(5px)';
+            document.getElementById('neighbourhoodDesc').style.filter = 'blur(5px)';
+        }
+
+        function generateTimeStory(h, m) {
+            const nextHour = h === 12 ? 1 : h + 1;
+            const minsTo = 60 - m;
+            const pad = n => n < 10 ? '0' + n : n;
+
+            // ── Everyday phrase (1 line) ──
+            let phrase;
+            if (m === 0)  phrase = `<strong>${h} o'clock!</strong>`;
+            else if (m === 15) phrase = `<strong>Quarter past ${h}!</strong>`;
+            else if (m === 30) phrase = `<strong>Half past ${h}!</strong>`;
+            else if (m === 45) phrase = `<strong>Quarter to ${nextHour}!</strong>`;
+            else if (m < 30)   phrase = `<strong>${m} minutes past ${h}!</strong>`;
+            else               phrase = `<strong>${minsTo} minutes to ${nextHour}!</strong>`;
+
+            // ── Rainbow Zoom description (1 line) ──
+            let zoomLine;
+            if (m === 0)       zoomLine = `Rainbow Zoom ⚡ is pointing straight up at the 12 — a brand new hour!`;
+            else if (m === 15) zoomLine = `Rainbow Zoom ⚡ has zoomed ¼ of the way round — a quarter of the hour done!`;
+            else if (m === 30) zoomLine = `Rainbow Zoom ⚡ is halfway round — exactly half the hour gone!`;
+            else if (m === 45) zoomLine = `Rainbow Zoom ⚡ has zoomed ¾ of the way round — just a quarter left to reach ${nextHour}.`;
+            else if (m < 30)   zoomLine = `Rainbow Zoom ⚡ has zoomed ${m} minutes past the ${h}.`;
+            else               zoomLine = `Rainbow Zoom ⚡ has ${minsTo} minutes left before reaching ${nextHour}:00.`;
+
+            // ── Float Trick warning only when minutes ≥ 40 ──
+            const floatLine = m >= 40
+                ? `🌈 Rainbow Float looks nearly on the ${nextHour}, but the hour is still <strong>${h}</strong> until Rainbow Zoom finishes the lap!`
+                : '';
+
+            return `
+                <div style="background:rgba(15,23,42,.6);border:1px solid var(--card-border);padding:14px 16px;border-radius:16px;margin-top:12px;text-align:left;animation:fadeIn .4s ease;font-size:.92rem;line-height:1.6;color:var(--text-secondary);">
+                    <div style="color:var(--accent-purple);font-weight:800;font-size:1.05rem;margin-bottom:6px;">🎉 ${phrase} (${h}:${pad(m)}) 🐾</div>
+                    <div>${zoomLine}</div>
+                    ${floatLine ? `<div style="margin-top:4px;">${floatLine}</div>` : ''}
+                </div>`;
+        }
+
+        function generateChallenge() {
+            state.usedHelp = false;
+            window._fibNext = null; // always clear stale fill-blank data
+            if (countUpInterval) {
+                clearInterval(countUpInterval);
+            }
+            
+            document.getElementById('quizFeedback').textContent = '';
+            
+            // Phase sets difficulty: Phase 1 -> Easy/Med/Hard, Phase 2 -> Drag Set, Phase 3 -> Stories
+            const phase = state.currentDifficulty + 1;
+
+            // Tutorial Mode is active exclusively in Phase 0 (Explore & Learn) to get familiar!
+            const isTutorialMode = (phase === 0);
+
+            const hintBtn = document.getElementById('hintBtn');
+            if (isTutorialMode) {
+                // In Tutorial Mode, the decoder is fully visible, so we don't need a hint button!
+                hintBtn.style.display = 'none';
+            } else {
+                // Always offer the opt-in hint button in non-tutorial phases!
+                hintBtn.style.display = 'inline-flex';
+                hintBtn.disabled = false;
+                hintBtn.style.opacity = '1';
+            }
+
+            // Reset dynamic CTA footer next button to default state
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.innerHTML = "🎲 Load Challenge";
+            nextBtn.onclick = generateChallenge;
+            
+            // Toggle sliders controls display based on active phase to prevent cheating and save space
+            const slidersContainer = document.getElementById('slidersContainer');
+            const slidersHintBtn = document.getElementById('slidersHintBtn');
+            if (phase === 0 || phase === 1) {
+                slidersContainer.style.display = 'flex';
+                slidersHintBtn.style.display = 'none';
+            } else {
+                slidersContainer.style.display = 'none';
+                slidersHintBtn.style.display = 'flex';
+                slidersHintBtn.textContent = '⚙️ Reveal Sliders Hint';
+            }
+            
+            let qText = "";
+            let correctAnswer = "";
+            let options = [];
+            let setupH = 8;
+            let setupM = 0;
+            let hint = "";
+
+            // Helper random generator variables
+            const hour = Math.floor(Math.random() * 12) + 1;
+            const nextHour = hour === 12 ? 1 : hour + 1;
+
+            if (phase === 0 || phase === 1) {
+                // Phase 1: Reinforce Quiz Mode (All-New Dynamic Multiples of 5)
+                const type = Math.random() > 0.5 ? 'neighborhood' : 'linguistic';
+
+                // Check if in Tutorial Mode (first 2 questions of Phase 1)
+                const isTutorialMode = (state.phaseProgress < 2);
+
+                if (type === 'neighborhood') {
+                    // Hour position & Rainbow Float Trick questions
+                    const mins = isTutorialMode 
+                        ? [0, 15, 30, 45][Math.floor(Math.random() * 4)]
+                        : [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55][Math.floor(Math.random() * 12)];
+                    setupH = hour;
+                    setupM = mins;
+
+                    const displayM = mins < 10 ? '0' + mins : mins;
+                    qText = `The digital display shows <strong>${hour}:${displayM}</strong>. Where should Rainbow Float 🌈 (the hour hand) be pointing?`;
+
+                    let correctDesc = "";
+                    if (mins === 0) {
+                        correctDesc = `Exactly on the ${hour}`;
+                    } else if (mins > 0 && mins < 20) {
+                        correctDesc = `A little bit past the ${hour}, heading towards ${nextHour}`;
+                    } else if (mins >= 28 && mins <= 32) {
+                        correctDesc = `Exactly halfway between ${hour} and ${nextHour}`;
+                    } else {
+                        correctDesc = `Almost at the ${nextHour} — but the hour is still ${hour}!`;
+                    }
+                    correctAnswer = correctDesc;
+
+                    const allPossible = [
+                        `Exactly on the ${hour}`,
+                        `A little bit past the ${hour}, heading towards ${nextHour}`,
+                        `Exactly halfway between ${hour} and ${nextHour}`,
+                        `Almost at the ${nextHour} — but the hour is still ${hour}!`,
+                        `Exactly on the ${nextHour}`,
+                        `Exactly halfway between ${nextHour} and ${nextHour === 12 ? 1 : nextHour + 1}`
+                    ];
+                    let distractors = shuffle(allPossible.filter(o => o !== correctDesc));
+                    while (distractors.length < 3) distractors.push(distractors[0]); // safety pad (shouldn't happen)
+                    options = shuffle([correctDesc, distractors[0], distractors[1], distractors[2]]);
+                    hint = "Remember, Rainbow Float 🌈 floats slowly from one number to the next. At 00 sharp she points right at the number, and near 50 she is almost touching the next number — but the hour doesn't change until Rainbow Zoom completes the full lap!";
+                } else {
+                    // Linguistic translation time translation questions
+                    // If in Tutorial Mode (first 2 questions), keep it simple with quarters (15, 30, 45).
+                    // Otherwise, provide 5-minute multiples and a few trickier single minutes (12, 23, 37, 48)!
+                    const mins = isTutorialMode
+                        ? [15, 30, 45][Math.floor(Math.random() * 3)]
+                        : [5, 10, 12, 15, 20, 23, 25, 30, 35, 37, 40, 45, 48, 50, 55][Math.floor(Math.random() * 15)];
+                    setupH = hour;
+                    setupM = mins;
+
+                    // Hard times (not o'clock/quarter/half) in non-tutorial mode → fill-in-the-blank
+                    // isTutorialMode (Phase 0) always picks from [15,30,45] so isHardTime is always false there
+                    const isHardTime = !isTutorialMode && mins !== 0 && mins !== 15 && mins !== 30 && mins !== 45;
+                    const askPhrase = !isTutorialMode && Math.random() > 0.5;
+
+                    if (askPhrase && isHardTime) {
+                        // Fill-in-the-blank: child types the numbers into a sentence template
+                        const isPast = mins < 30;
+                        const blankMins = isPast ? mins : 60 - mins;
+                        const blankHour = isPast ? hour : nextHour;
+                        qText = `Fill in the blanks to say <strong>${hour}:${mins < 10 ? '0' + mins : mins}</strong> the correct way:`;
+                        correctAnswer = `${blankMins}|${blankHour}`; // used for hint display only
+                        options = []; // no multiple-choice options
+                        // Stash fill-blank data in a local; merged into activeQuestion below
+                        window._fibNext = {
+                            isPast,
+                            blankMins,
+                            blankHour,
+                            displayH: hour,
+                            displayM: mins
+                        };
+                    } else if (askPhrase) {
+                        // Easy time (quarter/half) → multiple-choice as before
+                        qText = `How do we say the digital time <strong>${hour}:${mins < 10 ? '0' + mins : mins}</strong> using our standard "Past" or "To" zone rules?`;
+
+                        let correctPhrase = "";
+                        if (mins === 15) correctPhrase = `Quarter past ${hour}`;
+                        else if (mins === 30) correctPhrase = `Half past ${hour}`;
+                        else if (mins === 45) correctPhrase = `Quarter to ${nextHour}`;
+                        else if (mins < 30) correctPhrase = `${mins} minutes past ${hour}`;
+                        else correctPhrase = `${60 - mins} minutes to ${nextHour}`;
+
+                        correctAnswer = correctPhrase;
+
+                        const dist1 = mins < 30 ? `${mins} minutes to ${nextHour}` : `${60 - mins} minutes past ${hour}`;
+                        const dist2 = mins < 30 ? `${60 - mins} minutes past ${hour}` : `${60 - mins} minutes to ${hour}`;
+                        const dist3 = `${hour} minutes past ${mins}`;
+                        const dist4 = `Quarter ${mins < 30 ? 'to' : 'past'} ${hour}`;
+                        const dist5 = `${mins < 30 ? mins : 60-mins} minutes ${mins < 30 ? 'past' : 'to'} ${hour}`;
+
+                        const rawList = [dist1, dist2, dist3, dist4, dist5];
+                        let uniqueDists = shuffle([...new Set(rawList.filter(d => d !== correctPhrase))]);
+                        while (uniqueDists.length < 3) uniqueDists.push(`${mins} minutes past ${nextHour}`);
+                        options = shuffle([correctPhrase, uniqueDists[0], uniqueDists[1], uniqueDists[2]]);
+                    } else {
+                        // Give the translation phrase, ask for the digital time
+                        let phrase = "";
+                        if (mins === 15) phrase = `Quarter past ${hour}`;
+                        else if (mins === 30) phrase = `Half past ${hour}`;
+                        else if (mins === 45) phrase = `Quarter to ${nextHour}`;
+                        else if (mins < 30) phrase = `${mins} minutes past ${hour}`;
+                        else phrase = `${60 - mins} minutes to ${nextHour}`;
+
+                        const characters = [
+                            'Hairy Maclary',
+                            'Slinky Malinki',
+                            'Bitzer Maloney',
+                            'Hercules Morse',
+                            'Muffin McLay',
+                            'Bottomley Potts',
+                            'Schnitzel von Krumm',
+                            'Rainbow Doggy',
+                            'Kind Dog'
+                        ];
+                        const charName = characters[Math.floor(Math.random() * characters.length)];
+                        qText = `<strong>${charName}</strong> says: "It's <strong>${phrase}</strong>." What will the digital display show?`;
+                        qText = injectInlineIcons(qText);
+                        
+                        const correctDigital = `${hour}:${mins < 10 ? '0' + mins : mins}`;
+                        correctAnswer = correctDigital;
+
+                        const d1 = `${nextHour}:${mins < 10 ? '0' + mins : mins}`;
+                        const d2 = `${hour}:${(60-mins) < 10 ? '0' + (60-mins) : (60-mins)}`;
+                        const d3 = `${nextHour}:${(60-mins) < 10 ? '0' + (60-mins) : (60-mins)}`;
+                        const d4 = `${mins < 1 ? 12 : mins > 12 ? mins % 12 : mins}:${hour < 10 ? '0' + hour : hour}`;
+                        
+                        const rawDists = [d1, d2, d3, d4];
+                        let uniqueDigitalDists = shuffle([...new Set(rawDists.filter(d => d !== correctDigital))]);
+                        while (uniqueDigitalDists.length < 3) uniqueDigitalDists.push(`${hour}:${mins < 10 ? '0'+(mins+1) : mins+1}`);
+                        options = shuffle([correctDigital, uniqueDigitalDists[0], uniqueDigitalDists[1], uniqueDigitalDists[2]]);
+                    }
+                    hint = "Remember: the green side is the PAST zone (minutes 1 to 30), and the blue side is the TO zone (minutes 31 to 59). In the 'to' zone, we countdown to the next upcoming hour!";
+                }
+            }
+            else if (phase === 2) {
+                // Phase 2: Tactile Drag Match - Describe target time correctly first
+                const mins = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55][Math.floor(Math.random() * 11)];
+                setupH = hour;
+                setupM = mins;
+
+                const phraseWord = mins === 15 ? "quarter past" : mins === 30 ? "half past" : mins === 45 ? "quarter to" : mins < 30 ? `${mins} past` : `${60 - mins} to`;
+                const promptHour = mins < 30 ? hour : nextHour;
+
+                qText = `🛠️ <strong>Set the Clock! 🌈</strong> Can you move the rainbow hands to show <strong>${phraseWord} ${promptHour}</strong>?`;
+                correctAnswer = `${hour}:${mins < 10 ? '0' + mins : mins}`;
+                hint = "🐾 Move the hands to show the time on the clock — then check your answer! Watch the green and blue pizza slices on the clock face to track your zone.";
+            }
+            else {
+                // Phase 3: Rainbow Quest stories — data-driven, 3 tiers of difficulty
+                // Tier 1: within the hour (minutes only, no crossover)
+                // Tier 2: crossing the hour boundary
+                // Tier 3: full hours + minutes
+                const p3tier = state.phaseProgress < 3 ? 1 : state.phaseProgress < 6 ? 2 : 3;
+                const pad = n => n < 10 ? '0' + n : n;
+
+                // ── STORY BANK ──
+                // Each story: { dir:'fwd'|'back', title, fn(startH,startM,dur1,dur2) → {qText,hint} }
+                // dur1 = main duration minutes, dur2 = optional second step minutes (for back stories)
+                // Tier durations injected below before calling fn
+                const STORIES = [
+                  // ── FORWARD stories ──
+                  { dir:'fwd', title:'🐕 Hairy Maclary\'s Trot',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Hairy Maclary</strong> from Donaldson's Dairy went out for a walk. He started trotting down the pavement at <strong>${sH}:${pad(sM)}</strong> and sniffed all the gates along the lane for <strong>${d} minutes</strong>. What time did he reach the corner shop?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+
+                  { dir:'fwd', title:'💧 Hairy Maclary\'s Splash',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Hairy Maclary</strong> stopped by a garden tap at <strong>${sH}:${pad(sM)}</strong>. He lapped up refreshing drips of cool water for <strong>${d} minutes</strong>. What time did he wander off?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+
+                  { dir:'fwd', title:'🐈‍⬛ Slinky Malinki\'s Raid',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Slinky Malinki</strong> (who was blacker than black) decided to go on a cheeky night-time adventure. He slipped out of the window at <strong>${sH}:${pad(sM)}</strong> and hunted for glittering treasures for <strong>${d} minutes</strong>. What time did he sneak back inside?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+
+                  { dir:'fwd', title:'🐎 Hercules Morse\'s Snack',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Hercules Morse</strong> (who was as big as a horse) found a massive prize bone in the yard. He started crunching it at <strong>${sH}:${pad(sM)}</strong> and gnawed away for <strong>${d} minutes</strong> before burying it. What time did he finish?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+
+                  { dir:'fwd', title:'🐾 Bitzer Maloney\'s Sun-Bake',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Bitzer Maloney</strong> (all skinny and bony) found a beautifully warm patch of sunshine on the grass. He lay down for a cozy rest at <strong>${sH}:${pad(sM)}</strong> and snoozed for <strong>${d} minutes</strong>. What time did the sun go behind a cloud?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+
+                  { dir:'fwd', title:'💧 Bitzer Maloney\'s Cool Slurp',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Bitzer Maloney</strong> (all skinny and bony) was very thirsty after trotting in the heat. He ran to his water bowl at <strong>${sH}:${pad(sM)}</strong> and slurped cool water for <strong>${d} minutes</strong>. What time did he finish drinking?`, hint:`Add ${d} minutes.` }) },
+
+                  { dir:'fwd', title:'🧺 Muffin McLay\'s Grooming',
+                    fn:(sH,sM,d,d2)=>({ qText:`<strong>Muffin McLay</strong> (like a bundle of hay) looked incredibly messy after running through the bushes. His grooming session started at <strong>${sH}:${pad(sM)}</strong>: it took <strong>${d} minutes</strong> to brush out his tangled fur and another <strong>${d2} minutes</strong> to pick out the stray leaves. What time was he neat and tidy?`, hint:`Add ${d + d2} minutes to ${pad(sM)}.` }) },
+
+                  { dir:'fwd', title:'💧 Muffin McLay\'s Puddle Drink',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Muffin McLay</strong> (like a bundle of hay) got very hot chasing ducks. He found a puddle of clean rain water at <strong>${sH}:${pad(sM)}</strong> and drank happily for <strong>${d} minutes</strong>. When did he finish his drink?`, hint:`Add ${d} minutes.` }) },
+
+                  { dir:'fwd', title:'🤫 Schnitzel\'s Low-Tum Hideout',
+                    fn:(sH,sM,d,d2)=>({ qText:`<strong>Schnitzel von Krumm</strong> (with a very low tum) decided to hide under the garden sofa at <strong>${sH}:${pad(sM)}</strong>. He spent <strong>${d} minutes</strong> dragging his favorite squeaky toy under the frame and another <strong>${d2} minutes</strong> settling down for a quiet nap. What time was he fully asleep?`, hint:`Add ${d + d2} minutes to ${pad(sM)}.` }) },
+
+                  { dir:'fwd', title:'⛲ Bottomley Potts\' Garden Spray',
+                    fn:(sH,sM,d,d2)=>({ qText:`<strong>Bottomley Potts</strong> (all covered in spots) spotted a splashing sprinkler in the yard at <strong>${sH}:${pad(sM)}</strong>. He chased the water droplets for <strong>${d} minutes</strong> and stood under the refreshing spray for another <strong>${d2} minutes</strong>. What time did the tap turn off?`, hint:`Add ${d + d2} minutes.` }) },
+
+                  // ── BACKWARD stories ──
+                  { dir:'back', title:'🐈 Scarface Claw Escape',
+                    fn:(eH,eM,d,d2)=>({ qText:`The dogs spotted the toughest tom in town, <strong>Scarface Claw</strong>, up on the wall at <strong>${eH}:${pad(eM)}</strong>! To make sure they didn't get a fright, it took them <strong>${d} minutes</strong> to scurry backwards down the lane and another <strong>${d2} minutes</strong> to run all the way back into the safety of Donaldson's Dairy. When did they first spot the cat?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+
+                  { dir:'back', title:'🦴 Bottomley Potts\' Dinner Gate',
+                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Bottomley Potts</strong> (all covered in spots) needs to be sitting by his dinner bowl at <strong>${eH}:${pad(eM)}</strong>. It takes him <strong>${d} minutes</strong> to dig his way out of the vegetable patch and another <strong>${d2} minutes</strong> to gallop up the back deck steps. When does he need to stop digging?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+
+                  { dir:'fwd', title:'🌧️ Rainbow Doggy\'s Nap',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Rainbow Doggy</strong> fell asleep at <strong>${sH}:${pad(sM)}</strong> and napped for <strong>${d} minutes</strong>. What time did she wake up?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🛋️ Couch Potato Pup',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Bitzer Maloney</strong> curled up on the rug at <strong>${sH}:${pad(sM)}</strong> and snoozed for <strong>${d} minutes</strong>. What time did his eyes pop open?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'☀️ Sunny Spot Lounge',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Hairy Maclary</strong> followed the warm sunshine on the floor at <strong>${sH}:${pad(sM)}</strong> and rested for <strong>${d} minutes</strong>. What time did the sun move away?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🌳 Tree Shade Slumber',
+                    fn:(sH,sM,d)=>({ qText:`After chasing leaves, <strong>Muffin McLay</strong> flopped under the big oak tree at <strong>${sH}:${pad(sM)}</strong> and slept for <strong>${d} minutes</strong>. What time did he get up?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🐈‍⬛ Heist from Scarface Claw',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Slinky Malinki</strong> sneaks onto the brick wall at <strong>${sH}:${pad(sM)}</strong> and swipes a glistening gold collar tag right under the nose of <strong>Scarface Claw</strong>! He scrambles away and hides in a thick hedge for <strong>${d} minutes</strong> to inspect his loot. What time does he creep home?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🎾 Fetch at the Field',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Rainbow Doggy</strong> started her fetch game at <strong>${sH}:${pad(sM)}</strong> and played for <strong>${d} minutes</strong>. When did she finish?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🐿️ Squirrel Watch',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Hercules Morse</strong> took his post at the fence to watch the backyard squirrels at <strong>${sH}:${pad(sM)}</strong> and stared for <strong>${d} minutes</strong>. When did he stand down?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🪁 Park Dash',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Schnitzel von Krumm</strong> started chasing kites at the park at <strong>${sH}:${pad(sM)}</strong> and ran for <strong>${d} minutes</strong>. What time did he stop to pant?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'⚽ Friendly Football',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Bottomley Potts</strong> started nudging a giant yellow ball around the yard at <strong>${sH}:${pad(sM)}</strong> and played for <strong>${d} minutes</strong>. When did he tire out?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🥏 Disc Catching',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Rainbow Doggy</strong> practised her aerial catches starting at <strong>${sH}:${pad(sM)}</strong> and leaped for <strong>${d} minutes</strong>. What time did practice end?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🏖️ Beach Digging',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Hairy Maclary</strong> started digging for sand crabs at <strong>${sH}:${pad(sM)}</strong> and dug for <strong>${d} minutes</strong>. What time did he stop?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🦋 Butterfly Chase',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Bitzer Maloney</strong> followed a blue butterfly across the meadow starting at <strong>${sH}:${pad(sM)}</strong> for <strong>${d} minutes</strong>. When did the butterfly fly away?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🍂 Autumn Leaf Jumping',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Muffin McLay</strong> started leaping into crunchy leaf piles at <strong>${sH}:${pad(sM)}</strong> and jumped for <strong>${d} minutes</strong>. What time was his fur covered in leaves?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🏃 Tug-of-War Match',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Schnitzel von Krumm</strong> started pulling his favourite rope toy at <strong>${sH}:${pad(sM)}</strong> and pulled for <strong>${d} minutes</strong>. What time did he win the rope?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🪵 Stick Carrying',
+                    fn:(sH,sM,d)=>({ qText:`<strong>Hercules Morse</strong> found a massive stick at <strong>${sH}:${pad(sM)}</strong> and proudly marched down the path for <strong>${d} minutes</strong>. What time did he finally drop it?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🛁 Bath Time Chaos',
+                    fn:(sH,sM,d,d2)=>({ qText:`Bath starts at <strong>${sH}:${pad(sM)}</strong> — <strong>${d} minutes</strong> for <strong>Bottomley Potts</strong> to fill the tub and <strong>${d2} minutes</strong> for the soapy scrub. What time is he done?`, hint:`Add ${d + d2} minutes total to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'✂️ Fur Fluffing',
+                    fn:(sH,sM,d,d2)=>({ qText:`The groomer started at <strong>${sH}:${pad(sM)}</strong> — <strong>${d} minutes</strong> brushing <strong>Muffin McLay</strong> and <strong>${d2} minutes</strong> clipping. What time was he perfectly fluffy?`, hint:`Add ${d + d2} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🐾 Claw Clipping',
+                    fn:(sH,sM,d,d2)=>({ qText:`Nail trim starting at <strong>${sH}:${pad(sM)}</strong>: <strong>${d} minutes</strong> for front paws, <strong>${d2} minutes</strong> for back paws. What time did she get her treat?`, hint:`Add ${d + d2} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🚿 Muddy Paw Rinse',
+                    fn:(sH,sM,d,d2)=>({ qText:`Paw wash started at <strong>${sH}:${pad(sM)}</strong>: <strong>${d} minutes</strong> to hose off mud, <strong>${d2} minutes</strong> to towel dry. What time were the rugs safe?`, hint:`Add ${d + d2} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🍖 Big Bone Crunch',
+                    fn:(sH,sM,d)=>({ qText:`Rainbow Doggy started chewing her giant bone at <strong>${sH}:${pad(sM)}</strong> and gnawed for <strong>${d} minutes</strong>. What time did she bury the rest?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'👅 Peanut Butter Puzzle',
+                    fn:(sH,sM,d,d2)=>({ qText:`A tasty toy was stuffed at <strong>${sH}:${pad(sM)}</strong>: <strong>${d} minutes</strong> to lick the top, <strong>${d2} minutes</strong> to clear the bottom. What time was it clean?`, hint:`Add ${d + d2} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🍉 Watermelon Snack',
+                    fn:(sH,sM,d)=>({ qText:`She started eating juicy fruit cubes at <strong>${sH}:${pad(sM)}</strong> and nibbled for <strong>${d} minutes</strong>. What time did she finish?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'📮 Postman Alert',
+                    fn:(sH,sM,d)=>({ qText:`She started barking at the mail van at <strong>${sH}:${pad(sM)}</strong> and kept watch for <strong>${d} minutes</strong>. What time did the van drive away?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🦆 Duck Parade',
+                    fn:(sH,sM,d)=>({ qText:`She watched the baby ducks line up at <strong>${sH}:${pad(sM)}</strong> and observed for <strong>${d} minutes</strong>. What time did the ducks swim away?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🐾 Hello Neighbour',
+                    fn:(sH,sM,d)=>({ qText:`She stopped at the fence to greet the fluffy dog next door at <strong>${sH}:${pad(sM)}</strong> and wagged for <strong>${d} minutes</strong>. What time did they say goodbye?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🕵️ Blanket Burrowing',
+                    fn:(sH,sM,d)=>({ qText:`She started tunnelling under the heavy winter blankets at <strong>${sH}:${pad(sM)}</strong> and wiggled for <strong>${d} minutes</strong>. What time did her nose poke out?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🐜 Ant Watching',
+                    fn:(sH,sM,d)=>({ qText:`She discovered an ant parade on the patio at <strong>${sH}:${pad(sM)}</strong> and watched them march for <strong>${d} minutes</strong>. What time did she lose interest?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🪟 Window Birdwatch',
+                    fn:(sH,sM,d)=>({ qText:`She took her spot on the sofa at <strong>${sH}:${pad(sM)}</strong> to watch a family of blue jays, staying totally still for <strong>${d} minutes</strong>. What time did she jump down?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'💨 Wind Chasing',
+                    fn:(sH,sM,d)=>({ qText:`Big gusts started blowing leaves around at <strong>${sH}:${pad(sM)}</strong>. She chased them for <strong>${d} minutes</strong>. What time did the wind stop?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🧸 Toy De-Squeaking',
+                    fn:(sH,sM,d)=>({ qText:`She started working on extracting the squeaker from her plush monkey at <strong>${sH}:${pad(sM)}</strong> and chewed for <strong>${d} minutes</strong>. What time did the squeaking stop?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'💧 Sprinkler Snapping',
+                    fn:(sH,sM,d)=>({ qText:`The lawn sprinkler popped up at <strong>${sH}:${pad(sM)}</strong>. She spent <strong>${d} minutes</strong> trying to bite the water drops. What time did it turn off?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🐕 Tail Chasing Circus',
+                    fn:(sH,sM,d)=>({ qText:`She spotted her own tail at <strong>${sH}:${pad(sM)}</strong> and spun in circles for <strong>${d} minutes</strong>. What time did she get too dizzy to stand?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🧦 Sock Retrieval',
+                    fn:(sH,sM,d)=>({ qText:`She sneaked a fuzzy purple sock from the laundry at <strong>${sH}:${pad(sM)}</strong> and carried it as a trophy for <strong>${d} minutes</strong>. What time did she trade it for a biscuit?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🦎 Lizard Standoff',
+                    fn:(sH,sM,d)=>({ qText:`She spotted a tiny green lizard on a warm brick at <strong>${sH}:${pad(sM)}</strong> and stared at it for <strong>${d} minutes</strong>. What time did the lizard zip away?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🐾 Shadow Pouncing',
+                    fn:(sH,sM,d)=>({ qText:`The afternoon sun cast funny ear shadows on the wall at <strong>${sH}:${pad(sM)}</strong>. She pounced at them for <strong>${d} minutes</strong>. What time did the clouds cover the sun?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🎾 Tennis Ball Tennis',
+                    fn:(sH,sM,d)=>({ qText:`She started bouncing a tennis ball off the garage wall at <strong>${sH}:${pad(sM)}</strong> and caught it for <strong>${d} minutes</strong>. What time did the ball bounce into a bush?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🍦 Yogurt Tub Cleanout',
+                    fn:(sH,sM,d)=>({ qText:`She was given an empty yogurt tub to lick clean at <strong>${sH}:${pad(sM)}</strong> and worked for <strong>${d} minutes</strong>. What time was it sparkling clean?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+                  { dir:'fwd', title:'🌾 Tall Grass Safari',
+                    fn:(sH,sM,d)=>({ qText:`She entered the long un-mowed grass field at <strong>${sH}:${pad(sM)}</strong> and bounded through it for <strong>${d} minutes</strong>. What time did she pop out onto the path?`, hint:`Add ${d} minutes to ${pad(sM)}.` }) },
+
+                  // ── BACKWARD stories ──
+                  { dir:'back', title:'🎂 Kind Dog\'s Birthday',
+                    fn:(eH,eM,d,d2)=>({ qText:`The birthday party for <strong>Kind Dog</strong> starts at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Hairy Maclary</strong> to walk there and <strong>${d2} minutes</strong> to wrap the present. When do they start preparing?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🚂 Train to Grandma\'s',
+                    fn:(eH,eM,d,d2)=>({ qText:`The train to Grandma's leaves at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Muffin McLay</strong> to walk to the station and <strong>${d2} minutes</strong> to buy a ticket. When does he leave the house?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🌳 Forest Trek',
+                    fn:(eH,eM,d,d2)=>({ qText:`The trail walk meets at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Hercules Morse</strong> to travel to the forest and <strong>${d2} minutes</strong> to lace up his hiking collar. When does he start driving?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🎪 Pet Carnival',
+                    fn:(eH,eM,d,d2)=>({ qText:`The doggy agility show for <strong>Bitzer Maloney</strong> begins at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to travel and <strong>${d2} minutes</strong> to line up for entry. When do they hit the road?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🍦 Ice Cream Truck Meet',
+                    fn:(eH,eM,d,d2)=>({ qText:`The ice cream truck arrives at the park at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Schnitzel von Krumm</strong> to stroll there and <strong>${d2} minutes</strong> to count his coins. When does he start walking?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🐕 Puppy Playdate',
+                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Kind Dog</strong> arrives at the park gate at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Rainbow Doggy</strong> to trot down the street and <strong>${d2} minutes</strong> to find the tennis ball to bring. When does she start getting ready?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🌊 Splash Pool Party',
+                    fn:(eH,eM,d,d2)=>({ qText:`The backyard sprinklers turn on at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Bottomley Potts</strong> to stretch out the hose and <strong>${d2} minutes</strong> to put on his sun bandana. When does he start setting up?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🐈‍⬛ Midnight Loot Clutter',
+                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Slinky Malinki</strong> wants to finish piling his stolen treasures in the closet by <strong>${eH}:${pad(eM)}</strong>. It takes him <strong>${d} minutes</strong> to swipe a woolly slipper and <strong>${d2} minutes</strong> to carry home a shiny key ring. When does he start his raid?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🏫 School Gate Greeting',
+                    fn:(eH,eM,d,d2)=>({ qText:`The kids walk out of school at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Hairy Maclary</strong> to walk to the crosswalk and <strong>${d2} minutes</strong> to wag his tail for them. When does he step out the door?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🍽️ The Grand Dinner',
+                    fn:(eH,eM,d,d2)=>({ qText:`Dinner is served for <strong>Hercules Morse</strong> at <strong>${eH}:${pad(eM)}</strong> sharp. It takes <strong>${d} minutes</strong> to mix the kibble with gravy and <strong>${d2} minutes</strong> for the bowl to cool down. When does he start cooking?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🍳 Breakfast Crunch',
+                    fn:(eH,eM,d,d2)=>({ qText:`Breakfast for <strong>Schnitzel von Krumm</strong> is at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to wash the bowls and <strong>${d2} minutes</strong> to open the new dog food bag. When does he open the pantry?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🥣 Frozen Yogurt Chew',
+                    fn:(eH,eM,d,d2)=>({ qText:`The frosty treat for <strong>Muffin McLay</strong> is ready at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to freeze the yogurt and <strong>${d2} minutes</strong> to blend the strawberries. When does his owner put it in the freezer?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'⛺ Stargazing Camp',
+                    fn:(eH,eM,d,d2)=>({ qText:`We want to be inside the backyard tent with <strong>Rainbow Doggy</strong> by <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to pump up the pillows and <strong>${d2} minutes</strong> to pitch the poles. When do we start building?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🎨 Doggy Paw-Painting',
+                    fn:(eH,eM,d,d2)=>({ qText:`The art canvas for <strong>Bitzer Maloney</strong> needs to be ready by <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to lay down newspaper and <strong>${d2} minutes</strong> to pour out the rainbow paints. When does he start?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🫧 Bubble Chase',
+                    fn:(eH,eM,d,d2)=>({ qText:`The giant bubble machine starts for <strong>Hairy Maclary</strong> at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to find the bubble solution and <strong>${d2} minutes</strong> to fill the tray. When does he start searching?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🌻 Sunflower Planting',
+                    fn:(eH,eM,d,d2)=>({ qText:`Sunflower seeds need to be in the soil by <strong>${eH}:${pad(eM)}</strong> before <strong>Bottomley Potts</strong> digs them up. It takes <strong>${d} minutes</strong> to dig the holes and <strong>${d2} minutes</strong> to mix in compost. When do we grab the trowel?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'📸 Doggy Photoshoot',
+                    fn:(eH,eM,d,d2)=>({ qText:`The family photo with <strong>Rainbow Doggy</strong> is at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to brush her coat and <strong>${d2} minutes</strong> to tie her bow tie. When should she sit at the grooming station?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🚗 Drive to the Dog Park',
+                    fn:(eH,eM,d,d2)=>({ qText:`The park gates close at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to drive <strong>Hairy Maclary</strong> across town and <strong>${d2} minutes</strong> to pack his water bowl and leash. When do they back out of the driveway?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🧑‍⚕️ Vet Checkup',
+                    fn:(eH,eM,d,d2)=>({ qText:`The vet appointment for <strong>Bitzer Maloney</strong> is at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to ride the bus and <strong>${d2} minutes</strong> to check in and weigh him. When do they walk to the bus stop?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🎈 Birthday Balloon Party',
+                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Kind Dog</strong> arrives for his party at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> for <strong>Muffin McLay</strong> to blow up the balloons and <strong>${d2} minutes</strong> to scatter them across the rug. When does he start pumping?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🍵 Doggy Tea Party',
+                    fn:(eH,eM,d,d2)=>({ qText:`The chamomile bowls are served for <strong>Hercules Morse</strong> at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to steep the herbs and <strong>${d2} minutes</strong> to chill in the fridge. When do we boil the kettle?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🪁 Kite Flying Match',
+                    fn:(eH,eM,d,d2)=>({ qText:`The perfect wind gusts arrive for <strong>Schnitzel von Krumm</strong> at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to untangle the kite strings and <strong>${d2} minutes</strong> to walk up the windy hill. When does he start?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🥕 Homemade Biscuit Baking',
+                    fn:(eH,eM,d,d2)=>({ qText:`The crunch test is at <strong>${eH}:${pad(eM)}</strong> when biscuits come out of the oven for <strong>Hairy Maclary</strong>. It takes <strong>${d} minutes</strong> to bake and <strong>${d2} minutes</strong> to roll out and cut the dough. When do they mix the oats?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'🐈‍⬛ Escape from Scarface Claw',
+                    fn:(eH,eM,d,d2)=>({ qText:`<strong>Slinky Malinki</strong> must reach his garden shed hiding spot by <strong>${eH}:${pad(eM)}</strong>. He spends <strong>${d} minutes</strong> quietly swiping a squeaky mouse toy from <strong>Scarface Claw</strong>'s sleeping basket, and another <strong>${d2} minutes</strong> sprinting away as Scarface Claw chases him! When did Slinky Malinki first sneak in?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                  { dir:'back', title:'📸 Calendar Model Shoot',
+                    fn:(eH,eM,d,d2)=>({ qText:`The "Dog of the Month" photo clicks for <strong>Bottomley Potts</strong> at <strong>${eH}:${pad(eM)}</strong>. It takes <strong>${d} minutes</strong> to brush his ear fur and <strong>${d2} minutes</strong> to position him on the velvet cushion. When does he start brushing?`, hint:`Count backwards ${d + d2} minutes from ${eH}:${pad(eM)}.` }) },
+                ];
+
+                // Pick a random story
+                const story = STORIES[Math.floor(Math.random() * STORIES.length)];
+
+                // Tier-appropriate durations
+                const t1Minspool = [5,10,15];
+                const t2Minspool = [20,25,30];
+                const t3Minspool = [30,40,45];
+                const pickMins = tier => (tier===1?t1Minspool:tier===2?t2Minspool:t3Minspool)[Math.floor(Math.random()*3)];
+                const d1 = pickMins(p3tier);
+                const d2 = p3tier === 1 ? [5,10][Math.floor(Math.random()*2)] : pickMins(p3tier===3?2:p3tier);
+
+                // For Tier 3 forward stories, sometimes add a whole hour
+                const extraH = (p3tier === 3 && story.dir === 'fwd' && Math.random() < 0.5) ? 1 : 0;
+
+                // Build start/end time
+                const baseH = Math.floor(Math.random() * 10) + 1; // 1–10
+                const baseM = p3tier === 1 ? [0,15,30,45][Math.floor(Math.random()*4)]
+                                           : [0,10,15,20,30,40,45][Math.floor(Math.random()*7)];
+                const actualD2 = (story.fn.length === 4) ? d2 : 0;
+                const totalDurMins = d1 + actualD2 + extraH * 60;
+
+                if (story.dir === 'fwd') {
+                    // startH:startM → add totalDurMins → answer
+                    const totalMins = baseH * 60 + baseM + totalDurMins;
+                    setupH = Math.floor(totalMins / 60) % 12 || 12;
+                    setupM = totalMins % 60;
+                    const durText = extraH > 0
+                        ? `${extraH} hour and ${d1 + actualD2} minutes`
+                        : `${totalDurMins} minutes`;
+                    const built = story.fn(baseH, baseM, d1, d2);
+                    qText = `<strong>${story.title}</strong><br><br>${built.qText}<br><br><em>Drag the hands to your answer!</em>`;
+                    qText = injectInlineIcons(qText);
+                    correctAnswer = `${setupH}:${pad(setupM)}`;
+                    hint = built.hint + ((d1 + actualD2 + baseM) >= 60 && extraH === 0 ? ' The minutes go over 60 — carry 1 hour!' : '');
+                } else {
+                    // endH:endM → subtract totalDurMins → answer
+                    // Make sure end time is large enough to subtract without going negative
+                    const safeEndH = baseH + (baseM < totalDurMins % 60 ? 1 : 0) + Math.floor(totalDurMins / 60) + 1;
+                    const endH = Math.min(safeEndH, 11);
+                    const endM = p3tier === 1 ? [30,45][Math.floor(Math.random()*2)]
+                                             : [0,15,20,30,45][Math.floor(Math.random()*5)];
+                    const totalMins = endH * 60 + endM - totalDurMins;
+                    setupH = Math.floor(totalMins / 60);
+                    setupM = totalMins % 60;
+                    if (setupH <= 0) setupH += 12;
+                    if (setupH > 12) setupH = setupH % 12 || 12;
+                    const built = story.fn(endH, endM, d1, d2);
+                    qText = `<strong>${story.title}</strong><br><br>${built.qText}<br><br><em>Drag the hands to your answer!</em>`;
+                    qText = injectInlineIcons(qText);
+                    correctAnswer = `${setupH}:${pad(setupM)}`;
+                    hint = built.hint;
+                }
+
+            }
+
+            state.activeQuestion = {
+                text: qText,
+                correct: correctAnswer,
+                setupH: setupH,
+                setupM: setupM,
+                hint: hint,
+                fillBlank: window._fibNext || null
+            };
+            window._fibNext = null;
+
+            const choicesContainer = document.getElementById('quizChoices');
+            choicesContainer.innerHTML = '';
+
+            // Setup Challenge visual layout based on Phase
+            if (phase === 0) {
+                // Phase 0: Explore & Learn (Tutorial Mode) - Keep decoder unblurred!
+                revealDecoderReadouts();
+                
+                // Show clock in the correct target position
+                hourSlider.value = setupH;
+                minuteSlider.value = setupM;
+                updateClockFaceVisuals();
+
+                // Shuffle options
+                options = shuffle(options);
+                options.forEach(opt => {
+                    const btn = document.createElement('button');
+                    btn.className = 'choice-btn';
+                    btn.innerHTML = `<span>${opt}</span>`;
+                    btn.onclick = () => submitAnswer(opt, btn);
+                    choicesContainer.appendChild(btn);
+                });
+
+                // Hide CTA footer next button initially in Phase 0
+                nextBtn.style.display = 'none';
+            }
+            else if (phase === 1) {
+                // Phase 1: Q&A - ALWAYS blur decoder readouts to prevent cheating!
+                blurDecoderReadouts();
+
+                // Show clock in the correct target position
+                hourSlider.value = setupH;
+                minuteSlider.value = setupM;
+                updateClockFaceVisuals();
+
+                if (state.activeQuestion.fillBlank) {
+                    // Fill-in-the-blank sentence template for hard times
+                    const fb = state.activeQuestion.fillBlank;
+                    const zoneClass = fb.isPast ? 'zone-past' : 'zone-to';
+                    const zoneWord = fb.isPast ? 'past' : 'to';
+
+                    const wrap = document.createElement('div');
+                    wrap.className = 'fib-wrap';
+                    wrap.innerHTML = `
+                        <div class="fib-sentence">
+                            It is
+                            <input class="fib-input" id="fibMins" type="number" min="1" max="59" placeholder="?" autocomplete="off">
+                            minutes
+                            <span class="${zoneClass}">${zoneWord}</span>
+                            <input class="fib-input" id="fibHour" type="number" min="1" max="12" placeholder="?" autocomplete="off">
+                            .
+                        </div>
+                        <button class="fib-check-btn" onclick="checkFillBlank()">✅ Check my answer!</button>`;
+                    choicesContainer.appendChild(wrap);
+
+                    // Submit on Enter key from either input
+                    setTimeout(() => {
+                        const m = document.getElementById('fibMins');
+                        const h = document.getElementById('fibHour');
+                        if (m) m.focus();
+                        [m, h].forEach(el => { if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') checkFillBlank(); }); });
+                    }, 80);
+                } else {
+                    // Standard multiple-choice
+                    options = shuffle(options);
+                    options.forEach(opt => {
+                        const btn = document.createElement('button');
+                        btn.className = 'choice-btn';
+                        btn.innerHTML = `<span>${opt}</span>`;
+                        btn.onclick = () => submitAnswer(opt, btn);
+                        choicesContainer.appendChild(btn);
+                    });
+                }
+
+                // Hide CTA footer next button initially in Phase 1
+                nextBtn.style.display = 'none';
+            }
+            else if (phase === 2) {
+                // Phase 2: Set Hands (Describe correctly first, randomize hands)
+                revealDecoderReadouts();
+
+                // Pre-configure the sliders to the correct target time first so the statements update correctly
+                hourSlider.value = setupH;
+                minuteSlider.value = setupM;
+                updateClockFaceVisuals();
+
+                // Now set the visual sliders and hands to a random INCORRECT starting position
+                let randomH = setupH;
+                let randomM = setupM;
+                while (randomH === setupH && randomM === setupM) {
+                    randomH = Math.floor(Math.random() * 12) + 1;
+                    randomM = Math.floor(Math.random() * 12) * 5;
+                }
+                setTimeout(() => {
+                    hourSlider.value = randomH;
+                    minuteSlider.value = randomM;
+                    updateClockFaceVisuals();
+                }, 50); // Small timeout so values stabilize
+
+                // Render Drag matching verify buttons
+                const wrapper = document.createElement('div');
+                wrapper.style.display = 'flex';
+                wrapper.style.flexDirection = 'column';
+                wrapper.style.width = '100%';
+                wrapper.style.gridColumn = '1 / -1';
+                
+                wrapper.innerHTML = `
+                    <button class="primary-btn" onclick="verifyDragMatch()" style="width:100%; justify-content:center; font-size:1.15rem; padding:14px; margin-bottom:10px;">✨ Check My Hands!</button>
+                    <button class="tool-btn" onclick="animateCountUp()" style="width:100%; justify-content:center; padding:12px; margin-bottom:8px;">🏃 Show Me How It Counts! (💡 Play Count-Up)</button>
+                `;
+                choicesContainer.appendChild(wrapper);
+
+                // Hide the card's generic next button in tactile phase
+                nextBtn.style.display = 'none';
+            }
+            else {
+                // Phase 3: Rainbow Quest Stories (Blur readouts, randomize hands)
+                blurDecoderReadouts();
+
+                let randomH = setupH;
+                let randomM = setupM;
+                while (randomH === setupH && randomM === setupM) {
+                    randomH = Math.floor(Math.random() * 12) + 1;
+                    randomM = Math.floor(Math.random() * 12) * 5;
+                }
+                hourSlider.value = randomH;
+                minuteSlider.value = randomM;
+                updateClockFaceVisuals();
+
+                const wrapper = document.createElement('div');
+                wrapper.style.display = 'flex';
+                wrapper.style.flexDirection = 'column';
+                wrapper.style.width = '100%';
+                wrapper.style.gridColumn = '1 / -1';
+                
+                wrapper.innerHTML = `
+                    <button class="primary-btn" onclick="verifyDragMatch()" style="width:100%; justify-content:center; font-size:1.15rem; padding:14px; margin-bottom:10px;">✨ Check My Hands!</button>
+                    <button class="tool-btn" onclick="animateCountUp()" style="width:100%; justify-content:center; padding:12px; margin-bottom:8px;">🏃 Show Me How It Counts! (💡 Reveal Decoder)</button>
+                `;
+                choicesContainer.appendChild(wrapper);
+
+                // Hide the card's generic next button in Rainbow Quest phase
+                nextBtn.style.display = 'none';
+            }
+
+            // Update speaking mascot HUD
+            const bubbleImg = document.getElementById('mascotBubbleImg');
+            const bubbleText = document.getElementById('mascotSpeechText');
+            if (bubbleImg && bubbleText) {
+                if (phase === 3 && typeof story !== 'undefined') {
+                    // Update speaking mascot to match the featured dog!
+                    const charImages = {
+                      'Hairy Maclary': 'hairy_maclary.png',
+                      'Hercules Morse': 'hercules_morse.png',
+                      'Bottomley Potts': 'bottomley_potts.png',
+                      'Muffin McLay': 'muffin_mclay.png',
+                      'Bitzer Maloney': 'bitzer_maloney.png',
+                      'Schnitzel von Krumm': 'schnitzel_von_krumm.png',
+                      'Schnitzel': 'schnitzel_von_krumm.png',
+                      'Slinky Malinki': 'slinky.png',
+                      'Scarface Claw': 'scarface.png',
+                      'Rainbow Doggy': 'head.png',
+                      'Kind Dog': 'head.png'
+                    };
+                    const mascotGreetings = {
+                      'Hairy Maclary': "Woof! I'm Hairy Maclary from Donaldson's Dairy! Let's solve this time quest! 🐾",
+                      'Hercules Morse': "Woof! I'm Hercules Morse, as big as a horse! What time did I finish my snack? 🐾",
+                      'Bottomley Potts': "Woof! I'm Bottomley Potts, all covered in spots! Help me with this clock! 🐾",
+                      'Muffin McLay': "Woof! I'm Muffin McLay, like a bundle of hay! What time was I clean and fluffy? 🐾",
+                      'Bitzer Maloney': "Woof! I'm Bitzer Maloney, skinny and bony! Let's solve this clock quest! 🐾",
+                      'Schnitzel von Krumm': "Woof! I'm Schnitzel von Krumm, with a very low tum! Can you work out the clock time? 🐾",
+                      'Schnitzel': "Woof! I'm Schnitzel von Krumm, with a very low tum! Can you work out the clock time? 🐾",
+                      'Slinky Malinki': "Meow! I'm Slinky Malinki! Can you help me trace the time of my night-time raid? 🐾",
+                      'Scarface Claw': "Hiss! I'm Scarface Claw, the toughest tom in town! Solve this clock quest if you dare! 🐾",
+                      'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's solve this time quest! 🐾",
+                      'Kind Dog': "Avvavavava! I'm Kind Dog! Let's solve this time quest! 🐾"
+                    };
+                    let featuredName = 'Rainbow Doggy';
+                    for (const name of Object.keys(charImages)) {
+                      if (story.title.includes(name)) {
+                        featuredName = name;
+                        break;
+                      }
+                    }
+                    bubbleImg.src = charImages[featuredName] || 'head.png';
+                    bubbleImg.style.background = '#fff';
+                    bubbleImg.style.objectFit = 'cover';
+                    bubbleText.innerHTML = mascotGreetings[featuredName] || `Woof! Let's solve this time quest! 🐾`;
+                } else {
+                    // Standard Phase 0, 1, 2 default Rainbow Doggy
+                    bubbleImg.src = 'head.png';
+                    bubbleImg.style.background = 'rgba(255,255,255,0.1)';
+                    bubbleImg.style.objectFit = 'contain';
+                    
+                    const defaultTexts = {
+                      0: "Hi explorer! Let's explore how to read the clock together! ⏰",
+                      1: "Hi explorer! Look at the clock and pick the right time! 📖🐾",
+                      2: "Hi explorer! Move the sliders or drag the hands to show the correct time! 🛠️⏰"
+                    };
+                    bubbleText.innerHTML = defaultTexts[phase] || "Hi explorer! Let's learn to read the clock together! ⏰";
+                }
+            }
+
+            // Prepend mission line based on active phase
+            const missionTexts = {
+                0: "Look at the clock and pick the right time from the choices!",
+                1: "Look at the clock and pick the right time from the choices!",
+                2: "Drag the hands to match the time shown!",
+                3: "Read the story and work out the answer!"
+            };
+            const missionText = missionTexts[phase] || missionTexts[1];
+            const missionHtml = `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: ${missionText}</div>`;
+            document.getElementById('quizText').innerHTML = missionHtml + qText;
+            document.getElementById('questNumber').textContent = `Quest Phase ${phase}`;
+        }
+
+        function giveQuestHint() {
+            state.usedHelp = true;
+            if (!state.activeQuestion || !state.activeQuestion.hint) return;
+            const fb = document.getElementById('quizFeedback');
+            fb.innerHTML = `<div style="background: rgba(168, 85, 247, 0.15); border: 1px solid var(--accent-purple); padding: 12px; border-radius: 12px; margin-top: 10px; color: var(--text-primary); font-size: 0.95rem; animation: fadeIn 0.4s ease; text-align: left; position: relative; z-index: 1;">💡 <strong>Rainbow Doggy's Tip:</strong> ${state.activeQuestion.hint}</div>` + fb.innerHTML;
+            playSound('correct');
+            const hintBtn = document.getElementById('hintBtn');
+            hintBtn.disabled = true;
+            hintBtn.style.opacity = '0.5';
+            
+            // Also reveal/unblur decoder readouts as part of the opt-in hint!
+            revealDecoderReadouts();
+        }
+
+        function verifyDragMatch() {
+            if (!state.activeQuestion) return;
+
+            const currentH = parseInt(hourSlider.value);
+            const currentM = parseInt(minuteSlider.value);
+
+            const targetH = state.activeQuestion.setupH;
+            const targetM = state.activeQuestion.setupM;
+
+            const correct = (currentH === targetH) && (currentM === targetM);
+            const fb = document.getElementById('quizFeedback');
+            const choicesContainer = document.getElementById('quizChoices');
+
+            // Unblur displays for validation
+            revealDecoderReadouts();
+
+            if (correct) {
+                awardCorrect(fb);
+                state.phaseProgress += 1;
+                playSound('correct');
+                triggerConfetti(); if(window.rpjSuccess) rpjSuccess();
+
+                let extraHtml = '';
+                if (state.questPhase === 2 && state.phaseProgress >= 5) {
+                    state.questPhase = 3; state.phaseProgress = 0;
+                    playSound('levelup');
+                    extraHtml = `<div style="margin-top:10px;color:var(--accent-purple);font-weight:800;">🏆 Phase 2 done! Rainbow Quest Stories unlocked! 🌈</div>`;
+                    document.getElementById('answerModalNext').textContent = '🌈 Start Rainbow Quest!';
+                    document.getElementById('answerModalNext').onclick = () => { dismissAnswerModal(); autoTransitionToPhase(3); };
+                } else if (state.questPhase === 3 && state.phaseProgress >= 5) {
+                    state.phaseProgress = 0;
+                    playSound('levelup');
+                    extraHtml = `<div style="margin-top:10px;color:var(--accent-yellow);font-weight:800;">🌈 Rainbow Quest complete! Time Champion! 🎓</div>`;
+                }
+                showAnswerModal(true, generateTimeStory(targetH, targetM) + extraHtml, state.usedHelp);
+
+            } else {
+                state.streak = 0;
+                playSound('incorrect');
+                showAnswerModal(false, `<div style="margin-bottom:8px;">Target was <strong>${targetH}:${targetM < 10 ? '0' + targetM : targetM}</strong> — adjust the hands and try again!</div>` + generateTimeStory(targetH, targetM), false);
+            }
+
+            saveState();
+            updateScoresDisplay();
+        }
+
+        function checkFillBlank() {
+            if (!state.activeQuestion || !state.activeQuestion.fillBlank) return;
+            const fb = state.activeQuestion.fillBlank;
+            const mEl = document.getElementById('fibMins');
+            const hEl = document.getElementById('fibHour');
+            if (!mEl || !hEl) return;
+
+            const enteredMins = parseInt(mEl.value.trim(), 10);
+            const enteredHour = parseInt(hEl.value.trim(), 10);
+
+            const minsOk = enteredMins === fb.blankMins;
+            const hourOk = enteredHour === fb.blankHour;
+            const allOk  = minsOk && hourOk;
+
+            mEl.classList.toggle('correct', minsOk);
+            mEl.classList.toggle('incorrect', !minsOk);
+            hEl.classList.toggle('correct', hourOk);
+            hEl.classList.toggle('incorrect', !hourOk);
+
+            // Disable inputs and button
+            mEl.disabled = true; hEl.disabled = true;
+            const checkBtn = document.querySelector('.fib-check-btn');
+            if (checkBtn) checkBtn.disabled = true;
+
+            revealDecoderReadouts();
+
+            const feedbackEl = document.getElementById('quizFeedback');
+            const zoneWord = fb.isPast ? 'past' : 'to';
+            if (allOk) {
+                awardCorrect(feedbackEl);
+                state.phaseProgress += 1;
+                playSound('correct');
+                triggerConfetti(); if(window.rpjSuccess) rpjSuccess();
+                showAnswerModal(true, `<div>It IS <strong>${fb.blankMins} minutes ${zoneWord} ${fb.blankHour}</strong>! 🌈</div>` + generateTimeStory(fb.displayH, fb.displayM), state.usedHelp);
+            } else {
+                let msg = '';
+                if (!minsOk) msg += `The minutes should be <strong>${fb.blankMins}</strong>. `;
+                if (!hourOk) msg += `The ${zoneWord === 'past' ? 'hour' : 'next hour'} should be <strong>${fb.blankHour}</strong>. `;
+                msg += `So it's <strong>${fb.blankMins} minutes ${zoneWord} ${fb.blankHour}</strong>.`;
+                state.streak = 0;
+                playSound('incorrect');
+                showAnswerModal(false, msg, false);
+            }
+
+            saveState();
+            updateScoresDisplay();
+        }
+
+        function submitAnswer(selected, element) {
+            if (!state.activeQuestion) return;
+            
+            // Unblur decoder readouts on submit so they can see the correct matching answer visually!
+            revealDecoderReadouts();
+            
+            const correct = selected === state.activeQuestion.correct;
+            const fb = document.getElementById('quizFeedback');
+            const btns = document.querySelectorAll('.choice-btn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            const targetH = state.activeQuestion.setupH;
+            const targetM = state.activeQuestion.setupM;
+
+            // Disable choices
+            btns.forEach(b => b.disabled = true);
+
+            if (correct) {
+                element.classList.add('correct');
+                awardCorrect(fb);
+                state.phaseProgress += 1;
+                playSound('correct');
+                triggerConfetti(); if(window.rpjSuccess) rpjSuccess();
+
+                let extraHtml = '';
+                if (state.questPhase === 1 && state.phaseProgress >= 5) {
+                    state.questPhase = 2; state.phaseProgress = 0;
+                    playSound('levelup');
+                    extraHtml = `<div style="margin-top:10px;color:var(--accent-purple);font-weight:800;">🏆 Phase 1 done! Set Hands mode unlocked! 🚀</div>`;
+                    document.getElementById('answerModalNext').textContent = '🚀 Start Phase 2!';
+                    document.getElementById('answerModalNext').onclick = () => { dismissAnswerModal(); autoTransitionToPhase(2); };
+                }
+                showAnswerModal(true, generateTimeStory(targetH, targetM) + extraHtml, state.usedHelp);
+
+            } else {
+                element.classList.add('incorrect');
+                btns.forEach(b => { if (b.innerText.trim() === state.activeQuestion.correct) b.classList.add('correct'); });
+                state.streak = 0;
+                playSound('incorrect');
+                showAnswerModal(false, generateTimeStory(targetH, targetM), false);
+            }
+
+            saveState();
+            updateScoresDisplay();
+        }
+
+        function getStarsHtml(count, max = 5) {
+            let html = "";
+            for (let i = 0; i < max; i++) {
+                html += i < count ? '⭐ ' : '⚪ ';
+            }
+            return html.trim();
+        }
+
+        function updateScoresDisplay() {
+            document.getElementById('starsCount').textContent = state.stars;
+            document.getElementById('streakCount').textContent = state.streak;
+
+            // Render progression small text stars dynamically
+            const prog1 = document.getElementById('progStars1');
+            const prog2 = document.getElementById('progStars2');
+            const prog3 = document.getElementById('progStars3');
+
+            // Phase 1 Stars rendering
+            if (state.questPhase > 1) {
+                prog1.innerHTML = '⭐ ⭐ ⭐ ⭐ ⭐';
+            } else {
+                prog1.innerHTML = getStarsHtml(state.phaseProgress);
+            }
+
+            // Phase 2 Tab states and stars
+            const tab2 = document.getElementById('tab2');
+            if (state.questPhase >= 2) {
+                tab2.style.opacity = '1';
+                tab2.style.pointerEvents = 'auto';
+                if (state.questPhase > 2) {
+                    prog2.innerHTML = '⭐ ⭐ ⭐ ⭐ ⭐';
+                } else {
+                    prog2.innerHTML = getStarsHtml(state.phaseProgress);
+                }
+            } else {
+                tab2.style.opacity = '0.4';
+                tab2.style.pointerEvents = 'none';
+                prog2.innerHTML = '🔒 Locked';
+            }
+
+            // Phase 3 Tab states and stars
+            const tab3 = document.getElementById('tab3');
+            if (state.questPhase >= 3) {
+                tab3.style.opacity = '1';
+                tab3.style.pointerEvents = 'auto';
+                prog3.innerHTML = getStarsHtml(state.phaseProgress);
+            } else {
+                tab3.style.opacity = '0.4';
+                tab3.style.pointerEvents = 'none';
+                prog3.innerHTML = '🔒 Locked';
+            }
+
+            // Small header info update
+            const scoreEl = document.getElementById('levelScore');
+            const phaseName = state.currentDifficulty === 0 ? "Phase 1 Q&A" : state.currentDifficulty === 1 ? "Phase 2 Set Hands" : "Phase 3 Rainbow Quest";
+            scoreEl.textContent = `${phaseName} | Streak: ${state.streak}`;
+        }
+
+        function saveState() {
+            // stars and streak are session-only (not persisted)
+        }
+
+        function changeTheme(themeName) {
+                document.body.classList.remove('theme-sparkle-pink', 'theme-emerald-garden', 'theme-solar-flare', 'theme-rainbow-doggy');
+                document.body.classList.add('theme-rainbow-doggy');
+                localStorage.setItem('time_theme', 'rainbow-doggy');
+            }
+
+        // --- CONFETTI CELEBRATORY PARTICLES ---
+        const confettiCanvas = document.getElementById('confettiCanvas');
+        const cCtx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+        let animationFrameId = null;
+
+        function resizeConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeConfetti);
+        resizeConfetti();
+
+        function triggerConfetti() {
+            confettiParticles = [];
+            const colors = ['#a855f7', '#f43f5e', '#f59e0b', '#10b981', '#3b82f6'];
+            
+            for (let i = 0; i < 150; i++) {
+                confettiParticles.push({
+                    x: Math.random() * window.innerWidth,
+                    y: -20,
+                    size: Math.random() * 8 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    speedX: Math.random() * 4 - 2,
+                    speedY: Math.random() * 5 + 5,
+                    rotation: Math.random() * 360,
+                    rotationSpeed: Math.random() * 4 - 2
+                });
+            }
+
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            animateConfetti();
+        }
+
+        function animateConfetti() {
+            cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            let complete = true;
+
+            confettiParticles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.rotation += p.rotationSpeed;
+
+                if (p.y < window.innerHeight) {
+                    complete = false;
+                }
+
+                cCtx.save();
+                cCtx.translate(p.x, p.y);
+                cCtx.rotate(p.rotation * Math.PI / 180);
+                cCtx.fillStyle = p.color;
+                cCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+                cCtx.restore();
+            });
+
+            if (!complete) {
+                animationFrameId = requestAnimationFrame(animateConfetti);
+            } else {
+                cCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }
+        }
+    </script>
+  <!-- Floating Rainbow PJ mascot -->
+  <div id="rpj" onclick="rpjClick()" title="🐾 Click me!" style="
+    position:fixed; bottom:18px; right:18px;
+    width:80px; height:80px;
+    z-index:200; cursor:pointer;
+    transition: opacity .4s ease, transform .5s cubic-bezier(.175,.885,.32,1.8), bottom .5s ease, right .5s ease, width .5s cubic-bezier(.175,.885,.32,1.8), height .5s cubic-bezier(.175,.885,.32,1.8);
+    opacity: 0.22;
+  ">
+    <img src="rainbow-pj.png" style="width:100%;height:100%;object-fit:contain;border-radius:50%;
+      filter:drop-shadow(0 0 8px rgba(249,115,22,.5));pointer-events:none;" alt="Rainbow PJ">
+  </div>
+  <script>
+  (function(){
+    const rpj = document.getElementById('rpj');
+    let hideTimer = null;
+
+    function rpjShow() {
+      clearTimeout(hideTimer);
+      rpj.style.opacity = '0.22';
+    }
+    function rpjHide() {
+      rpj.style.opacity = '0';
+      hideTimer = setTimeout(rpjShow, 4000);
+    }
+
+    window.rpjClick = function() {
+      playNextAva(0.75);
+      rpj.style.opacity = '0.9';
+      rpj.style.transform = 'scale(1.3) rotate(12deg)';
+      setTimeout(() => {
+        rpj.style.transform = '';
+        rpjHide();
+      }, 600);
+    };
+
+    window.rpjSuccess = function() {
+      clearTimeout(hideTimer);
+      // expand to centre
+      const vw = window.innerWidth, vh = window.innerHeight;
+      const size = Math.min(vw, vh) * 0.45;
+      rpj.style.transition = 'opacity .3s ease, transform .5s cubic-bezier(.175,.885,.32,1.8), bottom .5s ease, right .5s ease, width .5s cubic-bezier(.175,.885,.32,1.8), height .5s cubic-bezier(.175,.885,.32,1.8)';
+      rpj.style.width = size + 'px';
+      rpj.style.height = size + 'px';
+      rpj.style.bottom = ((vh - size) / 2) + 'px';
+      rpj.style.right = ((vw - size) / 2) + 'px';
+      rpj.style.opacity = '0.95';
+      rpj.style.transform = 'rotate(-8deg) scale(1.05)';
+      // wobble
+      setTimeout(() => { rpj.style.transform = 'rotate(8deg) scale(1.08)'; }, 300);
+      setTimeout(() => { rpj.style.transform = 'rotate(-8deg) scale(1.05)'; }, 700);
+      setTimeout(() => { rpj.style.transform = 'rotate(6deg) scale(1.07)'; }, 1100);
+      setTimeout(() => { rpj.style.transform = 'rotate(-6deg) scale(1.04)'; }, 1500);
+      setTimeout(() => { rpj.style.transform = 'rotate(0deg) scale(1)'; }, 1900);
+      // shrink back
+      setTimeout(() => {
+        rpj.style.width = '80px';
+        rpj.style.height = '80px';
+        rpj.style.bottom = '18px';
+        rpj.style.right = '18px';
+        rpj.style.transform = '';
+        rpjHide();
+      }, 2500);
+    };
+
+    rpj.addEventListener('mouseover', () => { if (rpj.style.opacity !== '0') { rpj.style.opacity='0.85'; rpj.style.transform='scale(1.15) rotate(8deg)'; }});
+    rpj.addEventListener('mouseout',  () => { if (parseFloat(rpj.style.opacity||0) < 0.9) { rpj.style.opacity='0.22'; rpj.style.transform=''; }});
+  })();
+  </script>
+
+</body>
+</html>

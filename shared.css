@@ -1,0 +1,36 @@
+/* shared.css — theme colour tokens for all Rainbow Learning pages */
+:root {
+  --bg:     linear-gradient(135deg, #180512 0%, #0a0e24 60%, #150921 100%);
+  --card:   rgba(30,41,59,.65);
+  --border: rgba(255,255,255,.08);
+  --text1:  #f8fafc;
+  --text2:  #94a3b8;
+  --accent:  #f97316;
+  --accent2: #facc15;
+  --green:  #22c55e;
+  --red:    #ef4444;
+  --purple: #c084fc;
+  --pink:   #f43f5e;
+
+  /* aliases so time.html keeps working without renaming every usage */
+  --text-primary:   var(--text1);
+  --text-secondary: var(--text2);
+  --accent-purple:  var(--purple);
+  --accent-pink:    var(--pink);
+  --accent-yellow:  var(--accent2);
+  --card-bg:        var(--card);
+  --card-border:    var(--border);
+  --theme-bg-gradient: var(--bg);
+}
+
+body.theme-rainbow-doggy {
+  --bg:     linear-gradient(135deg, #0a0518 0%, #2b0827 45%, #050b1e 100%);
+  --card:   rgba(15,12,45,.68);
+  --border: rgba(129,140,248,.22);
+  --text1:  #eef2ff;
+  --text2:  #a5b4fc;
+  --purple: #818cf8;
+  --pink:   #f472b6;
+  --accent: #f97316;
+  --accent2: #facc15;
+}
