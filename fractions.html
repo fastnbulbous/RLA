@@ -18,7 +18,6 @@
     h1,h2,h3,h4 { font-family:'Outfit',sans-serif; font-weight:800; }
 
     /* ── AMBIENT BLOBS ── */
-    .blob { position:fixed; border-radius:50%; filter:blur(60px); pointer-events:none; z-index:0; transition:background .5s; will-change:transform; }
     .blob-a { width:360px; height:360px; background:rgba(249,115,22,.14); top:-80px; right:-80px; }
     .blob-b { width:420px; height:420px; background:rgba(234,88,12,.1); bottom:-100px; left:-100px; }
     body.theme-rainbow-doggy .blob-a { background:rgba(244,63,94,.18); }
@@ -202,7 +201,7 @@
     .sort-zone-hint { color:var(--text2); font-size:.82rem; }
     .frac-card { background: var(--card); border:2px solid var(--border); border-radius:20px; padding:11px 16px; cursor:grab; user-select:none; display:flex; flex-direction:column; align-items:center; gap:1px; transition:all .2s cubic-bezier(.175,.885,.32,1.275); min-width:60px; font-family:'Outfit',sans-serif; font-weight:800; }
     .frac-card:hover { border-color:var(--accent); transform:translateY(-3px) scale(1.09); box-shadow:0 8px 20px rgba(249,115,22,.22); }
-    .frac-card.dragging { opacity:.4; transform:scale(.9); cursor:grabbing; }
+    .frac-card.dragging { opacity: .75; transition: none !important; cursor: grabbing; z-index: 1000; }
     .frac-card .fc-n { font-size:1.35rem; color:var(--text1); line-height:1; border-bottom:3px solid var(--text2); width:100%; text-align:center; padding-bottom:3px; }
     .frac-card .fc-d { font-size:1.35rem; color:var(--text1); line-height:1; }
     .sort-arrow { text-align:center; font-size:.78rem; color:var(--text2); font-weight:700; }
@@ -310,8 +309,6 @@
     #confettiCanvas { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:999; }
 
     /* ── ANIMATIONS ── */
-    @keyframes pulse-glow { 0%,100% { transform:scale(1); filter:drop-shadow(0 0 3px rgba(249,115,22,.4)); } 50% { transform:scale(1.08); filter:drop-shadow(0 0 12px rgba(249,115,22,.8)); } }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
     @keyframes pop-in { 0% { transform:translate(-50%,-50%) scale(.3); opacity:0; } 80% { transform:translate(-50%,-50%) scale(1.15); } 100% { transform:translate(-50%,-50%) scale(1); opacity:1; } }
 
     /* Toggle */
@@ -390,9 +387,7 @@
         object-fit: contain;
         padding: 12px;
         border: 2px solid rgba(249, 115, 22, 0.4);
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        background: rgba(20, 10, 35, 0.88);
         box-shadow: 0 15px 35px rgba(0,0,0,0.6), 
                     inset 0 0 24px rgba(249, 115, 22, 0.25);
         margin: 0 auto 20px;
@@ -1669,7 +1664,7 @@
 
     document.getElementById('modeContent').innerHTML = `
       <div id="sortPool" class="sort-pool">
-        ${fracs.map((f,i)=>`<div class="frac-card" draggable="true" id="fc${i}" data-val="${fv(f)}"><div class="fc-n">${f[0]}</div><div class="fc-d">${f[1]}</div></div>`).join('')}
+        ${fracs.map((f,i)=>`<div class="frac-card" id="fc${i}" data-val="${fv(f)}"><div class="fc-n">${f[0]}</div><div class="fc-d">${f[1]}</div></div>`).join('')}
       </div>
       <div class="sort-arrow">${arrowText}</div>
       <div id="sortZone" class="sort-zone">
@@ -1691,34 +1686,128 @@
   }
 
   function initSortDnD() {
-    document.querySelectorAll('.frac-card').forEach(c=>{
-      c.addEventListener('dragstart',e=>{ sdItem=c; c.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
-      c.addEventListener('dragend',()=>{ c.classList.remove('dragging'); sdItem=null; });
-    });
-    ['sortPool','sortZone'].forEach(id=>{
-      const z=document.getElementById(id); if(!z) return;
-      z.addEventListener('dragover',e=>{ e.preventDefault(); z.classList.add('drag-over'); });
-      z.addEventListener('dragleave',()=>z.classList.remove('drag-over'));
-      z.addEventListener('drop',e=>{
-        e.preventDefault(); z.classList.remove('drag-over');
-        if(!sdItem) return;
-        const hint=document.getElementById('szHint'); if(hint) hint.remove();
-        // Insert before the card the cursor is over (if any), so cards can be reordered
-        const after = getCardAfter(z, e.clientX);
-        if (after) z.insertBefore(sdItem, after);
-        else z.appendChild(sdItem);
+    const cards = document.querySelectorAll('.frac-card');
+    const pool = document.getElementById('sortPool');
+    const zone = document.getElementById('sortZone');
+    if (!pool || !zone) return;
+
+    cards.forEach(c => {
+      c.style.touchAction = 'none'; // Prevent browser scrolling while dragging
+
+      let startX = 0, startY = 0;
+      let isDragging = false;
+      let poolRect, zoneRect;
+      let siblingsPool = [], siblingsZone = [];
+
+      function cachePositions() {
+        poolRect = pool.getBoundingClientRect();
+        zoneRect = zone.getBoundingClientRect();
+        
+        siblingsPool = [...pool.querySelectorAll('.frac-card:not(.dragging)')].map(sib => {
+          const r = sib.getBoundingClientRect();
+          return { el: sib, midX: r.left + r.width / 2 };
+        });
+
+        siblingsZone = [...zone.querySelectorAll('.frac-card:not(.dragging)')].map(sib => {
+          const r = sib.getBoundingClientRect();
+          return { el: sib, midX: r.left + r.width / 2 };
+        });
+      }
+
+      const onPointerMove = e => {
+        if (!isDragging) return;
+        
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        
+        c.style.transform = `translate(${dx}px, ${dy}px) scale(1.06)`;
+        
+        const midY = (poolRect.bottom + zoneRect.top) / 2;
+        const activeContainer = e.clientY > midY ? zone : pool;
+        const activeSiblings = e.clientY > midY ? siblingsZone : siblingsPool;
+        
+        // visual target feedback
+        if (activeContainer === zone) {
+          zone.classList.add('drag-over');
+          pool.classList.remove('drag-over');
+        } else {
+          pool.classList.add('drag-over');
+          zone.classList.remove('drag-over');
+        }
+
+        // find insert index
+        const after = activeSiblings.find(sib => sib.midX > e.clientX);
+        const nextSibling = after ? after.el : null;
+        
+        if (c.nextSibling !== nextSibling || c.parentNode !== activeContainer) {
+          const hint = document.getElementById('szHint');
+          if (hint && activeContainer === zone) hint.style.display = 'none';
+          
+          if (nextSibling) {
+            activeContainer.insertBefore(c, nextSibling);
+          } else {
+            activeContainer.appendChild(c);
+          }
+          
+          // Re-cache since active container's list has changed
+          cachePositions();
+        }
+      };
+
+      const onPointerUp = e => {
+        if (!isDragging) return;
+        isDragging = false;
+        
+        c.classList.remove('dragging');
+        c.style.transform = '';
+        c.style.zIndex = '';
+        c.style.position = '';
+        
+        pool.classList.remove('drag-over');
+        zone.classList.remove('drag-over');
+        
+        document.removeEventListener('pointermove', onPointerMove);
+        document.removeEventListener('pointerup', onPointerUp);
+        document.removeEventListener('pointercancel', onPointerUp);
+        
+        try {
+          c.releasePointerCapture(e.pointerId);
+        } catch (_) {}
+
+        // Ensure hint vis is clean
+        const hint = document.getElementById('szHint');
+        if (hint) {
+          if (zone.querySelectorAll('.frac-card').length > 0) {
+            hint.style.display = 'none';
+          } else {
+            hint.style.display = '';
+          }
+        }
+        
+        playSound('click');
+      };
+
+      c.addEventListener('pointerdown', e => {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        
+        c.classList.add('dragging');
+        c.style.zIndex = '1000';
+        c.style.position = 'relative';
+        
+        cachePositions();
+        
+        try {
+          c.setPointerCapture(e.pointerId);
+        } catch (_) {}
+        
+        document.addEventListener('pointermove', onPointerMove);
+        document.addEventListener('pointerup', onPointerUp);
+        document.addEventListener('pointercancel', onPointerUp);
+        e.preventDefault();
       });
     });
-  }
-
-  function getCardAfter(container, x) {
-    const cards = [...container.querySelectorAll('.frac-card:not(.dragging)')];
-    return cards.reduce((closest, c) => {
-      const box = c.getBoundingClientRect();
-      const offset = x - (box.left + box.width / 2);
-      if (offset < 0 && offset > closest.offset) return { offset, el: c };
-      return closest;
-    }, { offset: -Infinity }).el || null;
   }
 
   function resetSort() {
@@ -2286,12 +2375,23 @@
   // ─── CONFETTI ───
   const confC=document.getElementById('confettiCanvas'), cCtx=confC.getContext('2d');
   let parts=[], confAnim=null;
-  function resizeConf(){confC.width=window.innerWidth;confC.height=window.innerHeight;}
+  const dpr = window.devicePixelRatio || 1;
+  function resizeConf() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    confC.width = w * dpr;
+    confC.height = h * dpr;
+    confC.style.width = w + 'px';
+    confC.style.height = h + 'px';
+    cCtx.setTransform(1, 0, 0, 1, 0, 0);
+    cCtx.scale(dpr, dpr);
+  }
   window.addEventListener('resize',resizeConf); resizeConf();
   function triggerConfetti() {
     parts=[];
     const cols=['#f97316','#facc15','#22c55e','#3b82f6','#ec4899','#c084fc'];
-    for(let i=0;i<60;i++) parts.push({x:Math.random()*window.innerWidth,y:-15,sz:Math.random()*8+3,col:cols[Math.floor(Math.random()*cols.length)],sx:Math.random()*4-2,sy:Math.random()*5+4,rot:Math.random()*360,rs:Math.random()*4-2});
+    const w = window.innerWidth;
+    for(let i=0;i<60;i++) parts.push({x:Math.random()*w,y:-15,sz:Math.random()*8+3,col:cols[Math.floor(Math.random()*cols.length)],sx:Math.random()*4-2,sy:Math.random()*5+4,rot:Math.random()*360,rs:Math.random()*4-2});
     if(confAnim) cancelAnimationFrame(confAnim);
     (function anim(){
       cCtx.clearRect(0,0,confC.width,confC.height);
@@ -2302,8 +2402,12 @@
         cCtx.save();cCtx.translate(p.x,p.y);cCtx.rotate(p.rot*Math.PI/180);
         cCtx.fillStyle=p.col;cCtx.fillRect(-p.sz/2,-p.sz/2,p.sz,p.sz);cCtx.restore();
       });
-      if(!done) confAnim=requestAnimationFrame(anim);
-      else cCtx.clearRect(0,0,confC.width,confC.height);
+      if(!done) {
+        confAnim=requestAnimationFrame(anim);
+      } else {
+        cCtx.clearRect(0,0,confC.width,confC.height);
+        confAnim=null;
+      }
     })();
   }
 

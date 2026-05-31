@@ -232,11 +232,17 @@
       assert(html6.includes('Perfect Number'), true, 'explainProps(6): contains "Perfect Number"');
       assert(html6.includes('Even Number'), true, 'explainProps(6): contains "Even Number"');
       assert(html6.includes('Composite Number'), true, 'explainProps(6): contains "Composite Number"');
+      assert(html6.includes('Digital Root'), true, 'explainProps(6): contains "Digital Root"');
+      assert(html6.includes('divisible by 3'), true, 'explainProps(6): contains divisible by 3 secret');
+      assert(html6.includes('never</em> be a perfect square'), true, 'explainProps(6): contains perfect square exclusion');
 
       const r7 = buildNumberRecord(7);
       const html7 = explainProps(r7, 3);
       assert(html7.includes('Prime Number'), true, 'explainProps(7): contains "Prime Number"');
       assert(html7.includes('Odd Number'), true, 'explainProps(7): contains "Odd Number"');
+      assert(html7.includes('Digital Root'), true, 'explainProps(7): contains "Digital Root"');
+      assert(html7.includes('casting out nines'), true, 'explainProps(7): contains casting out nines secret');
+      assert(html7.includes('candidate, though it\'s not a perfect square'), true, 'explainProps(7): contains square candidacy');
     })();
 
     summarize();

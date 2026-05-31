@@ -21,7 +21,6 @@
     }
 
     /* Ambient blobs */
-    .blob { position: fixed; border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 0; will-change: transform; }
     .blob-a { width: 500px; height: 500px; background: rgba(56,189,248,.10); top: -150px; right: -100px; }
     .blob-b { width: 420px; height: 420px; background: rgba(251,113,133,.09); bottom: -100px; left: -100px; }
     .blob-c { width: 350px; height: 350px; background: rgba(251,191,36,.07); top: 40%; left: 40%; transform: translate(-50%,-50%); }
@@ -391,7 +390,7 @@
     let volumeFadeInterval = null;
     let musicPlaying = false;
 
-    function fadeMaxVolume(target, durationMs) {
+    function fadeMaxVolume(target, durationMs, onComplete) {
       if (volumeFadeInterval) clearInterval(volumeFadeInterval);
       const start = currentMaxVol;
       const startTime = performance.now();
@@ -403,12 +402,13 @@
         if (t >= 1) {
           clearInterval(volumeFadeInterval);
           volumeFadeInterval = null;
+          if (onComplete) onComplete();
         }
       }, 30);
     }
 
     function updateVolume() {
-      if (musicMuted || !musicPlaying) {
+      if (!musicPlaying) {
         bgMusic.volume = 0;
         return;
       }
@@ -440,9 +440,6 @@
     }
 
     function toggleMusic() {
-      if (!musicPlaying && !musicMuted) {
-        bgMusic.play().then(() => { musicPlaying = true; }).catch(() => {});
-      }
       musicMuted = !musicMuted;
       localStorage.setItem('rla_muted', musicMuted);
 
@@ -450,11 +447,14 @@
       if (sharedBtn) sharedBtn.textContent = musicMuted ? '🔇 Muted' : '🔊 Sound';
 
       if (musicMuted) {
-        fadeMaxVolume(0, 600);
+        fadeMaxVolume(0, 600, () => {
+          bgMusic.pause();
+          musicPlaying = false;
+        });
       } else {
         if (!musicPlaying) {
+          musicPlaying = true;
           bgMusic.play().then(() => {
-            musicPlaying = true;
             fadeMaxVolume(0.28, 800);
           }).catch(() => {});
         } else {

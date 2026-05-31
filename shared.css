@@ -523,10 +523,34 @@ body.user-interacted .nav-pulse {
 
 /* Respect Reduced Motion Preferences */
 @media (prefers-reduced-motion: reduce) {
-  .nav-pulse {
+  *, *::before, *::after {
+    animation-delay: -1ms !important;
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .nav-pulse, #rpj, .logo-img, .logo-icon, .mascot-img, .mascot-sway, .mcc-avatar, #svgMinuteHand, #svgHourHand {
     animation: none !important;
     transform: none !important;
     opacity: 1 !important;
+    transition: none !important;
+  }
+}
+
+/* Centralized tablet and mobile portal adjustments */
+@media (max-width: 900px) {
+  .portals {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 16px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .portals {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
   }
 }
 
@@ -541,4 +565,25 @@ body.user-interacted .nav-pulse {
   color: var(--text1) !important;
   background: rgba(168, 85, 247, 0.15) !important;
   box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
+}
+
+/* Ambient glow background blobs */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  will-change: transform;
+  transition: background 0.5s;
+}
+
+/* Centralized Glass layout utility */
+.glass {
+  background: var(--card);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border-radius: var(--radius, 24px);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }

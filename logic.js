@@ -627,6 +627,54 @@ const PROP_INFO = {
       const highlighted = bits.map(b => b === '1' ? `<strong style="color:#34d399;">${b}</strong>` : b).join('');
       return `${n} in binary: ${highlighted}.<br>Count the 1s: <strong>${rec.popcount}</strong> ones. ${rec.popcount} is odd, so ${n} is "odious"! 😇`;
     }
+  },
+  digitalRoot: {
+    title: '🌱 Digital Root',
+    definition: 'The digital root is found by adding up all the digits of a number. If the answer is 2 or more digits, we add those digits too, until we get a single number 1–9!',
+    explain(n, rec) {
+      const root = rec.digitalRoot;
+      const digits = String(n).split('');
+      let baseExplain = '';
+      
+      if (digits.length === 1) {
+        baseExplain = `Since ${n} is already a single digit, its digital root is simply <strong>${n}</strong>!`;
+      } else {
+        const step1Sum = digits.map(Number).reduce((sum, d) => sum + d, 0);
+        const step1Str = digits.join(' + ') + ` = ${step1Sum}`;
+        
+        if (String(step1Sum).length === 1) {
+          baseExplain = `Let's add the digits of ${n}:<br><strong>${step1Str}</strong>.<br>The digital root of ${n} is <strong>${root}</strong>!`;
+        } else {
+          const step2Digits = String(step1Sum).split('');
+          const step2Sum = step2Digits.map(Number).reduce((sum, d) => sum + d, 0);
+          const step2Str = step2Digits.join(' + ') + ` = ${step2Sum}`;
+          baseExplain = `Let's add the digits of ${n}:<br><strong>${step1Str}</strong>.<br>Since ${step1Sum} is two digits, we add those too:<br><strong>${step2Str}</strong>.<br>The digital root of ${n} is <strong>${root}</strong>!`;
+        }
+      }
+
+      // Add educational background information about digital roots!
+      let secretFact = '';
+      if (n % 9 === 0) {
+        secretFact = `Because its digital root is 9, we instantly know that <strong>${n}</strong> is perfectly divisible by 9 (and 3)! 🌟`;
+      } else if (n % 3 === 0) {
+        secretFact = `Because its digital root is ${root} (which is a multiple of 3), we instantly know that <strong>${n}</strong> is perfectly divisible by 3! 🌟`;
+      } else {
+        const rem = n % 9;
+        secretFact = `In math, the digital root is also the remainder when you divide the number by 9! For ${n}, dividing by 9 leaves a remainder of <strong>${rem}</strong>. Mathematicians call this trick <em>'casting out nines'</em>! 🌀`;
+      }
+
+      let squareFact = '';
+      const validSquareRoots = [1, 4, 7, 9];
+      if (rec.isSquare) {
+        squareFact = `<br>✨ <strong>Square Rule:</strong> Since ${n} is a perfect square, its digital root is ${root}, which perfectly matches the rule that square numbers can only have digital roots of 1, 4, 7, or 9! 🟦`;
+      } else if (!validSquareRoots.includes(root)) {
+        squareFact = `<br>✨ <strong>Square Rule:</strong> Perfect squares can only have digital roots of 1, 4, 7, or 9. Since ${n}'s digital root is ${root}, we know for absolute sure it can <em>never</em> be a perfect square! 🔍`;
+      } else {
+        squareFact = `<br>✨ <strong>Square Rule:</strong> Perfect squares can only have digital roots of 1, 4, 7, or 9. Since ${n}'s digital root is ${root}, it is a candidate, though it's not a perfect square! 🔍`;
+      }
+
+      return `${baseExplain}<br><span style="display:block;margin-top:8px;font-size:0.78rem;color:var(--text2);font-weight:normal;line-height:1.4;">💡 <strong>Cool Secret:</strong> ${secretFact}${squareFact}</span>`;
+    }
   }
 };
 
@@ -654,6 +702,7 @@ function explainProps(rec, currentDiff) {
     if (rec.isTwinPrime) list.push({ key: 'isTwinPrime', ...PROP_INFO.isTwinPrime });
     if (rec.isPow2) list.push({ key: 'isPow2', ...PROP_INFO.isPow2 });
     if (rec.isMersenne) list.push({ key: 'isMersenne', ...PROP_INFO.isMersenne });
+    list.push({ key: 'digitalRoot', ...PROP_INFO.digitalRoot });
   }
 
   if (currentDiff >= 2) {

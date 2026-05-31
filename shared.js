@@ -57,15 +57,69 @@ function isMuted() { return localStorage.getItem('rla_muted') === 'true'; }
 
 // Audio pool — reuse pre-decoded Audio objects instead of creating on every play
 const _audioPool = new Map(); // src → Audio[]
+
+// Pre-create and cache Audio objects for all bark and voice sources once
+[...BARK_FILES, ...AVA_FILES].forEach(src => {
+  const pool = [new Audio(src), new Audio(src), new Audio(src)];
+  pool.forEach(a => { a.preload = 'auto'; });
+  _audioPool.set(src, pool);
+});
+
+// Smoothly fade out and pause an Audio element over a duration to prevent hard clicks
+function _fadeAndPause(audio, durationMs = 150) {
+  if (!audio || audio.paused) return;
+  if (audio.fadeTimer) {
+    clearInterval(audio.fadeTimer);
+  }
+  const startVol = audio.volume;
+  const steps = 8;
+  const stepTime = durationMs / steps;
+  let currentStep = 0;
+  
+  audio.fadeTimer = setInterval(() => {
+    currentStep++;
+    const nextVol = startVol * (1 - (currentStep / steps));
+    if (nextVol <= 0.01 || currentStep >= steps) {
+      clearInterval(audio.fadeTimer);
+      audio.fadeTimer = null;
+      audio.pause();
+      audio.volume = startVol; // Reset volume for subsequent plays
+    } else {
+      audio.volume = nextVol;
+    }
+  }, stepTime);
+}
+
 function _pooledPlay(src, vol) {
   if (isMuted()) return;
+
+  // Fade out other currently playing voice/bark clips to prevent overlap clutter
+  _audioPool.forEach((pool, poolSrc) => {
+    if (poolSrc !== src) {
+      pool.forEach(a => {
+        if (!a.paused && !a.ended) {
+          _fadeAndPause(a, 150);
+        }
+      });
+    }
+  });
+
   let pool = _audioPool.get(src);
   if (!pool) {
-    pool = [new Audio(src), new Audio(src)];
+    pool = [new Audio(src), new Audio(src), new Audio(src)];
     pool.forEach(a => { a.preload = 'auto'; });
     _audioPool.set(src, pool);
   }
+  
+  // Find available channel
   const a = pool.find(a => a.paused || a.ended) || pool[0];
+  
+  // Clear any active fade out timers on the channel we are reusing
+  if (a.fadeTimer) {
+    clearInterval(a.fadeTimer);
+    a.fadeTimer = null;
+  }
+  
   a.volume = vol;
   a.currentTime = 0;
   a.play().catch(() => {});
@@ -294,8 +348,12 @@ function triggerConfetti() {
       cCtx.fillStyle = p.col; cCtx.fillRect(-p.sz / 2, -p.sz / 2, p.sz, p.sz);
       cCtx.restore();
     });
-    if (!done) _confAnim = requestAnimationFrame(anim);
-    else cCtx.clearRect(0, 0, confC.width, confC.height);
+    if (!done) {
+      _confAnim = requestAnimationFrame(anim);
+    } else {
+      cCtx.clearRect(0, 0, confC.width, confC.height);
+      _confAnim = null;
+    }
   })();
 }
 

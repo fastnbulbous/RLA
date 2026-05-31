@@ -14,7 +14,6 @@
     h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; font-weight: 800; }
 
     /* Blobs */
-    .blob { position: fixed; border-radius: 50%; filter: blur(60px); pointer-events: none; z-index: 0; will-change: transform; }
     .blob-a { width: 400px; height: 400px; background: rgba(251,113,133,.12); top: -100px; right: -80px; }
     .blob-b { width: 360px; height: 360px; background: rgba(253,164,175,.08); bottom: -80px; left: -80px; }
 
@@ -201,6 +200,12 @@
       cursor: pointer; color: var(--text2); transition: all .18s;
     }
     .slider-opt.active { background: var(--area-calc); color: var(--on-accent); border-color: transparent; }
+
+    @media (max-width: 900px) {
+      .table-picker-grid { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; }
+      .keypad-grid { width: 220px; }
+      .array-display { max-height: 200px; }
+    }
 
     @media (max-width: 600px) {
       .tab-bar {
