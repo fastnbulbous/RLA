@@ -244,6 +244,7 @@
             .challenge-text {
                 font-size: 0.95rem;
                 line-height: 1.4;
+                text-align: center;
             }
             .choices-grid {
                 grid-template-columns: 1fr;
@@ -654,6 +655,7 @@
             line-height: 1.5;
             color: var(--text-primary);
             font-weight: 600;
+            text-align: center;
         }
 
         .choices-grid {
@@ -3340,8 +3342,9 @@
             const missionText = (window._fibNext === undefined && state.activeQuestion && state.activeQuestion.fillBlank)
                 ? "Fill in the blanks to say the time the correct way!"
                 : (missionTexts[phase] || missionTexts[1]);
-            const missionHtml = `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: ${missionText}</div>`;
-            document.getElementById('quizText').innerHTML = missionHtml + qText;
+            const missionHtml = `<div style="color:#c084fc;font-weight:900;font-size:.88rem;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;">🐾 Your mission: ${missionText}</div>`;
+            const finalHtml = missionHtml + `<div style="margin: 10px auto; max-width: 580px; font-size: 1.05rem; line-height: 1.6; color: var(--text-primary); font-weight: 600;">${qText}</div>`;
+            document.getElementById('quizText').innerHTML = finalHtml;
             document.getElementById('questNumber').textContent = `Quest Phase ${phase}`;
         }
 

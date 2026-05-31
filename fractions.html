@@ -130,7 +130,7 @@
     .challenge-card { background: var(--card); border:1px solid var(--border); padding:18px; border-radius:18px; display:flex; flex-direction:column; gap:12px; animation:fadeIn .4s ease; position:relative; overflow:hidden; }
     .challenge-card::before { content:''; position:absolute; inset:0; background:url('doggy-watermark.png') center/contain no-repeat; opacity:.06; mix-blend-mode:screen; pointer-events:none; z-index:0; }
     .challenge-card>* { position:relative; z-index:1; }
-    .challenge-text { font-size:1.05rem; line-height:1.55; color:var(--text1); font-weight:600; }
+    .challenge-text { font-size:1.05rem; line-height:1.55; color:var(--text1); font-weight:600; text-align:center; }
     .feedback-msg { font-size:1rem; font-weight:800; text-align:center; min-height:26px; transition:all .3s; }
 
     .diff-badge { font-size:.68rem; text-transform:uppercase; padding:4px 8px; border-radius:6px; font-weight:800; letter-spacing:1px; }
@@ -1152,11 +1152,14 @@
       const choices = shuffle([correct, ...wrongs.slice(0, 3)]);
       return { ...t, eaten: t.dogA, left: t.total - t.dogA, correct, variant, choices };
     } else {
-      const eaten = t.dogA + t.dogB;
+      const isSlinky = t.dogAName === 'Scarface Claw' && t.dogBName === 'Slinky Malinki';
+      const eaten = isSlinky ? t.dogB : (t.dogA + t.dogB);
       const left  = t.total - eaten;
       const variantPick = Math.random();
-      const variant = variantPick < 0.4 ? 'left' : variantPick < 0.7 ? 'doggy' : 'kinddog';
-      const correct = variant === 'left' ? left : variant === 'doggy' ? t.dogA : t.dogB;
+      const variant = isSlinky 
+        ? (variantPick < 0.5 ? 'left' : 'kinddog')
+        : (variantPick < 0.4 ? 'left' : variantPick < 0.7 ? 'doggy' : 'kinddog');
+      const correct = variant === 'left' ? left : (variant === 'doggy' ? t.dogA : t.dogB);
       const wrongs = [];
       for (let n = 0; n <= t.total && wrongs.length < 3; n++) {
         if (n !== correct) wrongs.push(n);
@@ -1229,10 +1232,11 @@
           html += `<span style="display:inline-flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:8px;background:${bg};border:2px solid ${border};margin:3px;opacity:${opacity};overflow:hidden;vertical-align:middle;">${content}</span>`;
         }
       } else {
+        const isSlinky = q.dogAName === 'Scarface Claw' && q.dogBName === 'Slinky Malinki';
         for (let i = 0; i < q.total; i++) {
-          const isDoggySlice = i < q.dogA;
-          const isKindSlice  = i >= q.dogA && i < q.eaten;
-          const isLeft       = i >= q.eaten;
+          const isDoggySlice = isSlinky ? false : (i < q.dogA);
+          const isKindSlice  = isSlinky ? (i < q.dogB) : (i >= q.dogA && i < q.eaten);
+          const isLeft       = isSlinky ? (i >= q.dogB) : (i >= q.eaten);
           let bg, border, content, opacity;
           if (q.variant === 'doggy' || q.variant === 'kinddog') {
             bg      = isDoggySlice ? 'rgba(244,63,94,.12)'  : isKindSlice ? 'rgba(249,115,22,.1)' : 'rgba(34,197,94,.15)';
@@ -1283,22 +1287,21 @@
     } else {
       const actionText = isVillain ? 'snatch' : 'eat';
       if (q.dogAName === 'Scarface Claw' && q.dogBName === 'Slinky Malinki') {
-        mission = q.variant === 'left'    ? '🐾 Your mission: work out what fraction is left in the basket!'
-                      : q.variant === 'doggy'   ? `🐾 Your mission: work out what fraction <strong>Scarface Claw</strong> kept!`
-                      :                           `🐾 Your mission: work out what fraction <strong>Slinky Malinki</strong> snatched!`;
+        mission = q.variant === 'left' || q.variant === 'doggy'
+          ? '🐾 Your mission: work out what fraction is left in the basket!'
+          : `🐾 Your mission: work out what fraction Slinky Malinki snatched!`;
 
-        question = q.variant === 'left'   ? `What fraction of items is <strong>still there in the basket</strong>? 🐾`
-                       : q.variant === 'doggy'  ? `What fraction of items did <strong>Scarface Claw</strong> manage to guard/keep? 🐾`
-                       :                          `What fraction of items did <strong>Slinky Malinki</strong> snatch? 🐾`;
+        question = q.variant === 'left' || q.variant === 'doggy'
+          ? `What fraction of items is <strong>still there in the basket</strong>? 🐾`
+          : `What fraction of items did <strong>Slinky Malinki</strong> successfully snatch? 🐾`;
 
         legend = `<div style="display:flex;align-items:center;justify-content:center;gap:12px;font-size:.78rem;color:var(--text2);margin-bottom:14px;flex-wrap:wrap;">
-             <span style="display:inline-flex;align-items:center;gap:4px;"><img src="${imgA}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #f43f5e;display:block;"> <strong>Scarface Claw (guarded)</strong></span>
              <span style="display:inline-flex;align-items:center;gap:4px;"><img src="${imgB}" style="width:20px;height:20px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #f97316;display:block;"> <strong>Slinky Malinki (snatched)</strong></span>
              <span>${q.emoji} = still in basket</span>
            </div>`;
 
         storyText = `🐈‍⬛ <strong>Slinky Malinki</strong> (the cheeky cat who loves to steal) decided to raid the sleeping basket of <strong>Scarface Claw</strong> (the toughest tom in town)!<br>` +
-                    `He found <strong>${q.total}</strong> gorgeous <strong>${q.food}</strong>. <strong>Scarface Claw</strong> managed to guard/keep <strong>${q.dogA}</strong> of them, but <strong>Slinky Malinki</strong> successfully snatched <strong>${q.dogB}</strong> of them away! 🐾<br>`;
+                    `He found <strong>${q.total}</strong> gorgeous <strong>${q.food}</strong>. Slinky Malinki successfully snatched <strong>${q.dogB}</strong> of them away, but <strong>Scarface Claw</strong> woke up and saved the other <strong>${q.left}</strong>! 🐾<br>`;
       } else {
         mission = q.variant === 'left'    ? '🐾 Your mission: work out what fraction is left!'
                       : q.variant === 'doggy'   ? `🐾 Your mission: work out what fraction <strong>${q.dogAName}</strong> ate!`
@@ -1335,8 +1338,9 @@
       </button>`
     ).join('');
 
-    const finalHtml = `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">${mission}</div>` +
-      storyText + question;
+    const finalHtml = `<div style="color:#c084fc;font-weight:900;font-size:.88rem;margin-bottom:12px;letter-spacing:.5px;text-transform:uppercase;">${mission}</div>` +
+      `<div style="margin:10px auto;max-width:580px;font-size:1.02rem;line-height:1.6;color:var(--text1);font-weight:600;">${storyText}</div>` +
+      `<div style="margin-top:14px;font-size:1.15rem;color:var(--accent2);font-weight:800;text-shadow:var(--title-glow);">${question}</div>`;
     document.getElementById('challengeText').innerHTML = injectInlineIcons(finalHtml);
 
     st.rainbowDoggyDiagram = { slices, legend };
@@ -1370,9 +1374,8 @@
         `<span style="display:inline-flex;align-items:center;gap:4px;"><img src="${imgB}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #22c55e;"> Stayed brave: <strong>${formatFraction(q.total - q.dogA, q.total)}</strong></span></div>`;
     } else if (q.dogAName === 'Scarface Claw' && q.dogBName === 'Slinky Malinki') {
       summary = `<div style="margin-top:10px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;font-size:.82rem;color:var(--text2);line-height:1.6;align-items:center;">` +
-        `<span style="display:inline-flex;align-items:center;gap:4px;"><img src="${imgA}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #f43f5e;"> Scarface Claw guarded: <strong>${formatFraction(q.dogA, q.total)}</strong></span>` +
         `<span style="display:inline-flex;align-items:center;gap:4px;"><img src="${imgB}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #f97316;"> Slinky Malinki snatched: <strong>${formatFraction(q.dogB, q.total)}</strong></span>` +
-        `<span>${q.emoji} <strong>${formatFraction(q.left, q.total)}</strong> left in basket</span></div>`;
+        `<span>${q.emoji} <strong>${formatFraction(q.left, q.total)}</strong> still in basket</span></div>`;
     } else {
       summary = `<div style="margin-top:10px;display:flex;flex-wrap:wrap;justify-content:center;gap:12px;font-size:.82rem;color:var(--text2);line-height:1.6;align-items:center;">` +
         `<span style="display:inline-flex;align-items:center;gap:4px;"><img src="${imgA}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;background:#fff;border:1px solid #f43f5e;"> ${q.dogAName} ate <strong>${formatFraction(q.dogA, q.total)}</strong></span>` +

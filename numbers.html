@@ -38,7 +38,7 @@
     .tab-bar {
       position: relative; z-index: 2;
       width: 100%; max-width: 1200px;
-      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
       gap: 7px; margin-bottom: 10px;
       background: var(--surface-inset); backdrop-filter: blur(10px);
       border-radius: 28px; border: 1px solid var(--border); padding: 6px;
@@ -397,6 +397,80 @@
       color: var(--area-num-a, var(--area-num));
     }
     .diff-chip.second { background: oklch(70% .15 260 / .12); border-color: var(--area-calc-a, var(--area-calc)); color: var(--area-calc-a, var(--area-calc)); }
+
+    /* ── GUIDE SCREEN ──────────────────────────────────────────────── */
+    #guideScreen { position: relative; z-index: 1; width: 100%; max-width: 1200px; }
+    .guide-intro {
+      text-align: center; margin-bottom: 20px; padding: 18px 16px;
+      background: var(--card); border: 1px solid var(--border); border-radius: 22px;
+    }
+    .guide-intro h2 {
+      font-size: 1.4rem; margin-bottom: 6px;
+      background: linear-gradient(135deg, var(--area-num), #a78bfa);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+    .guide-intro p { font-size: .88rem; color: var(--text2); line-height: 1.5; max-width: 600px; margin: 0 auto; }
+    .guide-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    @media (max-width: 700px) { .guide-grid { grid-template-columns: 1fr; } }
+    .guide-card {
+      background: var(--card); border: 1px solid var(--border); border-radius: 22px;
+      padding: 22px 20px 18px; position: relative; overflow: hidden;
+      transition: transform .25s cubic-bezier(.175,.885,.32,1.275), box-shadow .25s;
+    }
+    .guide-card:hover { transform: translateY(-4px); box-shadow: 0 12px 36px rgba(0,0,0,.3); }
+    .guide-card .guide-accent {
+      position: absolute; top: 0; left: 0; right: 0; height: 4px; border-radius: 22px 22px 0 0;
+    }
+    .guide-card .guide-icon {
+      font-size: 2rem; margin-bottom: 6px; display: block;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,.3));
+    }
+    .guide-card h3 {
+      font-size: 1.1rem; margin-bottom: 8px; color: var(--text1);
+    }
+    .guide-card .guide-def {
+      font-size: .85rem; color: var(--text2); line-height: 1.55; margin-bottom: 12px;
+    }
+    .guide-card .guide-visual {
+      background: var(--surface-inset); border: 1px solid var(--border);
+      border-radius: 14px; padding: 12px 14px; margin-bottom: 12px;
+      text-align: center;
+    }
+    .guide-card .guide-visual .visual-label {
+      font-size: .72rem; font-weight: 700; color: var(--text2);
+      text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+    }
+    .guide-card .guide-visual .visual-demo {
+      font-size: 1.1rem; line-height: 1.8;
+    }
+    .guide-card .guide-examples {
+      display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px;
+    }
+    .guide-card .guide-examples .gx {
+      padding: 4px 10px; border-radius: 10px; font-family: 'Outfit', sans-serif;
+      font-weight: 800; font-size: .78rem; border: 1px solid; cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+    }
+    .guide-card .guide-examples .gx:hover { transform: scale(1.1); box-shadow: 0 3px 10px rgba(0,0,0,.2); }
+    .guide-card .guide-formula {
+      font-size: .78rem; color: var(--text2); margin-top: 10px;
+      padding: 8px 12px; background: var(--surface-inset); border-radius: 10px;
+      font-family: 'Outfit', sans-serif; font-weight: 600;
+      border-left: 3px solid var(--area-num);
+    }
+    .guide-card.locked {
+      opacity: .55; pointer-events: none;
+    }
+    .guide-card .lock-overlay {
+      position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+      background: rgba(15,23,42,.65); backdrop-filter: blur(3px);
+      border-radius: 22px; z-index: 2;
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1rem;
+      color: var(--text2); gap: 8px;
+    }
   </style>
 </head>
 <body>
@@ -430,6 +504,7 @@
     <button class="tab-btn nav-pulse" onclick="switchTab('quiz')" id="tabQuiz">🎯 Quiz</button>
     <button class="tab-btn nav-pulse" onclick="switchTab('build')" id="tabBuild">🔧 Build-a-Number</button>
     <button class="tab-btn nav-pulse" onclick="switchTab('sequences')" id="tabSequences">🔢 Sequences</button>
+    <button class="tab-btn nav-pulse" onclick="switchTab('guide')" id="tabGuide">📚 Guide</button>
   </div>
 
   <!-- DIFFICULTY -->
@@ -458,7 +533,7 @@
         <img src="head.png" id="quizNarrImg" alt="narrator">
         <div class="narrator-bubble" id="quizNarrSpeech">Loading a quest...</div>
       </div>
-      <div id="quizChallenge" style="font-size:1.05rem;font-weight:700;line-height:1.6;margin-bottom:4px;"></div>
+      <div id="quizChallenge" style="font-size:1.05rem;font-weight:700;line-height:1.6;margin-bottom:4px;text-align:center;"></div>
       <div id="quizFeedback" style="min-height:22px;font-weight:800;font-size:.95rem;margin:6px 0;"></div>
       <div class="choices-grid" id="quizChoices"></div>
       <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
@@ -526,6 +601,9 @@
       </div>
     </div>
   </div>
+
+  <!-- GUIDE SCREEN -->
+  <div id="guideScreen" style="display:none;"></div>
 
   <!-- Term peek card -->
   <div id="seqTermCard"></div>
@@ -752,7 +830,7 @@
       _seqKeypadCtrl.destroy(); _seqKeypadCtrl = null;
     }
     currentTab = t;
-    ['gallery','quiz','build','sequences'].forEach(id => {
+    ['gallery','quiz','build','sequences','guide'].forEach(id => {
       const screen = document.getElementById(id + 'Screen');
       const btn    = document.getElementById('tab' + id.charAt(0).toUpperCase() + id.slice(1));
       if (screen) screen.style.display = t === id ? '' : 'none';
@@ -764,6 +842,219 @@
     if (t === 'quiz') genQuiz();
     if (t === 'build') initBuild();
     if (t === 'sequences') genSequence();
+    if (t === 'guide') renderGuide();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // GUIDE — Number Properties Reference
+  // ═══════════════════════════════════════════════════════════════════
+  const GUIDE_CARDS = [
+    {
+      key: 'prime', icon: '🔴', title: 'Prime Numbers', color: '#fb7185',
+      minDiff: 0,
+      definition: 'A prime number has exactly <strong>2 divisors</strong>: 1 and itself. It cannot be broken into smaller equal groups. Primes are the "atoms" of numbers — every number is built by multiplying primes together!',
+      visual() {
+        return `<div class="visual-label">Why 7 is prime</div>
+          <div class="visual-demo">
+            You cannot arrange 7 dots into a rectangle (other than 1×7):<br>
+            <span style="letter-spacing:3px;">🔴🔴🔴🔴🔴🔴🔴</span><br>
+            <span style="font-size:.8rem;color:var(--text2);">Only 1 row of 7 — no other rectangles possible!</span>
+          </div>`;
+      },
+      formula: '🧪 Test: try dividing by every number from 2 up to √n. If none divide evenly, it\'s prime!',
+      examples() { return Array.from({length:120}, (_,i)=>i+1).filter(n => NUM_CACHE[n].isPrime); }
+    },
+    {
+      key: 'perfect', icon: '✨', title: 'Perfect Numbers', color: '#facc15',
+      minDiff: 0,
+      definition: 'A perfect number\'s <strong>proper divisors</strong> (all divisors except itself) add up to exactly the number! They are extremely rare — there are only 2 below 120.',
+      visual() {
+        return `<div class="visual-label">Why 6 is perfect</div>
+          <div class="visual-demo">
+            Divisors of 6 (smaller than 6): <strong>1, 2, 3</strong><br>
+            <span style="font-size:1.3rem;">1 + 2 + 3 = <strong style="color:#facc15;">6</strong> ✨</span><br>
+            <span style="font-size:.8rem;color:var(--text2);">They add up to the number itself — perfectly balanced!</span>
+          </div>`;
+      },
+      formula: '🧪 Add up all divisors smaller than n. If the sum equals n, it\'s perfect! (e.g. 28: 1+2+4+7+14 = 28)',
+      examples() { return Array.from({length:120}, (_,i)=>i+1).filter(n => NUM_CACHE[n].numClass === 'perfect'); }
+    },
+    {
+      key: 'square', icon: '🟦', title: 'Square Numbers', color: '#38bdf8',
+      minDiff: 0,
+      definition: 'A square number can be arranged as a perfect <strong>square grid</strong> of dots! It\'s made by multiplying a whole number by itself: n × n.',
+      visual() {
+        return `<div class="visual-label">Why 9 is a square number (3 × 3)</div>
+          <div class="visual-demo">
+            <div style="display:inline-grid;grid-template-columns:repeat(3,1fr);gap:4px;">
+              ${'<span style="font-size:1.2rem;">🔵</span>'.repeat(9)}
+            </div><br>
+            <span style="font-size:.8rem;color:var(--text2);">3 rows × 3 columns = 9 dots in a perfect square!</span>
+          </div>`;
+      },
+      formula: '🧪 Formula: n × n (or n²). The sequence goes: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121...',
+      examples() { return Array.from({length:120}, (_,i)=>i+1).filter(n => NUM_CACHE[n].isSquare); }
+    },
+    {
+      key: 'cube', icon: '🟣', title: 'Cube Numbers', color: '#a78bfa',
+      minDiff: 0,
+      definition: 'A cube number can build a perfect <strong>3D cube</strong>! It\'s made by multiplying a number by itself three times: n × n × n.',
+      visual() {
+        return `<div class="visual-label">Why 8 is a cube number (2 × 2 × 2)</div>
+          <div class="visual-demo">
+            <span style="font-size:.95rem;">Layer 1: </span>
+            <span style="letter-spacing:2px;">🟣🟣</span><span style="margin:0 4px;">/</span><span style="letter-spacing:2px;">🟣🟣</span>
+            <span style="margin:0 8px;">→</span>
+            <span style="font-size:.95rem;">Layer 2: </span>
+            <span style="letter-spacing:2px;">🟣🟣</span><span style="margin:0 4px;">/</span><span style="letter-spacing:2px;">🟣🟣</span><br>
+            <span style="font-size:.8rem;color:var(--text2);">2 layers × 2 rows × 2 cols = 8 cubes stacked in 3D!</span>
+          </div>`;
+      },
+      formula: '🧪 Formula: n × n × n (or n³). The sequence goes: 1, 8, 27, 64, 125...',
+      examples() { return Array.from({length:120}, (_,i)=>i+1).filter(n => NUM_CACHE[n].isCube); }
+    },
+    {
+      key: 'triangular', icon: '🔺', title: 'Triangular Numbers', color: '#34d399',
+      minDiff: 0,
+      definition: 'Triangular numbers form a perfect <strong>triangle</strong> when stacked, like bowling pins! Each row has one more dot than the row above.',
+      visual() {
+        return `<div class="visual-label">Why 10 is triangular (4 rows)</div>
+          <div class="visual-demo" style="display:flex;flex-direction:column;align-items:center;">
+            <div>🟢</div>
+            <div>🟢🟢</div>
+            <div>🟢🟢🟢</div>
+            <div>🟢🟢🟢🟢</div>
+            <div style="font-size:.8rem;color:var(--text2);margin-top:4px;">1 + 2 + 3 + 4 = 10 🎳</div>
+          </div>`;
+      },
+      formula: '🧪 Formula: n × (n+1) ÷ 2. Add rows: 1, then 1+2=3, then 1+2+3=6, then 1+2+3+4=10...',
+      examples() { return Array.from({length:120}, (_,i)=>i+1).filter(n => NUM_CACHE[n].isTriangular); }
+    },
+    {
+      key: 'pow2', icon: '⚡', title: 'Powers of 2', color: '#f472b6',
+      minDiff: 1,
+      definition: 'Powers of 2 grow by <strong>doubling</strong>! Starting from 1, each step multiplies by 2. These numbers are fundamental to computers — every byte, pixel, and file uses powers of 2!',
+      visual() {
+        return `<div class="visual-label">Doubling chain</div>
+          <div class="visual-demo">
+            <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
+              <span style="background:rgba(244,114,182,.2);padding:3px 8px;border-radius:8px;">1</span>
+              <span style="color:var(--text2);">×2→</span>
+              <span style="background:rgba(244,114,182,.25);padding:3px 8px;border-radius:8px;">2</span>
+              <span style="color:var(--text2);">×2→</span>
+              <span style="background:rgba(244,114,182,.3);padding:3px 8px;border-radius:8px;">4</span>
+              <span style="color:var(--text2);">×2→</span>
+              <span style="background:rgba(244,114,182,.35);padding:3px 8px;border-radius:8px;">8</span>
+              <span style="color:var(--text2);">×2→</span>
+              <span style="background:rgba(244,114,182,.4);padding:3px 8px;border-radius:8px;">16</span>
+              <span style="color:var(--text2);">×2→</span>
+              <span style="background:rgba(244,114,182,.45);padding:3px 8px;border-radius:8px;">32</span>
+              <span style="color:var(--text2);">×2→</span>
+              <span style="background:rgba(244,114,182,.5);padding:3px 8px;border-radius:8px;">64</span>
+            </div>
+            <div style="font-size:.8rem;color:var(--text2);margin-top:6px;">💾 A byte = 2³ = 8 bits. A kilobyte = 2¹⁰ = 1024 bytes!</div>
+          </div>`;
+      },
+      formula: '🧪 Formula: 2ⁿ where n = 0, 1, 2, 3... Binary test: the number has exactly one "1" bit!',
+      examples() { return Array.from({length:120}, (_,i)=>i+1).filter(n => NUM_CACHE[n].isPow2); }
+    },
+    {
+      key: 'fibonacci', icon: '🌀', title: 'Fibonacci Numbers', color: '#fbbf24',
+      minDiff: 1,
+      definition: 'Each Fibonacci number is the <strong>sum of the two before it</strong>: 1, 1, 2, 3, 5, 8, 13, 21... This spiral pattern appears everywhere in nature — sunflower seeds, pinecones, seashells, and even galaxies!',
+      visual() {
+        return `<div class="visual-label">The golden spiral pattern</div>
+          <div class="visual-demo">
+            <div style="display:flex;align-items:center;justify-content:center;gap:3px;flex-wrap:wrap;">
+              <span style="background:rgba(251,191,36,.15);padding:3px 8px;border-radius:8px;">1</span>
+              <span style="color:var(--text2);">+</span>
+              <span style="background:rgba(251,191,36,.2);padding:3px 8px;border-radius:8px;">1</span>
+              <span style="color:var(--text2);">=</span>
+              <span style="background:rgba(251,191,36,.25);padding:3px 8px;border-radius:8px;">2</span>
+              <span style="color:var(--text2);">+</span>
+              <span style="background:rgba(251,191,36,.2);padding:3px 8px;border-radius:8px;">1</span>
+              <span style="color:var(--text2);">=</span>
+              <span style="background:rgba(251,191,36,.3);padding:3px 8px;border-radius:8px;">3</span>
+              <span style="color:var(--text2);">+</span>
+              <span style="background:rgba(251,191,36,.25);padding:3px 8px;border-radius:8px;">2</span>
+              <span style="color:var(--text2);">=</span>
+              <span style="background:rgba(251,191,36,.35);padding:3px 8px;border-radius:8px;">5</span>
+              <span style="color:var(--text2);">+</span>
+              <span style="background:rgba(251,191,36,.3);padding:3px 8px;border-radius:8px;">3</span>
+              <span style="color:var(--text2);">=</span>
+              <span style="background:rgba(251,191,36,.4);padding:3px 8px;border-radius:8px;">8</span>
+            </div>
+            <div style="font-size:.8rem;color:var(--text2);margin-top:6px;">🌻 Sunflowers have 34 or 55 spirals — both Fibonacci numbers!</div>
+          </div>`;
+      },
+      formula: '🧪 Rule: F(n) = F(n-1) + F(n-2), starting with F(1) = 1, F(2) = 1. Each term is the sum of the previous two!',
+      examples() { return Array.from({length:120}, (_,i)=>i+1).filter(n => NUM_CACHE[n].isFibonacci); }
+    },
+    {
+      key: 'highly-composite', icon: '🏆', title: 'Highly Composite Numbers', color: '#60a5fa',
+      minDiff: 1,
+      definition: 'A highly composite number has <strong>more divisors than every number smaller than it</strong>! It\'s the all-time champion of sharing — it can be divided into the most equal groups.',
+      visual() {
+        const hcNums = [1,2,4,6,12,24,36,48,60,120];
+        const rows = hcNums.map(n => {
+          const rec = NUM_CACHE[n];
+          return `<span style="display:inline-flex;align-items:center;gap:4px;margin:2px 0;">
+            <strong style="color:#60a5fa;min-width:28px;text-align:right;">${n}</strong>
+            <span style="color:var(--text2);font-size:.75rem;">→ ${rec.numDivisors} divisors</span>
+          </span>`;
+        });
+        return `<div class="visual-label">Record-breaking divisor counts</div>
+          <div class="visual-demo" style="display:flex;flex-direction:column;align-items:center;gap:1px;">
+            ${rows.join('')}
+            <div style="font-size:.8rem;color:var(--text2);margin-top:6px;">🎂 That's why clocks have 12 hours & 60 minutes — maximum sharing!</div>
+          </div>`;
+      },
+      formula: '🧪 Test: count divisors. If this number has more divisors than ALL smaller numbers, it\'s highly composite!',
+      examples() { return Array.from({length:120}, (_,i)=>i+1).filter(n => NUM_CACHE[n].isHighlyComposite); }
+    }
+  ];
+
+  function renderGuide() {
+    const el = document.getElementById('guideScreen');
+    const diff = currentDiff;
+
+    const cardsHtml = GUIDE_CARDS.map(card => {
+      const locked = diff < card.minDiff;
+      const examples = card.examples();
+      const exChips = examples.map(n =>
+        `<span class="gx" style="color:${card.color};background:${card.color}18;border-color:${card.color}40;"
+              onclick="openProfile(${n})">${n}</span>`
+      ).join('');
+
+      const lockHtml = locked
+        ? `<div class="lock-overlay">🔒 Unlock at ${card.minDiff === 1 ? '🗺️ Explorer' : '🏆 Champion'} difficulty</div>`
+        : '';
+
+      return `
+        <div class="guide-card${locked ? ' locked' : ''}">
+          ${lockHtml}
+          <div class="guide-accent" style="background:${card.color};"></div>
+          <span class="guide-icon">${card.icon}</span>
+          <h3 style="color:${card.color};">${card.title}</h3>
+          <div class="guide-def">${card.definition}</div>
+          <div class="guide-visual">${card.visual()}</div>
+          <div class="guide-formula">${card.formula}</div>
+          <div style="margin-top:12px;">
+            <div style="font-size:.72rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;">
+              ${examples.length} number${examples.length !== 1 ? 's' : ''} from 1–120 · click to explore!
+            </div>
+            <div class="guide-examples">${exChips}</div>
+          </div>
+        </div>`;
+    }).join('');
+
+    el.innerHTML = `
+      <div class="guide-intro">
+        <h2>📚 Number Properties Guide</h2>
+        <p>Every number has special properties that make it unique! Explore each property below to learn what it means, see visual examples, and discover which numbers from 1 to 120 have it. 🐾</p>
+      </div>
+      <div class="guide-grid">${cardsHtml}</div>
+    `;
   }
 
   function selectDiff(d) {
