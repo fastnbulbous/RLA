@@ -55,19 +55,30 @@ let _idleAvaTimer = null;
 
 function isMuted() { return localStorage.getItem('rla_muted') === 'true'; }
 
-function playBark() {
+// Audio pool — reuse pre-decoded Audio objects instead of creating on every play
+const _audioPool = new Map(); // src → Audio[]
+function _pooledPlay(src, vol) {
   if (isMuted()) return;
-  const a = new Audio(BARK_FILES[Math.floor(Math.random() * BARK_FILES.length)]);
-  a.volume = 0.55;
+  let pool = _audioPool.get(src);
+  if (!pool) {
+    pool = [new Audio(src), new Audio(src)];
+    pool.forEach(a => { a.preload = 'auto'; });
+    _audioPool.set(src, pool);
+  }
+  const a = pool.find(a => a.paused || a.ended) || pool[0];
+  a.volume = vol;
+  a.currentTime = 0;
   a.play().catch(() => {});
 }
 
+function playBark() {
+  const src = BARK_FILES[Math.floor(Math.random() * BARK_FILES.length)];
+  _pooledPlay(src, 0.55);
+}
+
 function playNextAva(vol) {
-  if (isMuted()) return;
   if (_avaPos >= _avaDeck.length) { _avaDeck = shuffle(AVA_FILES); _avaPos = 0; }
-  const a = new Audio(_avaDeck[_avaPos++]);
-  a.volume = vol || 0.7;
-  a.play().catch(() => {});
+  _pooledPlay(_avaDeck[_avaPos++], vol || 0.7);
 }
 
 function tickInteraction() {
@@ -258,7 +269,7 @@ function triggerConfetti() {
   // Bubblegum candy palette (lemon/apple/lagoon/blueberry/grape/strawberry)
   const cols = ['#d4e04a','#5ec975','#4ab8d4','#7b8fec','#c07de8','#f5634a'];
   const parts = [];
-  for (let i = 0; i < 140; i++) {
+  for (let i = 0; i < 80; i++) {
     parts.push({
       x: Math.random() * confC.width, y: -10,
       sx: Math.random() * 4 - 2,     sy: Math.random() * 5 + 4,
@@ -575,4 +586,11 @@ document.addEventListener('DOMContentLoaded', () => {
   updateStatsDisplay();
   initMascotHover();
   initJuice(); // Hook up Web Audio delegated listeners globally
+
+  // Stop nav-pulse animations after first user interaction (reduces continuous repaints)
+  const stopNavPulse = () => {
+    document.body.classList.add('user-interacted');
+    document.removeEventListener('pointerdown', stopNavPulse);
+  };
+  document.addEventListener('pointerdown', stopNavPulse);
 });

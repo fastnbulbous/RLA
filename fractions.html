@@ -18,7 +18,7 @@
     h1,h2,h3,h4 { font-family:'Outfit',sans-serif; font-weight:800; }
 
     /* ── AMBIENT BLOBS ── */
-    .blob { position:fixed; border-radius:50%; filter:blur(120px); pointer-events:none; z-index:0; transition:background .5s; }
+    .blob { position:fixed; border-radius:50%; filter:blur(60px); pointer-events:none; z-index:0; transition:background .5s; will-change:transform; }
     .blob-a { width:360px; height:360px; background:rgba(249,115,22,.14); top:-80px; right:-80px; }
     .blob-b { width:420px; height:420px; background:rgba(234,88,12,.1); bottom:-100px; left:-100px; }
     body.theme-rainbow-doggy .blob-a { background:rgba(244,63,94,.18); }
@@ -36,7 +36,7 @@
       width:100%; max-width:1100px;
       display:flex; justify-content:space-between; align-items:center;
       padding:10px 18px; margin-bottom:14px;
-      background:var(--card); backdrop-filter:blur(12px);
+      background:var(--card); backdrop-filter:blur(5px);
       border-radius:20px; border:1px solid var(--border);
       flex-wrap:wrap; gap:10px;
     }
@@ -65,7 +65,7 @@
       width:100%; max-width:1100px;
       display:grid; grid-template-columns:repeat(7,1fr);
       gap:7px; margin-bottom:10px;
-      background:var(--surface-inset); backdrop-filter:blur(10px);
+      background:var(--surface-inset); backdrop-filter:blur(5px);
       border-radius:28px; border:1px solid var(--border); padding:7px;
     }
     .mode-btn {
@@ -111,7 +111,7 @@
     /* ── PANEL ── */
     .panel {
       background: var(--card);
-      backdrop-filter:blur(12px);
+      backdrop-filter:blur(5px);
       border-radius:24px; border:1px solid var(--border);
       padding:20px; box-shadow:0 20px 40px rgba(0,0,0,.4);
       display:flex; flex-direction:column; gap:14px;
@@ -275,7 +275,7 @@
     #guideDrawer {
       position: fixed; right: -420px; top: 0; height: 100vh; width: min(420px, 92vw);
       z-index: 199; overflow-y: auto;
-      background: var(--card); backdrop-filter: blur(16px);
+      background: var(--card); backdrop-filter: blur(6px);
       border-left: 1.5px solid var(--border);
       box-shadow: -8px 0 40px rgba(0, 0, 0, 0.25);
       padding: 20px 18px 40px; transition: right 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
@@ -410,7 +410,7 @@
   <canvas id="confettiCanvas"></canvas>
 
   <!-- Answer result modal -->
-  <div id="answerModal" style="display:none;position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(10px);z-index:1100;align-items:center;justify-content:center;padding:20px;">
+  <div id="answerModal" style="display:none;position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(5px);z-index:1100;align-items:center;justify-content:center;padding:20px;">
     <div style="background:var(--card);border:1px solid var(--border);max-width:640px;width:100%;border-radius:28px;padding:28px 24px;box-shadow:0 25px 50px rgba(0,0,0,.5);animation:fadeIn .3s ease;text-align:center;">
       <div id="answerModalIcon" style="font-size:2.4rem;margin-bottom:8px;"></div>
       <div id="answerModalBody" style="font-size:.95rem;line-height:1.6;color:var(--text2);text-align:left;"></div>
@@ -460,7 +460,7 @@
   <!-- ── PJ INTRO ── -->
   <div id="pjIntro" class="pj-intro-container" style="display:none;">
     <div style="
-      background: var(--card); backdrop-filter:blur(10px);
+      background: var(--card); backdrop-filter:blur(5px);
       border:1.5px solid rgba(192,132,252,.4); border-radius:14px;
       padding:8px 13px; font-family:'Outfit',sans-serif; font-weight:800;
       font-size:.78rem; color: var(--text1); text-align:center; max-width:130px;
@@ -863,20 +863,15 @@
   function activeDens() {
     return st.diff===0?[1,2,3,4]:st.diff===1?[1,2,3,4,5,6,7,8]:st.diff===2?[1,2,3,4,5,6,7,8,9,10,11,12]:STRIP_DENS;
   }
-  function renderStrips() {
+
+  // Full rebuild — only called when denominator set or label toggle changes
+  function buildStrips() {
     const c = document.getElementById('stripsContainer');
     const showLbl = document.getElementById('lblToggle').checked;
     c.innerHTML = '';
     activeDens().forEach(den=>{
       const row = document.createElement('div'); row.className='strip-row';
-      const lbl = document.createElement('div'); lbl.className='strip-lbl';
-      const hlCount = [...st.hlSegs].filter(k=>k.startsWith(`${den}-`)).length;
-      if (hlCount > 0) {
-        const pct = Math.round(hlCount/den*100);
-        lbl.innerHTML = `<span style="color:var(--text1);font-size:.82rem;font-weight:800;">${hlCount}/${den}</span><br><span style="color:var(--text2);font-size:.65rem;font-weight:700;">${pct}%</span>`;
-      } else {
-        lbl.textContent = den===1?'1':`1/${den}`;
-      }
+      const lbl = document.createElement('div'); lbl.className='strip-lbl'; lbl.dataset.den=den;
       row.appendChild(lbl);
       const track = document.createElement('div'); track.className='strip-track';
       const col = denColor(den);
@@ -886,20 +881,50 @@
         seg.style.setProperty('--seg-color', col);
         if (den===1||den===4) seg.style.color='#1e293b';
         if (showLbl && den<=16) seg.textContent = den===1?'1':`1/${den}`;
-        const key = `${den}-${i}`;
-        if (st.hlSegs.has(key)) {
-          seg.classList.add('hl');
-        } else {
-          seg.classList.add('dim');
-        }
+        seg.dataset.key = `${den}-${i}`;
         seg.addEventListener('click',()=>{
-          st.hlSegs.has(key)?st.hlSegs.delete(key):st.hlSegs.add(key);
-          renderStrips(); playSound('click');
+          const k=seg.dataset.key;
+          st.hlSegs.has(k)?st.hlSegs.delete(k):st.hlSegs.add(k);
+          applyStripHighlights(); playSound('click');
         });
         track.appendChild(seg);
       }
       row.appendChild(track); c.appendChild(row);
     });
+    applyStripHighlights();
+  }
+
+  // Fast highlight-only pass — no DOM creation
+  function applyStripHighlights() {
+    const c = document.getElementById('stripsContainer');
+    c.querySelectorAll('.strip-seg').forEach(seg=>{
+      const hl = st.hlSegs.has(seg.dataset.key);
+      seg.classList.toggle('hl', hl);
+      seg.classList.toggle('dim', !hl);
+    });
+    c.querySelectorAll('.strip-lbl[data-den]').forEach(lbl=>{
+      const den = parseInt(lbl.dataset.den);
+      const hlCount = [...st.hlSegs].filter(k=>k.startsWith(`${den}-`)).length;
+      if (hlCount > 0) {
+        const pct = Math.round(hlCount/den*100);
+        lbl.innerHTML = `<span style="color:var(--text1);font-size:.82rem;font-weight:800;">${hlCount}/${den}</span><br><span style="color:var(--text2);font-size:.65rem;font-weight:700;">${pct}%</span>`;
+      } else {
+        lbl.textContent = den===1?'1':`1/${den}`;
+      }
+    });
+  }
+
+  // renderStrips: full rebuild when structure changes, highlight-only when just hl state changes
+  let _stripsDens = null, _stripsLbl = null;
+  function renderStrips() {
+    const dens = activeDens().join(',');
+    const lbl = document.getElementById('lblToggle').checked;
+    if (dens !== _stripsDens || lbl !== _stripsLbl) {
+      _stripsDens = dens; _stripsLbl = lbl;
+      buildStrips();
+    } else {
+      applyStripHighlights();
+    }
   }
 
   function scrollToSandbox() {
@@ -1514,7 +1539,8 @@
       const col = denColor(hf[1]);
       const pct = Math.round(fv(hf)*100);
       document.getElementById('challengeText').innerHTML =
-        `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: Is this fraction less than, equal to, or more than a half?</div>` + text;
+        `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: Is this fraction less than, equal to, or more than a half?</div>` +
+        `<div style="background:rgba(192,132,252,.13);border:2px solid rgba(192,132,252,.45);border-radius:14px;padding:10px 16px;margin-top:6px;box-shadow:0 0 18px rgba(192,132,252,.18);">${text}</div>`;
       document.getElementById('modeContent').innerHTML = `
         <div style="max-width:340px;margin:0 auto;padding:8px 0;">
           <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -1534,24 +1560,30 @@
       setTimeout(()=>{ const b=document.getElementById('cBar1'); if(b) b.style.width=b.dataset.t+'%'; },80);
       hlFrac(hf);
     } else {
+      const missionText = qtype==='smaller'
+        ? '🐾 Your mission: Which fraction is <strong>SMALLER</strong> — pick the right answer!'
+        : '🐾 Your mission: Which fraction is <strong>BIGGER</strong> — pick the right answer!';
       document.getElementById('challengeText').innerHTML =
-        `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">🐾 Your mission: Which fraction is bigger — pick the right answer!</div>` + text;
+        `<div style="color:#c084fc;font-weight:800;font-size:.85rem;margin-bottom:8px;letter-spacing:.3px;">${missionText}</div>` +
+        `<div style="background:rgba(192,132,252,.13);border:2px solid rgba(192,132,252,.45);border-radius:14px;padding:10px 16px;margin-top:6px;box-shadow:0 0 18px rgba(192,132,252,.18);">${text}</div>`;
       const c1 = denColor(f1[1]), c2 = denColor(f2[1]);
       const p1 = Math.round(fv(f1)*100), p2 = Math.round(fv(f2)*100);
+      // Map each choice to which fraction it belongs so the button sits under it
+      const btn1 = `<button class="choice-btn" onclick="checkCompare('${fs(f1).replace(/'/g,"\\'")}',this)">${fs(f1)}</button>`;
+      const btn2 = `<button class="choice-btn" onclick="checkCompare('${fs(f2).replace(/'/g,"\\'")}',this)">${fs(f2)}</button>`;
       document.getElementById('modeContent').innerHTML = `
         <div class="compare-row">
           <div class="cmp-block">
             <div class="cmp-frac"><span>${f1[0]}</span><div class="line"></div><span>${f1[1]}</span></div>
             <div class="cmp-bar"><div class="cmp-fill" id="cBar1" style="width:0%;background:${c1};" data-t="${p1}">${p1>15?p1+'%':''}</div></div>
+            <div style="margin-top:8px;">${btn1}</div>
           </div>
           <div class="cmp-vs">vs</div>
           <div class="cmp-block">
             <div class="cmp-frac"><span>${f2[0]}</span><div class="line"></div><span>${f2[1]}</span></div>
             <div class="cmp-bar"><div class="cmp-fill" id="cBar2" style="width:0%;background:${c2};" data-t="${p2}">${p2>15?p2+'%':''}</div></div>
+            <div style="margin-top:8px;">${btn2}</div>
           </div>
-        </div>
-        <div class="choices-grid">
-          ${choices.map(c=>`<button class="choice-btn" onclick="checkCompare('${c.replace(/'/g,"\\'")}',this)">${c}</button>`).join('')}
         </div>`;
       setTimeout(()=>{
         const b1=document.getElementById('cBar1'), b2=document.getElementById('cBar2');
@@ -2235,7 +2267,7 @@
   function triggerConfetti() {
     parts=[];
     const cols=['#f97316','#facc15','#22c55e','#3b82f6','#ec4899','#c084fc'];
-    for(let i=0;i<100;i++) parts.push({x:Math.random()*window.innerWidth,y:-15,sz:Math.random()*8+3,col:cols[Math.floor(Math.random()*cols.length)],sx:Math.random()*4-2,sy:Math.random()*5+4,rot:Math.random()*360,rs:Math.random()*4-2});
+    for(let i=0;i<60;i++) parts.push({x:Math.random()*window.innerWidth,y:-15,sz:Math.random()*8+3,col:cols[Math.floor(Math.random()*cols.length)],sx:Math.random()*4-2,sy:Math.random()*5+4,rot:Math.random()*360,rs:Math.random()*4-2});
     if(confAnim) cancelAnimationFrame(confAnim);
     (function anim(){
       cCtx.clearRect(0,0,confC.width,confC.height);

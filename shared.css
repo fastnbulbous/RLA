@@ -223,12 +223,13 @@ body {
   background: var(--theme-bg-gradient, var(--bg));
   color: var(--text1);
   transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
 }
 
 /* Panel card */
 .panel {
   background: var(--card);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(5px);
   border-radius: var(--radius, 24px);
   border: 1px solid var(--border);
   padding: 20px;
@@ -325,7 +326,7 @@ button:active, .tab-btn:active, .tool-btn:active, .home-btn:active, .kp-btn:acti
 .portal-card {
   position: relative;
   background: var(--card);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(6px);
   border-radius: var(--radius, 28px);
   border: 1px solid var(--border);
   padding: 34px 26px 28px;
@@ -482,8 +483,8 @@ button:active, .tab-btn:active, .tool-btn:active, .home-btn:active, .kp-btn:acti
   to   { opacity: 1; transform: translateY(0); }
 }
 @keyframes pulse-glow {
-  0%,100% { filter: drop-shadow(0 0 6px currentColor); }
-  50%      { filter: drop-shadow(0 0 18px currentColor); }
+  0%,100% { opacity: 0.85; }
+  50%      { opacity: 1; }
 }
 
 /* ── FLOATING RAINBOW MASCOT (#rpj) ───────────────────────────────────────── */
@@ -501,27 +502,23 @@ button:active, .tab-btn:active, .tool-btn:active, .home-btn:active, .kp-btn:acti
 }
 #rpj:hover { opacity: 0.85 !important; transform: scale(1.15) rotate(8deg) !important; }
 @keyframes rpj-glow {
-  0%,100% { filter: drop-shadow(0 0 8px rgba(192,132,252,.4)); }
-  50%      { filter: drop-shadow(0 0 22px rgba(192,132,252,.75)); }
+  0%,100% { opacity: 0.22; }
+  50%      { opacity: 0.45; }
 }
 @media (prefers-reduced-motion: reduce) { #rpj { animation: none; } }
 
 /* A5 — Breathing Navigation Affordance Keyframes */
 @keyframes nav-breathe {
-  0%, 100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 rgba(192, 132, 252, 0);
-    opacity: 0.85;
-  }
-  50% {
-    transform: scale(1.03);
-    box-shadow: 0 0 14px 2px rgba(192, 132, 252, 0.22);
-    opacity: 1;
-  }
+  0%, 100% { opacity: 0.78; }
+  50%       { opacity: 1; }
 }
 
 .nav-pulse {
   animation: nav-breathe 2.5s ease-in-out infinite;
+}
+/* Stop pulsing once user has interacted with the page */
+body.user-interacted .nav-pulse {
+  animation: none;
 }
 
 /* Respect Reduced Motion Preferences */
