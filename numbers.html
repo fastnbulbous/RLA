@@ -1,0 +1,1677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Explorers — Rainbow Learning Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text1); min-height: 100vh; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; padding: 12px 10px 60px; }
+    h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; font-weight: 800; }
+
+    /* Blobs */
+    .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+    .blob-a { width: 400px; height: 400px; background: rgba(56,189,248,.12); top: -100px; right: -80px; }
+    .blob-b { width: 360px; height: 360px; background: rgba(167,139,250,.1); bottom: -80px; left: -80px; }
+
+    /* Header */
+    header {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1200px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 18px; margin-bottom: 12px;
+      background: var(--card); backdrop-filter: blur(12px);
+      border-radius: 20px; border: 1px solid var(--border);
+      flex-wrap: wrap; gap: 8px;
+    }
+    .logo-row { display: flex; align-items: center; gap: 10px; }
+    .logo-img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 8px var(--area-num)); animation: pulse-glow 2.2s ease-in-out infinite; }
+    .logo-text h1 { font-size: 1.25rem; background: linear-gradient(to right, var(--area-num), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: var(--logo-glow); }
+    .logo-text p  { font-size: .7rem; color: var(--text2); text-transform: uppercase; letter-spacing: 2px; }
+    .stats-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    /* Tabs */
+    .tab-bar {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1200px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 7px; margin-bottom: 10px;
+      background: var(--surface-inset); backdrop-filter: blur(10px);
+      border-radius: 18px; border: 1px solid var(--border); padding: 6px;
+    }
+    .tab-btn {
+      background: transparent; border: 1px solid transparent;
+      color: var(--text2); padding: 10px 8px; border-radius: 13px;
+      cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700;
+      font-size: .82rem; text-align: center;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      transition: all .22s ease;
+    }
+    .tab-btn:hover:not(.active) { background: var(--card); color: var(--text1); }
+    .tab-btn.active { background: linear-gradient(135deg, var(--area-num), #0284c7); color: var(--on-accent); border-color: transparent; box-shadow: 0 4px 14px rgba(56,189,248,.38); }
+
+    /* Diff selector */
+    .diff-bar {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1200px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 6px; margin-bottom: 14px;
+    }
+    .diff-btn { background: var(--card); border: 1px solid var(--border); color: var(--text2); padding: 8px 6px; border-radius: 12px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: .75rem; transition: all .2s; text-align: center; }
+    .diff-btn small { display: block; font-size: .62rem; font-weight: 600; opacity: .7; margin-top: 2px; }
+    .diff-btn:hover:not(.active) { background: var(--surface-inset); color: var(--text1); }
+    .diff-btn.active { background: linear-gradient(135deg, #0369a1, var(--area-num)); color: var(--on-accent); border-color: transparent; box-shadow: 0 4px 12px rgba(56,189,248,.3); }
+
+    /* Gallery screen */
+    #galleryScreen { position: relative; z-index: 1; width: 100%; max-width: 1200px; }
+    .tint-toggle-bar {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .tint-btn {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text2); padding: 7px 14px; border-radius: 10px;
+      cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: .8rem;
+      transition: all .2s;
+    }
+    .tint-btn.active { background: var(--area-num); color: var(--on-accent); border-color: transparent; }
+    .explore-badge {
+      margin-left: auto; font-size: .82rem; color: var(--area-num); font-weight: 700;
+      background: rgba(56,189,248,.1); border: 1px solid rgba(56,189,248,.25); border-radius: 10px; padding: 5px 12px;
+    }
+
+    /* Legend */
+    .legend-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .legend-chip { display: flex; align-items: center; gap: 4px; font-size: .7rem; font-weight: 700; color: var(--text2); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* Number grid */
+    .num-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 6px;
+    }
+    @media (max-width: 600px) { .num-grid { grid-template-columns: repeat(auto-fill, minmax(54px, 1fr)); gap: 4px; } }
+
+    .num-tile {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; cursor: pointer; padding: 8px 4px 6px;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      transition: transform .2s, box-shadow .2s, opacity .3s;
+      position: relative; overflow: hidden;
+      min-height: 72px;
+    }
+    .num-tile:hover { transform: translateY(-4px) scale(1.07); box-shadow: 0 8px 24px rgba(56,189,248,.3); }
+    .num-tile.undiscovered { opacity: .45; }
+    .num-tile .tile-num { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.2rem; line-height: 1; color: var(--text1); }
+    .num-tile .tile-sym { font-size: .6rem; font-weight: 800; border-radius: 5px; padding: 1px 5px; color: white; }
+    .num-tile .tile-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 3px; border-radius: 0 0 14px 14px; }
+    .num-tile .paw-mark { position: absolute; top: 4px; right: 5px; font-size: .65rem; opacity: .5; }
+
+    /* Profile modal */
+    #profileModal {
+      display: none; position: fixed; inset: 0; z-index: 900;
+      background: rgba(0,0,0,.6); backdrop-filter: blur(8px);
+      align-items: center; justify-content: center;
+      padding: 12px;
+    }
+    #profileModal.show { display: flex; }
+    .profile-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 28px; max-width: 680px; width: 100%;
+      max-height: 90vh; overflow-y: auto;
+      padding: 24px 22px 28px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+      animation: popIn .3s cubic-bezier(.175,.885,.32,1.5);
+      position: relative;
+    }
+    .profile-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .profile-nav button { background: rgba(30,41,59,.8); border: 1px solid var(--border); color: var(--text1); padding: 6px 14px; border-radius: 10px; cursor: pointer; font-weight: 700; font-family: 'Outfit', sans-serif; font-size: .9rem; transition: all .18s; }
+    .profile-nav button:hover { border-color: var(--area-num); }
+    .profile-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--text2); font-size: 1.4rem; cursor: pointer; line-height: 1; }
+
+    /* Sub-cards inside profile */
+    .sub-card { background: rgba(15,23,42,.5); border: 1px solid var(--border); border-radius: 18px; padding: 14px 16px; margin-bottom: 12px; }
+    .sub-card h3 { font-size: .9rem; color: var(--text2); margin-bottom: 8px; }
+    .prop-badge { padding: 5px 12px; border-radius: 20px; font-size: .78rem; font-weight: 800; border: 1px solid; cursor: default; }
+
+    /* Factor Trees */
+    .tree-row {
+      display: flex;
+      gap: 16px;
+      overflow-x: auto;
+      padding: 12px 4px;
+      justify-content: flex-start;
+      scroll-behavior: smooth;
+      width: 100%;
+    }
+    @media (min-width: 480px) {
+      .tree-row {
+        justify-content: center;
+      }
+    }
+    .tree-col {
+      flex: 1;
+      min-width: 210px;
+      background: rgba(15,23,42,0.3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tree-col h4 {
+      font-size: .82rem;
+      color: var(--text2);
+      margin-bottom: 12px;
+      text-align: center;
+      font-weight: 800;
+    }
+    .tree-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+    .tree-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      padding: 0 4px;
+    }
+    .tree-node:not(.tree-root) {
+      padding-top: 14px;
+    }
+    /* Horizontal line connect */
+    .tree-node:not(.tree-root)::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--border);
+    }
+    /* Hide outer halves of horizontal connect */
+    .tree-children > .tree-node:first-child::before {
+      left: 50%;
+      width: 50%;
+    }
+    .tree-children > .tree-node:last-child::before {
+      right: 50%;
+      left: 0;
+      width: 50%;
+    }
+    /* Vertical line down to child */
+    .tree-node:not(.tree-root)::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 14px;
+      background: var(--border);
+      transform: translateX(-50%);
+    }
+    .tree-val {
+      min-width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 0.8rem;
+      padding: 0 8px;
+      border-radius: 17px;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+      position: relative;
+      z-index: 2;
+    }
+    .tree-val-prime {
+      background: rgba(251, 113, 133, 0.18);
+      border: 1.5px solid #fb7185;
+      color: var(--text1);
+    }
+    .tree-val-comp {
+      background: rgba(96, 165, 250, 0.18);
+      border: 1.5px solid #60a5fa;
+      color: var(--text1);
+    }
+    .tree-children {
+      display: flex;
+      justify-content: center;
+      position: relative;
+      margin-top: 14px;
+    }
+    /* Vertical line down from parent */
+    .tree-children::before {
+      content: '';
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      width: 2px;
+      height: 14px;
+      background: var(--border);
+      transform: translateX(-50%);
+    }
+
+    /* Element science badge */
+    .elem-badge { text-align: center; }
+    .elem-sym { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2.8rem; line-height: 1; }
+    .elem-name { font-size: 1.1rem; font-weight: 800; margin-top: 2px; }
+    .elem-z { font-size: .8rem; color: var(--text2); margin-top: 2px; }
+    .elem-fact { font-size: .85rem; color: var(--text2); margin-top: 8px; line-height: 1.5; }
+
+    /* Narrator strip */
+    .narrator-strip { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+    .narrator-strip img { width: 52px; height: 52px; border-radius: 50%; object-fit: contain; border: 2px solid var(--area-num); }
+    .narrator-bubble {
+      background: rgba(15,23,42,.8); border: 1px solid var(--border); padding: 9px 13px;
+      border-radius: 14px; font-size: .84rem; font-weight: 600; line-height: 1.5; flex: 1;
+      position: relative;
+    }
+    .narrator-bubble::before {
+      content: ''; position: absolute; left: -6px; top: 50%;
+      transform: translateY(-50%) rotate(45deg); width: 10px; height: 10px;
+      background: #0f172a; border-left: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+
+    /* Shape visualizer */
+    #shapeViz { min-height: 80px; }
+    .dog-token { display: inline-flex; align-items: center; justify-content: center; }
+    .dog-token img { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; }
+
+    /* Journey panel */
+    .journey-path { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; margin-top: 8px; }
+    .journey-step { font-size: .75rem; font-weight: 800; padding: 3px 7px; border-radius: 8px; }
+    .journey-step.even { background: rgba(56,189,248,.2); color: var(--area-num); }
+    .journey-step.odd  { background: rgba(167,139,250,.2); color: var(--purple); }
+    .journey-step.end  { background: rgba(52,211,153,.2); color: var(--green); }
+
+    /* Build-a-Number */
+    #buildScreen { position: relative; z-index: 1; width: 100%; max-width: 900px; }
+    .bit-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 16px 0; }
+    .bit-light {
+      width: 64px; height: 64px; border-radius: 16px; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border: 2px solid var(--border);
+      background: rgba(15,23,42,.6);
+      transition: all .18s cubic-bezier(.175,.885,.32,1.275);
+      user-select: none;
+    }
+    .bit-light.on { background: linear-gradient(135deg, var(--area-num), #0284c7); border-color: var(--area-num); box-shadow: 0 0 18px rgba(56,189,248,.5); }
+    .bit-light .bit-val { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: .75rem; color: var(--text2); }
+    .bit-light.on .bit-val { color: rgba(255,255,255,.7); }
+    .bit-light .bit-icon { font-size: 1.4rem; }
+    .bit-result { text-align: center; font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 3rem; color: var(--area-num); margin: 8px 0; }
+    .bit-target-row { text-align: center; margin-bottom: 12px; }
+
+    /* Quiz screen */
+    #quizScreen { position: relative; z-index: 1; width: 100%; max-width: 900px; }
+    .quiz-panel { background: rgba(15,23,42,.5); border: 1px solid var(--border); border-radius: 24px; padding: 22px; margin-bottom: 16px; }
+    .choices-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+
+    @media (max-width: 600px) {
+      .choices-grid { grid-template-columns: 1fr; }
+      .tab-bar { grid-template-columns: 1fr 1fr; }
+      .diff-bar { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── SEQUENCE SCREEN ── */
+    #sequencesScreen { position: relative; z-index: 1; width: 100%; max-width: 900px; }
+
+    .seq-panel {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 22px; padding: 20px 22px; margin-bottom: 14px;
+    }
+
+    /* Chips row */
+    .seq-chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin: 14px 0; }
+    .seq-chip {
+      min-width: 64px; height: 64px; border-radius: 18px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.4rem;
+      border: 2px solid var(--border); background: var(--card); color: var(--text1);
+      cursor: pointer; transition: transform .18s cubic-bezier(.34,1.56,.64,1), box-shadow .18s;
+      position: relative;
+    }
+    .seq-chip:hover { transform: scale(1.08); box-shadow: 0 4px 18px oklch(70% .15 200 / .3); }
+    .seq-chip.unknown {
+      border-color: var(--area-num-a, var(--area-num));
+      color: var(--area-num-a, var(--area-num));
+      background: oklch(70% .15 200 / .12);
+      font-size: 1.8rem; cursor: default;
+    }
+    .seq-chip.unknown:hover { transform: none; }
+
+    /* Term peek card */
+    #seqTermCard {
+      position: fixed; z-index: 600;
+      background: var(--card); border: 1px solid var(--border); border-radius: 18px;
+      padding: 12px 16px; max-width: 200px;
+      pointer-events: none; opacity: 0; transition: opacity .2s;
+      box-shadow: var(--shadow, 0 8px 30px rgba(0,0,0,.4));
+      font-size: .82rem; color: var(--text2); line-height: 1.6;
+    }
+
+    /* Graph canvas */
+    #seqGraph {
+      width: 100%; max-width: 560px; height: 200px;
+      display: block; margin: 0 auto 14px;
+      border-radius: 14px; border: 1px solid var(--border);
+    }
+
+    /* Keypad for sequences */
+    #seqKeypad .keypad-answer-display {
+      background: var(--card); border: 2px solid var(--area-num-a, var(--area-num));
+      border-radius: 14px; padding: 12px 24px;
+      font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2.4rem;
+      color: var(--area-num-a, var(--area-num)); min-width: 120px; text-align: center;
+    }
+    #seqKeypad .keypad-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; width: 240px; }
+    #seqKeypad .kp-btn {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 8px;
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem;
+      color: var(--text1); cursor: pointer; touch-action: manipulation;
+      transition: all .15s cubic-bezier(.175,.885,.32,1.275);
+      min-height: 52px; display: flex; align-items: center; justify-content: center;
+    }
+    #seqKeypad .kp-btn:hover { border-color: var(--area-num); transform: scale(1.04); }
+    #seqKeypad .kp-btn:active { transform: scale(.92); }
+    #seqKeypad .kp-btn.submit { grid-column: span 3; background: var(--grad-num, linear-gradient(135deg, var(--area-num-a), var(--area-num-b))); color: white; border-color: transparent; font-size: 1rem; }
+    #seqKeypad .kp-btn.del { color: var(--area-num); }
+
+    /* Hint ladder */
+    .diff-ladder { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
+    .diff-chip {
+      padding: 4px 10px; border-radius: 8px;
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: .85rem;
+      background: oklch(70% .15 200 / .15); border: 1px solid var(--area-num-a, var(--area-num));
+      color: var(--area-num-a, var(--area-num));
+    }
+    .diff-chip.second { background: oklch(70% .15 260 / .12); border-color: var(--area-calc-a, var(--area-calc)); color: var(--area-calc-a, var(--area-calc)); }
+  </style>
+</head>
+<body>
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-row" style="gap:16px;">
+      <a href="index.html" class="home-avatar-btn" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;">
+        <img id="logoMascotImg" src="head.png" class="logo-img" style="width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 0 6px var(--accent-purple)); opacity:0.95; transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0;" alt="Mascot Mascot">
+        <span style="font-size:0.65rem;font-weight:800;color:var(--text2);font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:0.3px;background:rgba(30,41,59,0.6);border:1px solid var(--border);padding:2px 8px;border-radius:8px;transition:all 0.2s;white-space:nowrap;">🏠 Home avavav! 🐾</span>
+      </a>
+      <div class="logo-text">
+        <h1>Number Explorers 🔢 — Rainbow Learning Academy</h1>
+        <p>Discover every number 1–120</p>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <button id="themeToggleBtn" class="tool-btn" onclick="toggleTheme()">☀️ Light</button>
+      <button id="muteBtn" class="tool-btn" onclick="toggleMute()">🔊 Sound</button>
+      <div class="stat-badge stars">⭐ <span id="starsCount">0</span></div>
+      <div class="stat-badge streak">🔥 <span id="streakCount">0</span></div>
+      <div class="stat-badge" style="color:var(--area-num);">🐾 <span id="exploreCount">0</span>/120</div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('gallery')" id="tabGallery">🔭 Gallery</button>
+    <button class="tab-btn nav-pulse" onclick="switchTab('quiz')" id="tabQuiz">🎯 Quiz</button>
+    <button class="tab-btn nav-pulse" onclick="switchTab('build')" id="tabBuild">🔧 Build-a-Number</button>
+    <button class="tab-btn nav-pulse" onclick="switchTab('sequences')" id="tabSequences">🔢 Sequences</button>
+  </div>
+
+  <!-- DIFFICULTY -->
+  <div class="diff-bar">
+    <button class="diff-btn active" onclick="selectDiff(0)" id="diff0">🌱 Beginner<small>Core facts</small></button>
+    <button class="diff-btn nav-pulse" onclick="selectDiff(1)" id="diff1">🗺️ Explorer<small>More detail</small></button>
+    <button class="diff-btn nav-pulse" onclick="selectDiff(2)" id="diff2">🏆 Champion<small>Full profile</small></button>
+    <button class="diff-btn nav-pulse" onclick="selectDiff(3)" id="diff3">🌈 Rainbow<small>Everything</small></button>
+  </div>
+
+  <!-- GALLERY SCREEN -->
+  <div id="galleryScreen">
+    <div class="tint-toggle-bar">
+      <button class="tint-btn active" onclick="setTint('math')" id="tintMath">🔢 Math</button>
+      <button class="tint-btn" onclick="setTint('elem')" id="tintElem">⚗️ Element</button>
+      <span id="exploreBadge" class="explore-badge">🐾 0 / 120 explored</span>
+    </div>
+    <div class="legend-row" id="legendRow"></div>
+    <div class="num-grid" id="numGrid"></div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen" style="display:none;">
+    <div class="quiz-panel">
+      <div class="narrator-strip" id="quizNarrator">
+        <img src="head.png" id="quizNarrImg" alt="narrator">
+        <div class="narrator-bubble" id="quizNarrSpeech">Loading a quest...</div>
+      </div>
+      <div id="quizChallenge" style="font-size:1.05rem;font-weight:700;line-height:1.6;margin-bottom:4px;"></div>
+      <div id="quizFeedback" style="min-height:22px;font-weight:800;font-size:.95rem;margin:6px 0;"></div>
+      <div class="choices-grid" id="quizChoices"></div>
+      <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;">
+        <button class="primary-btn" onclick="genQuiz()" id="nextBtn">🎲 New Quest</button>
+        <button class="tool-btn" onclick="useHint()" id="hintBtn">💡 Hint</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILD-A-NUMBER SCREEN -->
+  <div id="buildScreen" style="display:none;">
+    <div class="quiz-panel">
+      <div class="narrator-strip">
+        <img src="hairy_maclary.png" alt="Hairy Maclary">
+        <div class="narrator-bubble">Toggle the paw-lights to build any number from 0 to 255! Each light is worth double the one to its right. 🐾</div>
+      </div>
+      <div class="bit-target-row" id="buildTargetRow" style="display:none;">
+        <span style="color:var(--text2);font-weight:700;">Target: </span>
+        <strong id="buildTargetNum" style="color:var(--area-num);font-size:1.2rem;"></strong>
+        <span id="buildTargetResult" style="margin-left:10px;font-weight:800;"></span>
+      </div>
+      <div class="bit-row" id="bitRow"></div>
+      <div class="bit-result" id="bitResult">0</div>
+      <div style="text-align:center;color:var(--text2);font-size:.85rem;margin-bottom:10px;" id="bitInfo">
+        Binary: <strong id="bitBinary" style="color:var(--area-num);">00000000</strong> &nbsp;|&nbsp; Paw-lights lit: <strong id="bitPopcount">0</strong>
+        &nbsp;<span id="evilOdious" style="color:var(--purple);"></span>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="primary-btn" onclick="buildChallenge()">🎯 Challenge Mode</button>
+        <button class="tool-btn" onclick="buildClear()">🔄 Clear</button>
+        <button class="tool-btn" onclick="buildRandom()">🎲 Random</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEQUENCES SCREEN -->
+  <div id="sequencesScreen" style="display:none;">
+    <div class="seq-panel">
+      <div class="narrator-strip" id="seqNarrator">
+        <img src="head.png" id="seqNarrImg" alt="narrator">
+        <div class="narrator-bubble" id="seqNarrSpeech">What comes next? 🐾</div>
+      </div>
+
+      <div class="seq-chips" id="seqChips"></div>
+
+      <canvas id="seqGraph"></canvas>
+
+      <div style="display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:center;">
+        <button class="tool-btn" onclick="seqHint()" id="seqHintBtn">💡 Hint</button>
+        <div id="seqHintArea" style="display:none;flex:1;">
+          <div style="font-size:.8rem;color:var(--text2);margin-bottom:4px;">Differences:</div>
+          <div class="diff-ladder" id="seqDiffLadder"></div>
+        </div>
+      </div>
+
+      <div id="seqFeedback" style="text-align:center;font-weight:800;font-size:1rem;margin-bottom:10px;min-height:24px;"></div>
+
+      <div class="keypad-wrap" id="seqKeypad">
+        <div class="keypad-answer-display" id="seqAnswer">_</div>
+        <div class="keypad-grid" id="seqKeypadGrid"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap;">
+        <button class="primary-btn" onclick="genSequence()">🎲 New Sequence</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Term peek card -->
+  <div id="seqTermCard"></div>
+
+  <!-- NUMBER PROFILE MODAL -->
+  <div id="profileModal">
+    <div class="profile-box" id="profileBox">
+      <button class="profile-close" onclick="closeProfile()">✕</button>
+      <div class="profile-nav">
+        <button onclick="walkProfile(-1)">← Prev</button>
+        <span id="profileNavLabel" style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1rem;"></span>
+        <button onclick="walkProfile(1)">Next →</button>
+      </div>
+      <div id="profileContent"></div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="logic.js"></script>
+  <script>
+  // Pure number logic loaded from logic.js: NUM_CACHE, MATH_TINTS, getMathTint,
+  // SEQ_GENERATORS, diffLadder, buildNumberRecord, MAX_NUMBER, etc.
+
+  // ═══════════════════════════════════════════════════════════════════
+  // ELEMENT DATASET  (pipe-delimited: z|symbol|name|cat|fact)
+  // ═══════════════════════════════════════════════════════════════════
+  const ELEM_RAW = `1|H|Hydrogen|nm|The lightest element! Stars and the sun are mostly hydrogen. 🌟
+2|He|Helium|ng|Lighter than air — it makes balloons float and your voice squeaky! 🎈
+3|Li|Lithium|am|A soft silver metal used in phone batteries! 🔋
+4|Be|Beryllium|am2|Super light and strong — used in spacecraft! 🚀
+5|B|Boron|me|Found in borax soap and very hard materials. 🧼
+6|C|Carbon|nm|The basis of all life — in you, diamonds, and pencils! 💎
+7|N|Nitrogen|nm|Makes up 78% of the air you breathe right now! 💨
+8|O|Oxygen|nm|The air you need to breathe! Every breath, you take in oxygen. 🌬️
+9|F|Fluorine|ha|The most reactive element — makes your toothpaste work! 🦷
+10|Ne|Neon|ng|Makes those bright glowing signs in shop windows! 🌟
+11|Na|Sodium|am|Half of table salt — but pure sodium explodes in water! 💥
+12|Mg|Magnesium|am2|Burns with a brilliant white light — in fireworks! 🎆
+13|Al|Aluminium|pm|Light and strong — used in planes, cans, and foil! ✈️
+14|Si|Silicon|me|The material computers are made from! 💻
+15|P|Phosphorus|nm|Glows in the dark and is in your bones and DNA! 🦴
+16|S|Sulfur|nm|Smells like rotten eggs and makes matches work! 🔥
+17|Cl|Chlorine|ha|Keeps swimming pools clean and safe! 🏊
+18|Ar|Argon|ng|Fills light bulbs to stop the wire burning out! 💡
+19|K|Potassium|am|Found in bananas — keeps your heart beating! 🍌
+20|Ca|Calcium|am2|Makes your bones and teeth strong! 🦷
+21|Sc|Scandium|tm|A rare metal used in some aircraft parts. ✈️
+22|Ti|Titanium|tm|Super strong and light — used in jet engines and implants! 🦾
+23|V|Vanadium|tm|Makes steel super tough! 🔩
+24|Cr|Chromium|tm|Makes stainless steel shiny and rust-proof! ✨
+25|Mn|Manganese|tm|Helps make steel stronger — in your cereal too! 🥣
+26|Fe|Iron|tm|The most common metal on Earth — in your blood! 🩸
+27|Co|Cobalt|tm|Makes the brilliant blue in pottery and glass! 🔵
+28|Ni|Nickel|tm|Used in coins and protects against rust! 🪙
+29|Cu|Copper|tm|Turns green outdoors — makes wires and the Statue of Liberty! 🗽
+30|Zn|Zinc|tm|Protects iron from rust — galvanises buckets! 🪣
+31|Ga|Gallium|pm|Melts in your hand — it's a liquid near room temperature! 🌡️
+32|Ge|Germanium|me|Used in early transistors — helped start the computer age! 💻
+33|As|Arsenic|me|A metalloid with a notorious history as a poison. ⚠️
+34|Se|Selenium|nm|Used in solar cells to turn sunlight into electricity! ☀️
+35|Br|Bromine|ha|One of only two liquid elements at room temperature! 💧
+36|Kr|Krypton|ng|A glowing noble gas — Superman's planet was named after it! 🦸
+37|Rb|Rubidium|am|Ignites spontaneously in air — very reactive! 🔥
+38|Sr|Strontium|am2|Gives fireworks their brilliant red colour! 🎆
+39|Y|Yttrium|tm|Used in LED lights and lasers! 💡
+40|Zr|Zirconium|tm|Used in nuclear reactors because it doesn't absorb neutrons! ⚛️
+41|Nb|Niobium|tm|Strengthens steel — used in pipelines and jets! 🛫
+42|Mo|Molybdenum|tm|Has one of the highest melting points of all metals! 🌡️
+43|Tc|Technetium|tm|The first artificially made element — only exists in labs! 🔬
+44|Ru|Ruthenium|tm|A rare platinum-group metal used in electronics! 💻
+45|Rh|Rhodium|tm|The rarest precious metal — more valuable than gold! 💰
+46|Pd|Palladium|tm|Used in catalytic converters to clean car exhaust! 🚗
+47|Ag|Silver|tm|A shiny precious metal used in jewellery and mirrors! 🪞
+48|Cd|Cadmium|tm|Used in rechargeable batteries and yellow pigments! 🎨
+49|In|Indium|pm|Used to make touchscreens — very soft and silvery! 📱
+50|Sn|Tin|pm|Makes tin cans — mixed with copper to make bronze! 🥫
+51|Sb|Antimony|me|Used in flame retardants to make things fire-safe! 🧯
+52|Te|Tellurium|me|Makes steel easier to machine — rare in Earth's crust! ⚙️
+53|I|Iodine|ha|Keeps your thyroid healthy — a purple vapour! 💜
+54|Xe|Xenon|ng|Used in bright xenon headlights and space thrusters! 🚀
+55|Cs|Caesium|am|So reactive it explodes on contact with water or ice! 💥
+56|Ba|Barium|am2|Used in medical X-ray scans as a contrast agent! 🏥
+57|La|Lanthanum|ln|Used in camera lenses for ultra-clear images! 📷
+58|Ce|Cerium|ln|The most abundant rare earth — self-ignites when scratched! 🔥
+59|Pr|Praseodymium|ln|Used in aircraft engines and strong magnets! ✈️
+60|Nd|Neodymium|ln|Makes the strongest permanent magnets in the world! 🧲
+61|Pm|Promethium|ln|Radioactive and very rare — used in some pacemakers! ❤️
+62|Sm|Samarium|ln|Makes magnets that work at very high temperatures! 🌡️
+63|Eu|Europium|ln|Makes the red and blue colours in TV screens! 📺
+64|Gd|Gadolinium|ln|Helps doctors see inside your body in MRI scans! 🏥
+65|Tb|Terbium|ln|Makes green phosphors in energy-saving bulbs! 💚
+66|Dy|Dysprosium|ln|Essential for magnets in electric car motors! 🚗
+67|Ho|Holmium|ln|Has the highest magnetic strength of any element! 🧲
+68|Er|Erbium|ln|Used in fibre-optic cables to boost internet signals! 🌐
+69|Tm|Thulium|ln|The rarest naturally occurring lanthanide! 🔬
+70|Yb|Ytterbium|ln|Used in the world's most accurate atomic clocks! ⏱️
+71|Lu|Lutetium|ln|The last and heaviest lanthanide element! ⚗️
+72|Hf|Hafnium|tm|Used in nuclear reactor control rods! ⚛️
+73|Ta|Tantalum|tm|Corrosion-proof — used in phone circuit boards! 📱
+74|W|Tungsten|tm|The highest melting point of any metal — 3422°C! 🌡️
+75|Re|Rhenium|tm|One of the rarest metals — used in jet engine blades! ✈️
+76|Os|Osmium|tm|The densest naturally occurring element! ⚖️
+77|Ir|Iridium|tm|The most corrosion-resistant metal — very rare! 🌟
+78|Pt|Platinum|tm|A precious metal used in jewellery and catalytic converters! 💍
+79|Au|Gold|tm|The shiny precious metal prized since ancient times! 🥇
+80|Hg|Mercury|tm|The only metal that is liquid at room temperature! 💧
+81|Tl|Thallium|pm|A toxic heavy metal sometimes called the poisoner's poison! ⚠️
+82|Pb|Lead|pm|A dense soft metal — used in old pipes and paint! 🔩
+83|Bi|Bismuth|pm|Forms rainbow-coloured crystals — in some medicines! 🌈
+84|Po|Polonium|me|Highly radioactive — discovered by Marie Curie! ☢️
+85|At|Astatine|ha|The rarest naturally occurring element on Earth! 🔬
+86|Rn|Radon|ng|A radioactive noble gas that seeps from the ground! ☢️
+87|Fr|Francium|am|The most unstable naturally occurring element! ⚡
+88|Ra|Radium|am2|Radioactive — Marie Curie discovered it and won the Nobel Prize! 🏆
+89|Ac|Actinium|ac|A radioactive metal that glows blue in the dark! 🔵
+90|Th|Thorium|ac|Used as a safer nuclear fuel alternative! ⚛️
+91|Pa|Protactinium|ac|A rare and highly radioactive metal! ☢️
+92|U|Uranium|ac|Powers nuclear reactors — 92 protons in its nucleus! ⚛️
+93|Np|Neptunium|ac|Named after the planet Neptune — made in nuclear reactors! 🔵
+94|Pu|Plutonium|ac|Used in nuclear weapons and spacecraft power! 🚀
+95|Am|Americium|ac|Found in smoke detectors — keeps your home safe! 🔔
+96|Cm|Curium|ac|Named after Marie and Pierre Curie! 🏆
+97|Bk|Berkelium|ac|Made only in particle accelerators! ⚛️
+98|Cf|Californium|ac|Only a few micrograms exist — incredibly rare! 🔬
+99|Es|Einsteinium|ac|Named after Albert Einstein! 🧠
+100|Fm|Fermium|ac|Named after Enrico Fermi, pioneer of nuclear energy! ⚛️
+101|Md|Mendelevium|ac|Named after Mendeleev who invented the periodic table! 📊
+102|No|Nobelium|ac|Named after Alfred Nobel, inventor of dynamite! 💥
+103|Lr|Lawrencium|ac|The last actinide — named after Ernest Lawrence! 🔬
+104|Rf|Rutherfordium|tm|Named after Ernest Rutherford who split the atom! ⚛️
+105|Db|Dubnium|tm|Made only a few atoms at a time in accelerators! 🔬
+106|Sg|Seaborgium|tm|Named after Glenn Seaborg who helped discover 10 elements! 🌟
+107|Bh|Bohrium|tm|Named after Niels Bohr, founder of quantum theory! 🔬
+108|Hs|Hassium|tm|Named after the German state of Hesse! 🇩🇪
+109|Mt|Meitnerium|tm|Named after physicist Lise Meitner — a true pioneer! 👩‍🔬
+110|Ds|Darmstadtium|tm|Made at a particle accelerator in Darmstadt, Germany! 🇩🇪
+111|Rg|Roentgenium|tm|Named after Wilhelm Röntgen who discovered X-rays! ☢️
+112|Cn|Copernicium|tm|Named after astronomer Copernicus! 🌍
+113|Nh|Nihonium|pm|Discovered by Japanese scientists — named after Japan (Nihon)! 🇯🇵
+114|Fl|Flerovium|pm|Named after Flerov Laboratory in Russia! 🔬
+115|Mc|Moscovium|pm|Named after Moscow, Russia! 🏛️
+116|Lv|Livermorium|pm|Named after Livermore Laboratory in California! 🇺🇸
+117|Ts|Tennessine|ha|Named after Tennessee — made in collaboration between Russia and USA! 🔬
+118|Og|Oganesson|ng|The heaviest known element — only a few atoms ever made! ⚛️`;
+
+  const ELEM_CATS = {
+    nm: { label: 'Nonmetal',        color: '#22d3ee' },
+    ng: { label: 'Noble Gas',       color: '#818cf8' },
+    am: { label: 'Alkali Metal',    color: '#f87171' },
+    am2:{ label: 'Alkaline Earth',  color: '#fb923c' },
+    me: { label: 'Metalloid',       color: '#a3e635' },
+    ha: { label: 'Halogen',         color: '#34d399' },
+    tm: { label: 'Transition Metal',color: '#60a5fa' },
+    pm: { label: 'Post-Trans Metal',color: '#c084fc' },
+    ln: { label: 'Lanthanide',      color: '#f472b6' },
+    ac: { label: 'Actinide',        color: '#facc15' },
+  };
+
+  const ELEMENTS = {};
+  ELEM_RAW.trim().split('\n').forEach(line => {
+    const [z, symbol, name, cat, ...factParts] = line.split('|');
+    const n = parseInt(z);
+    ELEMENTS[n] = { z: n, symbol, name, category: cat, color: (ELEM_CATS[cat]||{color:'#94a3b8'}).color, fact: factParts.join('|') };
+  });
+  for (let i = 119; i <= MAX_NUMBER; i++) {
+    ELEMENTS[i] = { z: i, symbol: '?', name: 'Undiscovered', category: 'xx', color: '#475569',
+      fact: "Scientists haven't made this yet — maybe you will! 🔬" };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STORY OVERRIDES (sparse ~12 entries)
+  // ═══════════════════════════════════════════════════════════════════
+  const STORY_OVERRIDES = {
+    1:  { headline: 'The Beginning', story: '<strong>Rainbow Doggy</strong> says: "1 is the start of everything — every number is built from 1!" 🐾', narrator: 'Rainbow Doggy', highlight: ['unit'] },
+    2:  { headline: 'The Smallest Prime', story: '<strong>Scarface Claw</strong> growls: "2 is the only EVEN prime — it can\'t be shared equally!" 😼', narrator: 'Scarface Claw', highlight: ['prime', 'even'] },
+    6:  { headline: 'Perfect Six', story: '<strong>Bottomley Potts</strong> says: "6 is PERFECT — 1+2+3 = 6! Its friends add up to itself!" 🐶', narrator: 'Bottomley Potts', highlight: ['perfect'] },
+    7:  { headline: 'Lucky Seven', story: '<strong>Muffin McLay</strong> says: "7 is prime AND a happy number — it always reaches 1!" 🐾', narrator: 'Muffin McLay', highlight: ['prime', 'happy'] },
+    12: { headline: 'Highly Composite', story: '<strong>Hercules Morse</strong> booms: "12 has MORE divisors than ANY smaller number — 1,2,3,4,6,12!" 🦴', narrator: 'Hercules Morse', highlight: ['highly-composite'] },
+    28: { headline: 'Perfect Twenty-Eight', story: '<strong>Bottomley Potts</strong> beams: "28 is the second perfect number! 1+2+4+7+14 = 28!" 🐶', narrator: 'Bottomley Potts', highlight: ['perfect'] },
+    64: { headline: 'Six-Four Power Tower', story: '<strong>Hercules Morse</strong> roars: "64 = 2⁶ — it\'s a cube, a square, AND a power of two!" 🐾', narrator: 'Hercules Morse', highlight: ['square', 'cube', 'pow2'] },
+    120:{ headline: 'Grand Finale 120!', story: '<strong>Hairy Maclary</strong> cheers: "120 is the biggest highly-composite — it has the MOST divisors of all 1–120!" 🎉', narrator: 'Hairy Maclary', highlight: ['highly-composite', 'triangular', 'tetrahedral'] },
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // NARRATOR PERSONALITY (by number property)
+  // ═══════════════════════════════════════════════════════════════════
+  function pickNarrator(rec) {
+    if (STORY_OVERRIDES[rec.n]) return STORY_OVERRIDES[rec.n].narrator;
+    if (rec.isPrime) return 'Scarface Claw';
+    if (rec.isHighlyComposite) return 'Bottomley Potts';
+    if (rec.isSquare || rec.isCube) return 'Hercules Morse';
+    if (rec.isFibonacci) return 'Muffin McLay';
+    if (rec.numClass === 'perfect') return 'Bottomley Potts';
+    if (rec.numClass === 'abundant') return 'Hairy Maclary';
+    return 'Rainbow Doggy';
+  }
+
+  // MATH_TINTS and getMathTint() loaded from logic.js
+
+  // ═══════════════════════════════════════════════════════════════════
+  // STATE
+  // ═══════════════════════════════════════════════════════════════════
+  let currentTab  = 'gallery';
+  let currentDiff = 0;
+  let currentTint = 'math';
+  let discoveredSet = new Set(safeJSON('num_discovered', []));
+  let profileNum  = null;
+  let quizState   = {};
+
+  function saveDiscovered() { safeSet('num_discovered', JSON.stringify([...discoveredSet])); }
+  function markDiscovered(n) { if (!discoveredSet.has(n)) { discoveredSet.add(n); saveDiscovered(); updateExploreCount(); } }
+  function updateExploreCount() {
+    const c = discoveredSet.size;
+    document.getElementById('exploreCount').textContent = c;
+    document.getElementById('exploreBadge').textContent = `🐾 ${c} / 120 explored`;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // UI: TABS & DIFF
+  // ═══════════════════════════════════════════════════════════════════
+  function switchTab(t) {
+    // Destroy any active sequence keypad before switching away
+    if (currentTab === 'sequences' && _seqKeypadCtrl) {
+      _seqKeypadCtrl.destroy(); _seqKeypadCtrl = null;
+    }
+    currentTab = t;
+    ['gallery','quiz','build','sequences'].forEach(id => {
+      const screen = document.getElementById(id + 'Screen');
+      const btn    = document.getElementById('tab' + id.charAt(0).toUpperCase() + id.slice(1));
+      if (screen) screen.style.display = t === id ? '' : 'none';
+      if (btn) {
+        btn.classList.toggle('active', t === id);
+        btn.classList.toggle('nav-pulse', t !== id);
+      }
+    });
+    if (t === 'quiz') genQuiz();
+    if (t === 'build') initBuild();
+    if (t === 'sequences') genSequence();
+  }
+
+  function selectDiff(d) {
+    currentDiff = d;
+    [0,1,2,3].forEach(i => {
+      const btn = document.getElementById('diff'+i);
+      if (btn) {
+        btn.classList.toggle('active', i === d);
+        btn.classList.toggle('nav-pulse', i !== d);
+      }
+    });
+    if (currentTab === 'gallery') buildGrid();
+    if (currentTab === 'quiz') genQuiz();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // GALLERY
+  // ═══════════════════════════════════════════════════════════════════
+  function setTint(t) {
+    currentTint = t;
+    document.getElementById('tintMath').classList.toggle('active', t === 'math');
+    document.getElementById('tintElem').classList.toggle('active', t === 'elem');
+    buildGrid(); buildLegend();
+  }
+
+  function buildLegend() {
+    const row = document.getElementById('legendRow');
+    if (currentTint === 'math') {
+      // Show only tints actually used in 1-120
+      const shown = MATH_TINTS.filter(mt => {
+        for (let n = 1; n <= MAX_NUMBER; n++) {
+          const rec = NUM_CACHE[n];
+          if (getMathTint(rec).key === mt.key) return true;
+        }
+        return false;
+      });
+      row.innerHTML = shown.map(mt =>
+        `<div class="legend-chip"><div class="legend-dot" style="background:${mt.color};"></div>${mt.label}</div>`
+      ).join('');
+    } else {
+      const cats = [...new Set(Object.values(ELEMENTS).map(e => e.category))];
+      row.innerHTML = cats.filter(c => ELEM_CATS[c]).map(c =>
+        `<div class="legend-chip"><div class="legend-dot" style="background:${ELEM_CATS[c].color};"></div>${ELEM_CATS[c].label}</div>`
+      ).join('');
+    }
+  }
+
+  function buildGrid() {
+    const grid = document.getElementById('numGrid');
+    grid.innerHTML = '';
+    for (let n = 1; n <= MAX_NUMBER; n++) {
+      const rec  = NUM_CACHE[n];
+      const elem = ELEMENTS[n];
+      const tint = currentTint === 'math' ? getMathTint(rec) : { color: elem.color, key: elem.category };
+      const disc = discoveredSet.has(n);
+      const tile = document.createElement('button');
+      tile.className = 'num-tile' + (disc ? '' : ' undiscovered');
+      tile.title = `Number ${n}`;
+      tile.innerHTML = `
+        <div class="tile-num">${n}</div>
+        <div class="tile-sym" style="background:${tint.color};">${elem.symbol}</div>
+        <div class="tile-bar" style="background:${tint.color};"></div>
+        ${disc ? '' : '<div class="paw-mark">🐾</div>'}
+      `;
+      tile.addEventListener('click', () => openProfile(n));
+      grid.appendChild(tile);
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // NUMBER PROFILE
+  // ═══════════════════════════════════════════════════════════════════
+  function openProfile(n) {
+    profileNum = n;
+    markDiscovered(n);
+    renderProfile(n);
+    document.getElementById('profileModal').classList.add('show');
+    // Refresh tile to remove undiscovered class
+    buildGrid();
+  }
+
+  function closeProfile() {
+    document.getElementById('profileModal').classList.remove('show');
+  }
+
+  function walkProfile(dir) {
+    const next = Math.max(1, Math.min(MAX_NUMBER, profileNum + dir));
+    profileNum = next;
+    markDiscovered(next);
+    renderProfile(next);
+    buildGrid();
+  }
+
+  document.addEventListener('keydown', e => {
+    if (document.getElementById('profileModal').classList.contains('show')) {
+      if (e.key === 'ArrowLeft')  walkProfile(-1);
+      if (e.key === 'ArrowRight') walkProfile(1);
+      if (e.key === 'Escape')     closeProfile();
+    }
+  });
+
+  function makeFactorTree(n, type) {
+    if (n <= 1) return null;
+    const isP = isPrime(n);
+    const node = { value: n, isPrime: isP, left: null, right: null };
+    if (isP) return node;
+    
+    let leftVal;
+    if (type === 'prime') {
+      let p = 2;
+      for (; p * p <= n; p++) if (n % p === 0) break;
+      if (n % p !== 0) p = n;
+      leftVal = p;
+    } else {
+      let bestA = 1;
+      const limit = Math.sqrt(n);
+      for (let a = 2; a <= limit; a++) if (n % a === 0) bestA = a;
+      leftVal = bestA;
+    }
+    
+    node.left = makeFactorTree(leftVal, type);
+    node.right = makeFactorTree(n / leftVal, type);
+    return node;
+  }
+
+  function areTreesIdentical(a, b) {
+    if (!a && !b) return true;
+    if (!a || !b) return false;
+    return a.value === b.value && areTreesIdentical(a.left, b.left) && areTreesIdentical(a.right, b.right);
+  }
+
+  function renderTreeHTML(node, isRoot = true) {
+    if (!node) return '';
+    const isLeaf = !node.left && !node.right;
+    const valClass = node.isPrime ? 'tree-val-prime' : 'tree-val-comp';
+    let html = `<div class="tree-node${isRoot ? ' tree-root' : ''}">`;
+    html += `<div class="tree-val ${valClass}">${node.value}</div>`;
+    if (!isLeaf) {
+      html += `<div class="tree-children">`;
+      html += renderTreeHTML(node.left, false);
+      html += renderTreeHTML(node.right, false);
+      html += `</div>`;
+    }
+    html += `</div>`;
+    return html;
+  }
+
+  function renderProfile(n) {
+    const rec  = NUM_CACHE[n];
+    const elem = ELEMENTS[n];
+    const over = STORY_OVERRIDES[n];
+    const narrName = pickNarrator(rec);
+    const narrImg  = getCharImage(narrName);
+    const diff = currentDiff;
+
+    document.getElementById('profileNavLabel').textContent = `${n} of 120`;
+
+    // Build badges
+    const badges = [];
+    if (rec.isUnit)       badges.push({ label: 'The Unit', color: '#f59e0b',  bg: 'rgba(245,158,11,.18)' });
+    if (rec.isPrime)      badges.push({ label: '🔴 Prime',  color: '#fb7185', bg: 'rgba(251,113,133,.18)' });
+    if (rec.isComposite)  badges.push({ label: 'Composite', color: '#60a5fa', bg: 'rgba(96,165,250,.18)' });
+    if (rec.isEven)       badges.push({ label: 'Even',      color: '#34d399', bg: 'rgba(52,211,153,.18)' });
+    else                  badges.push({ label: 'Odd',       color: '#f472b6', bg: 'rgba(244,114,182,.18)' });
+    if (rec.numClass === 'perfect')  badges.push({ label: '✨ Perfect', color: '#facc15', bg: 'rgba(250,204,21,.18)' });
+    if (rec.numClass === 'abundant') badges.push({ label: 'Abundant',  color: '#fb923c', bg: 'rgba(251,146,60,.18)' });
+    if (rec.isSquare)     badges.push({ label: '🟦 Square',    color: '#38bdf8', bg: 'rgba(56,189,248,.18)' });
+    if (rec.isCube)       badges.push({ label: '🟣 Cube',      color: '#a78bfa', bg: 'rgba(167,139,250,.18)' });
+    if (rec.isTriangular) badges.push({ label: '🔺 Triangular', color: '#34d399', bg: 'rgba(52,211,153,.18)' });
+    if (diff >= 1) {
+      if (rec.isFibonacci)       badges.push({ label: '🌀 Fibonacci',    color: '#fbbf24', bg: 'rgba(251,191,36,.18)' });
+      if (rec.isHighlyComposite) badges.push({ label: '🏆 Highly Comp.', color: '#60a5fa', bg: 'rgba(96,165,250,.18)' });
+      if (rec.isTwinPrime)       badges.push({ label: `Twin Prime (${rec.twinPartner})`, color: '#f472b6', bg: 'rgba(244,114,182,.18)' });
+      if (rec.isPow2)            badges.push({ label: '⚡ Power of 2',   color: '#f472b6', bg: 'rgba(244,114,182,.18)' });
+      if (rec.isMersenne)        badges.push({ label: 'Mersenne',         color: '#c084fc', bg: 'rgba(192,132,252,.18)' });
+    }
+    if (diff >= 2) {
+      if (rec.isPalin10) badges.push({ label: 'Palindrome', color: '#34d399', bg: 'rgba(52,211,153,.18)' });
+      if (rec.isPalinBin) badges.push({ label: 'Binary Palindrome', color: '#38bdf8', bg: 'rgba(56,189,248,.18)' });
+      badges.push({ label: rec.isEvil ? '😈 Evil (even bits)' : '😇 Odious (odd bits)', color: rec.isEvil ? '#fb7185' : '#34d399', bg: 'rgba(100,100,100,.18)' });
+    }
+
+    const badgeHtml = badges.map(b =>
+      `<span class="prop-badge" style="color:${b.color};background:${b.bg};border-color:${b.color}40;">${b.label}</span>`
+    ).join('');
+
+    // Divisors display
+    const divHtml = diff >= 1 ? `<div class="sub-card" style="padding:10px 14px;">
+      <h3 style="font-size:.8rem;">Divisors of ${n} (${rec.divisors.length} friends)</h3>
+      <div style="font-size:.85rem;color:var(--text2);">${rec.divisors.join(' · ')}</div>
+      ${rec.numClass !== 'deficient' || rec.n <= 1 ? '' : `<div style="font-size:.75rem;color:var(--text2);margin-top:4px;">Aliquot sum: ${rec.aliquotSum} (deficient)</div>`}
+      ${rec.numClass === 'abundant' ? `<div style="font-size:.75rem;color:var(--area-frac);margin-top:4px;">Aliquot sum: ${rec.aliquotSum} — ABUNDANT!</div>` : ''}
+    </div>` : '';
+
+    // Factor string
+    const factHtml = (!rec.isUnit && !rec.isPrime) ? `<div style="font-size:.85rem;color:var(--purple);font-weight:700;margin-top:6px;">Prime DNA: ${rec.factorString}</div>` : '';
+
+    // Factor trees
+    let treesHtml = '';
+    if (rec.isComposite) {
+      const treePrime = makeFactorTree(n, 'prime');
+      const treeComp = makeFactorTree(n, 'composite');
+      const identical = areTreesIdentical(treePrime, treeComp);
+      
+      if (identical) {
+        treesHtml = `
+          <div class="sub-card" style="padding:14px 16px;">
+            <h3 style="font-size:.8rem;color:var(--text2);margin-bottom:6px;">🌳 Factor Tree for ${n}</h3>
+            <p style="font-size:.76rem;color:var(--text2);margin-bottom:14px;line-height:1.4;">
+              A factor tree splits a number into factors. 
+              <span style="color:#fb7185;font-weight:700;">Rose pills 🔴</span> are prime numbers. 
+              <span style="color:#60a5fa;font-weight:700;">Blue pills 🟦</span> are composite numbers and can split further!
+            </p>
+            <div class="tree-row" style="justify-content:center;">
+              <div class="tree-col" style="min-width:240px;background:none;border:none;padding:0;">
+                <div class="tree-container">
+                  ${renderTreeHTML(treePrime)}
+                </div>
+              </div>
+            </div>
+            <div style="font-size:.72rem;color:var(--text2);text-align:center;margin-top:12px;font-style:italic;">
+              This number splits directly into prime factors, so both tree methods are the same! 🌟
+            </div>
+          </div>
+        `;
+      } else {
+        treesHtml = `
+          <div class="sub-card" style="padding:14px 16px;">
+            <h3 style="font-size:.8rem;color:var(--text2);margin-bottom:6px;">🌳 Factor Trees for ${n}</h3>
+            <p style="font-size:.76rem;color:var(--text2);margin-bottom:14px;line-height:1.4;">
+              A factor tree splits a number into factors. 
+              <span style="color:#fb7185;font-weight:700;">Rose pills 🔴</span> are prime numbers. 
+              <span style="color:#60a5fa;font-weight:700;">Blue pills 🟦</span> are composite numbers and can split further!
+            </p>
+            <div class="tree-row">
+              <div class="tree-col">
+                <h4>🌳 Prime-First Split</h4>
+                <div class="tree-container">
+                  ${renderTreeHTML(treePrime)}
+                </div>
+              </div>
+              <div class="tree-col">
+                <h4>🌳 Balanced Split</h4>
+                <div class="tree-container">
+                  ${renderTreeHTML(treeComp)}
+                </div>
+              </div>
+            </div>
+            <div style="font-size:.72rem;color:var(--text2);text-align:center;margin-top:12px;font-style:italic;line-height:1.3;">
+              Whether you start with prime numbers or composite parts, you always end up with the same prime factors at the bottom! 🌈✨
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Shape grid visualizer (beginner shape only)
+    let shapeHtml = '';
+    if (diff >= 1 && rec.isSquare) {
+      const k = Math.round(Math.sqrt(n));
+      const dogImg = 'head.png';
+      const row = Array(k).fill(`<img src="${dogImg}" style="width:20px;height:20px;border-radius:50%;object-fit:contain;">`).join('');
+      const rows = Array(k).fill(`<div style="display:flex;gap:2px;">${row}</div>`).join('');
+      shapeHtml = `<div class="sub-card"><h3 style="font-size:.8rem;">🟦 ${n} dogs in a ${k}×${k} square kennel!</h3><div style="display:flex;flex-direction:column;gap:2px;align-items:flex-start;overflow:auto;">${rows}</div></div>`;
+    } else if (diff >= 1 && rec.isTriangular && n <= 36) {
+      const k = Math.round((-1 + Math.sqrt(1 + 8*n)) / 2);
+      const dogImg = 'head.png';
+      let rows = '';
+      for (let r = 1; r <= k; r++) {
+        rows += `<div style="display:flex;gap:2px;">${Array(r).fill(`<img src="${dogImg}" style="width:20px;height:20px;border-radius:50%;object-fit:contain;">`).join('')}</div>`;
+      }
+      shapeHtml = `<div class="sub-card"><h3 style="font-size:.8rem;">🔺 ${n} dogs in a triangle!</h3><div style="display:flex;flex-direction:column;gap:2px;align-items:flex-start;">${rows}</div></div>`;
+    } else if (diff >= 1 && rec.isPrime && n <= 30) {
+      const dogImg = 'scarface.png';
+      shapeHtml = `<div class="sub-card"><h3 style="font-size:.8rem;">🔴 ${n} — only fits in a 1×${n} line (prime!)</h3><div style="display:flex;flex-wrap:wrap;gap:3px;">${Array(n).fill(`<img src="${dogImg}" style="width:22px;height:22px;border-radius:50%;object-fit:contain;">`).join('')}</div></div>`;
+    }
+
+    // Journey panel
+    let journeyHtml = '';
+    if (diff >= 2) {
+      const c = rec.collatz;
+      const h = rec.happy;
+      journeyHtml = `<div class="sub-card">
+        <h3 style="font-size:.8rem;">🌊 Collatz Journey (${c.steps} steps, max=${c.max})</h3>
+        <div class="journey-path">
+          ${c.path.slice(0, 20).map((v, i) => `<span class="journey-step ${v===1?'end':v%2===0?'even':'odd'}">${v}</span>${i < Math.min(c.path.length-1, 19) ? '<span style="color:var(--text2);font-size:.75rem;">→</span>' : ''}`).join('')}
+          ${c.path.length > 20 ? `<span style="color:var(--text2);font-size:.75rem;">…→1</span>` : ''}
+        </div>
+        <div style="margin-top:8px;font-size:.82rem;">
+          😊 Happy number? <strong style="${h.isHappy ? 'color:var(--green)' : 'color:var(--red)'}">${h.isHappy ? 'YES! Reaches 1! 🎉' : 'Nope — loops forever!'}</strong>
+        </div>
+        <div style="font-size:.78rem;color:var(--text2);margin-top:4px;">Digital root: ${rec.digitalRoot}</div>
+      </div>`;
+    }
+
+    // Secret codes panel
+    let codesHtml = '';
+    if (diff >= 3) {
+      const binStr = rec.binary.padStart(8, '0');
+      const paws = binStr.split('').map((b, i) => {
+        const val = Math.pow(2, 7-i);
+        return `<span title="place value ${val}" style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:7px;font-size:1rem;border:1.5px solid var(--border);background:${b==='1'?'var(--area-num)':'rgba(15,23,42,.5)'};margin:1px;">${b==='1'?'🐾':'⬜'}</span>`;
+      }).join('');
+      codesHtml = `<div class="sub-card">
+        <h3 style="font-size:.8rem;">🔐 Secret Codes for ${n}</h3>
+        <div style="font-size:.8rem;color:var(--text2);margin-bottom:6px;">Binary paw-lights: ${paws}</div>
+        <div style="font-size:.8rem;display:flex;gap:10px;flex-wrap:wrap;color:var(--text2);">
+          <span>Bin: <strong style="color:var(--area-num);">${rec.binary}</strong></span>
+          <span>Hex: <strong style="color:var(--purple);">${rec.base16}</strong></span>
+          ${rec.roman ? `<span>Roman: <strong style="color:var(--area-frac);">${rec.roman}</strong></span>` : ''}
+          <span>Digital root: <strong>${rec.digitalRoot}</strong></span>
+        </div>
+        <div style="font-size:.78rem;color:var(--text2);margin-top:4px;">Factor DNA: ${rec.factorString}</div>
+      </div>`;
+    }
+
+    // Element badge
+    const elemCatInfo = ELEM_CATS[elem.category] || { label: 'Unknown', color: '#94a3b8' };
+    const elemHtml = `<div class="sub-card elem-badge" style="border-color:${elem.color}40;">
+      <div class="elem-sym" style="color:${elem.color};">${elem.symbol}</div>
+      <div class="elem-name">${elem.name}</div>
+      <div class="elem-z">Atomic number ${elem.z} — same as your number!</div>
+      <div style="display:inline-block;margin:6px auto;padding:3px 10px;border-radius:20px;font-size:.72rem;font-weight:800;background:${elem.color}22;color:${elem.color};border:1px solid ${elem.color}44;">${elemCatInfo.label}</div>
+      <div class="elem-fact">${elem.fact}</div>
+    </div>`;
+
+    // Narrator story
+    const story = over ? over.story :
+      `<strong>${narrName}</strong>: ${rec.isPrime ? `"${n} is prime — it can only be shared by 1 and itself! 🔴"` :
+        rec.numClass === 'perfect' ? `"${n} is PERFECT — its divisors add up to itself! ✨"` :
+        rec.isHighlyComposite ? `"${n} has ${rec.numDivisors} divisors — more than any smaller number! 🏆"` :
+        rec.isSquare ? `"${n} makes a perfect square! That's ${Math.round(Math.sqrt(n))}×${Math.round(Math.sqrt(n))} = ${n}! 🟦"` :
+        rec.isFibonacci ? `"${n} appears in the Fibonacci sequence — nature's favourite pattern! 🌀"` :
+        `"${n} has ${rec.numDivisors} divisors: ${rec.divisors.join(', ')}! Let's explore! 🐾"`}`;
+
+    const headline = over ? over.headline : `The Number ${n}`;
+
+    document.getElementById('profileContent').innerHTML = `
+      <div style="text-align:center;margin-bottom:14px;">
+        <div style="font-family:'Outfit',sans-serif;font-weight:900;font-size:2.8rem;color:var(--area-num);line-height:1;">${n}</div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;color:var(--text2);">${headline}</div>
+      </div>
+      <div class="narrator-strip">
+        <img src="${narrImg}" alt="${narrName}">
+        <div class="narrator-bubble">${injectInlineIcons(story)}</div>
+      </div>
+      <div class="sub-card">
+        <h3 style="font-size:.8rem;">Properties</h3>
+        <div class="badge-row">${badgeHtml}</div>
+        ${factHtml}
+        
+        <!-- Pedagogical Explanations (Workstream C2) -->
+        <div class="prop-explanations" style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
+          <div style="font-size: 0.78rem; font-weight: 800; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1.5px solid var(--border); padding-bottom: 4px; margin-bottom: 6px;">
+            🎓 What these words mean:
+          </div>
+          ${explainProps(rec, diff)}
+        </div>
+      </div>
+      ${treesHtml}
+      ${divHtml}
+      ${shapeHtml}
+      ${journeyHtml}
+      ${codesHtml}
+      ${elemHtml}
+    `;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // QUIZ
+  // ═══════════════════════════════════════════════════════════════════
+  const QUIZ_TEMPLATES = [
+    {
+      id: 'is_prime',
+      minDiff: 0,
+      range: [1,60,1,120],
+      gen(diff) {
+        const max = diff === 0 ? 30 : diff === 1 ? 60 : 120;
+        const n = 1 + Math.floor(Math.random() * max);
+        const rec = NUM_CACHE[n];
+        const correct = rec.isPrime ? 'Yes — Prime!' : 'No — Composite';
+        const wrong   = rec.isPrime ? 'No — Composite' : 'Yes — Prime!';
+        return {
+          challenge: `🔴 Is <strong style="font-size:1.4em;color:var(--area-num);">${n}</strong> a prime number?`,
+          choices: shuffle([correct, wrong, 'It\'s 1 (the unit)', `It has ${rec.numDivisors} divisors`]).slice(0,4),
+          correct, n,
+          hint: rec.isPrime ? `${n} is only divisible by 1 and ${n}.` : `${n} = ${rec.factorString}`,
+          narrator: rec.isPrime ? 'Scarface Claw' : 'Rainbow Doggy',
+        };
+      }
+    },
+    {
+      id: 'is_even',
+      minDiff: 0,
+      gen(diff) {
+        const max = diff === 0 ? 20 : diff === 1 ? 60 : 120;
+        const n = 1 + Math.floor(Math.random() * max);
+        const correct = NUM_CACHE[n].isEven ? 'Even' : 'Odd';
+        const wrong   = NUM_CACHE[n].isEven ? 'Odd' : 'Even';
+        return {
+          challenge: `Is <strong style="font-size:1.4em;color:var(--area-num);">${n}</strong> even or odd?`,
+          choices: [correct, wrong],
+          correct, n,
+          hint: NUM_CACHE[n].isEven ? `${n} ends in an even digit!` : `${n} ends in an odd digit!`,
+          narrator: 'Rainbow Doggy',
+        };
+      }
+    },
+    {
+      id: 'element_symbol',
+      minDiff: 0,
+      gen(diff) {
+        const max = diff === 0 ? 20 : diff === 1 ? 54 : 118;
+        const n = 1 + Math.floor(Math.random() * max);
+        const elem = ELEMENTS[n];
+        const others = [1,8,26,79,6,7,17,11,20,47].filter(x=>x!==n&&ELEMENTS[x]).slice(0,3).map(x=>ELEMENTS[x].symbol);
+        const choices = shuffle([elem.symbol, ...others.slice(0,3)]);
+        return {
+          challenge: `⚗️ The element with atomic number <strong style="color:var(--area-num);">${n}</strong> is <em>${elem.name}</em>. What is its symbol?`,
+          choices: choices.slice(0,4),
+          correct: elem.symbol, n,
+          hint: `${elem.name} (${elem.symbol}) — ${elem.fact}`,
+          narrator: 'Muffin McLay',
+        };
+      }
+    },
+    {
+      id: 'digital_root',
+      minDiff: 1,
+      gen(diff) {
+        const max = diff <= 1 ? 50 : 120;
+        const n = 2 + Math.floor(Math.random() * (max - 1));
+        const dr = digitalRoot(n);
+        const wrongs = [dr===1?2:1, dr===9?8:9, dr===5?4:5].filter(x=>x!==dr).slice(0,3);
+        return {
+          challenge: `🌀 What is the digital root of <strong style="color:var(--area-num);">${n}</strong>? (Keep adding digits until you get one digit)`,
+          choices: shuffle([String(dr), ...wrongs.map(String)]).slice(0,4),
+          correct: String(dr), n,
+          hint: `Add digits of ${n} repeatedly until one digit remains.`,
+          narrator: 'Bottomley Potts',
+        };
+      }
+    },
+    {
+      id: 'perfect_square',
+      minDiff: 0,
+      gen(diff) {
+        const squares = [1,4,9,16,25,36,49,64,81,100];
+        const nonSq   = [2,3,5,6,7,8,10,11,12,13,15,17,18,20];
+        const isS = Math.random() < 0.5;
+        const pool = isS ? squares : nonSq;
+        const n = pool[Math.floor(Math.random() * pool.length)];
+        const correct = isS ? 'Yes — perfect square!' : 'No';
+        const wrong   = isS ? 'No' : 'Yes — perfect square!';
+        return {
+          challenge: `🟦 Is <strong style="color:var(--area-num);">${n}</strong> a perfect square?`,
+          choices: [correct, wrong],
+          correct, n,
+          hint: isS ? `${n} = ${Math.round(Math.sqrt(n))}²` : `The nearest squares are ${Math.pow(Math.floor(Math.sqrt(n)),2)} and ${Math.pow(Math.ceil(Math.sqrt(n)),2)}.`,
+          narrator: 'Hercules Morse',
+        };
+      }
+    },
+    {
+      id: 'num_divisors',
+      minDiff: 1,
+      gen(diff) {
+        const max = diff <= 1 ? 40 : 120;
+        const n = 2 + Math.floor(Math.random() * (max - 1));
+        const rec = NUM_CACHE[n];
+        const nd = rec.numDivisors;
+        const wrongs = [nd===2?3:2, nd===4?6:4, nd+2].filter(x=>x!==nd).slice(0,3);
+        return {
+          challenge: `How many divisors does <strong style="color:var(--area-num);">${n}</strong> have?`,
+          choices: shuffle([String(nd), ...wrongs.map(String)]).slice(0,4),
+          correct: String(nd), n,
+          hint: `Divisors of ${n}: ${rec.divisors.join(', ')}`,
+          narrator: 'Bottomley Potts',
+        };
+      }
+    },
+    {
+      id: 'is_triangular',
+      minDiff: 1,
+      gen() {
+        const triNums = [1,3,6,10,15,21,28,36,45,55,66,78,91,105,120];
+        const notTri  = [2,4,5,7,8,9,11,12,13,14,16,17,19,20];
+        const isTri = Math.random() < 0.5;
+        const n = isTri ? triNums[Math.floor(Math.random()*triNums.length)] : notTri[Math.floor(Math.random()*notTri.length)];
+        const correct = isTri ? 'Yes — triangular!' : 'No';
+        return {
+          challenge: `🔺 Is <strong style="color:var(--area-num);">${n}</strong> a triangular number?`,
+          choices: [correct, isTri ? 'No' : 'Yes — triangular!'],
+          correct, n,
+          hint: isTri ? `${n} = 1+2+3+…+k for some k.` : `Triangular numbers near ${n}: ${triNums.filter(t=>Math.abs(t-n)<10).join(', ')}`,
+          narrator: 'Muffin McLay',
+        };
+      }
+    },
+    {
+      id: 'happy_number',
+      minDiff: 2,
+      gen() {
+        const happyNums = [1,7,10,13,19,23,28,31,32,44,49,68,70,79,82,86,91,94,97,100];
+        const n = 1 + Math.floor(Math.random() * 100);
+        const isH = NUM_CACHE[n].happy.isHappy;
+        return {
+          challenge: `😊 Is <strong style="color:var(--area-num);">${n}</strong> a happy number? (Square each digit, add them, repeat — do you reach 1?)`,
+          choices: ['Yes — Happy! 😊', 'No — Sad loop 😢'],
+          correct: isH ? 'Yes — Happy! 😊' : 'No — Sad loop 😢', n,
+          hint: `Try: ${NUM_CACHE[n].happy.path.slice(0,5).join(' → ')}…`,
+          narrator: 'Muffin McLay',
+        };
+      }
+    },
+  ];
+
+  let currentQuizQ = null;
+  let quizHintUsed  = false;
+
+  function genQuiz() {
+    quizHintUsed = false;
+    document.getElementById('hintBtn').textContent = '💡 Hint';
+    document.getElementById('quizFeedback').textContent = '';
+
+    const pool = QUIZ_TEMPLATES.filter(t => (t.minDiff || 0) <= currentDiff);
+    const tmpl = pool[Math.floor(Math.random() * pool.length)];
+    const q = tmpl.gen(currentDiff);
+    currentQuizQ = q;
+
+    const narrImg  = getCharImage(q.narrator || 'Rainbow Doggy');
+    document.getElementById('quizNarrImg').src = narrImg;
+    document.getElementById('quizNarrSpeech').textContent = `Let's go! Can you answer this? 🐾`;
+    document.getElementById('quizChallenge').innerHTML = injectInlineIcons(q.challenge, currentDiff >= 2);
+
+    const grid = document.getElementById('quizChoices');
+    grid.innerHTML = '';
+    q.choices.forEach(ch => {
+      const btn = document.createElement('button');
+      btn.className = 'choice-btn';
+      btn.textContent = ch;
+      btn.addEventListener('click', () => submitQuizAnswer(ch, btn));
+      grid.appendChild(btn);
+    });
+
+    document.getElementById('nextBtn').textContent = '🎲 New Quest';
+  }
+
+  function submitQuizAnswer(choice, btn) {
+    const q = currentQuizQ;
+    if (!q) return;
+    const correct = choice === q.correct;
+    const btns = document.querySelectorAll('#quizChoices .choice-btn');
+    btns.forEach(b => {
+      b.disabled = true;
+      if (b.textContent === q.correct) b.classList.add('correct');
+    });
+    if (!correct) btn.classList.add('incorrect');
+
+    const fb = document.getElementById('quizFeedback');
+    if (correct) {
+      fb.textContent = '✅ Brilliant!';
+      fb.style.color = 'var(--green)';
+      markDiscovered(q.n);
+      bumpCorrect(quizHintUsed, updateStatsDisplay);
+      showAnswerModal(true, q.hint || '', quizHintUsed);
+    } else {
+      fb.textContent = `❌ Not quite — answer: ${q.correct}`;
+      fb.style.color = 'var(--red)';
+      bumpWrong(updateStatsDisplay);
+      showAnswerModal(false, q.hint || '', false);
+    }
+    buildGrid();
+  }
+
+  function useHint() {
+    if (!currentQuizQ) return;
+    quizHintUsed = true;
+    document.getElementById('quizNarrSpeech').textContent = `💡 Hint: ${currentQuizQ.hint}`;
+    document.getElementById('hintBtn').textContent = '💡 Hinted';
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // BUILD-A-NUMBER (binary game)
+  // ═══════════════════════════════════════════════════════════════════
+  let bitState = [0,0,0,0,0,0,0,0]; // 8 bits, MSB first
+  let buildTarget = null;
+
+  function initBuild() {
+    const row = document.getElementById('bitRow');
+    if (row.children.length === 8) { updateBitDisplay(); return; }
+    row.innerHTML = '';
+    for (let i = 0; i < 8; i++) {
+      const val = Math.pow(2, 7 - i);
+      const light = document.createElement('div');
+      light.className = 'bit-light';
+      light.dataset.idx = i;
+      light.innerHTML = `<div class="bit-icon">🐾</div><div class="bit-val">${val}</div>`;
+      light.addEventListener('click', () => {
+        bitState[i] ^= 1;
+        light.classList.toggle('on', !!bitState[i]);
+        updateBitDisplay();
+        playBark();
+        if (buildTarget !== null) checkBuildTarget();
+      });
+      row.appendChild(light);
+    }
+    updateBitDisplay();
+  }
+
+  function updateBitDisplay() {
+    const val = bitState.reduce((s, b, i) => s + b * Math.pow(2, 7-i), 0);
+    document.getElementById('bitResult').textContent = val;
+    document.getElementById('bitBinary').textContent = bitState.join('');
+    const pc = bitState.reduce((s,b) => s+b, 0);
+    document.getElementById('bitPopcount').textContent = pc;
+    document.getElementById('evilOdious').textContent = pc % 2 === 0 ? '😈 Evil (even bits)' : '😇 Odious (odd bits)';
+    // Update light visuals
+    const lights = document.querySelectorAll('#bitRow .bit-light');
+    lights.forEach((l, i) => l.classList.toggle('on', !!bitState[i]));
+  }
+
+  function buildClear() { bitState = [0,0,0,0,0,0,0,0]; updateBitDisplay(); buildTarget = null; document.getElementById('buildTargetRow').style.display = 'none'; }
+  function buildRandom() {
+    for (let i = 0; i < 8; i++) bitState[i] = Math.random() < 0.5 ? 1 : 0;
+    updateBitDisplay();
+  }
+
+  function buildChallenge() {
+    buildTarget = 1 + Math.floor(Math.random() * 127);
+    bitState = [0,0,0,0,0,0,0,0]; updateBitDisplay();
+    document.getElementById('buildTargetNum').textContent = buildTarget;
+    document.getElementById('buildTargetResult').textContent = '';
+    document.getElementById('buildTargetRow').style.display = '';
+  }
+
+  function checkBuildTarget() {
+    if (buildTarget === null) return;
+    const val = bitState.reduce((s,b,i) => s + b * Math.pow(2, 7-i), 0);
+    const el  = document.getElementById('buildTargetResult');
+    if (val === buildTarget) {
+      el.textContent = '🎉 Correct!';
+      el.style.color = 'var(--green)';
+      triggerConfetti();
+      playSound('correct');
+      bumpCorrect(false, updateStatsDisplay);
+      markDiscovered(buildTarget);
+      setTimeout(buildChallenge, 2000);
+    } else {
+      el.textContent = val > buildTarget ? `Too big (${val})` : `Too small (${val})`;
+      el.style.color = 'var(--red)';
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SEQUENCE MODE
+  // ═══════════════════════════════════════════════════════════════════
+
+  // SEQ_GENERATORS loaded from logic.js
+
+  // ── Narrator by family ──
+  function seqNarratorForFamily(family) {
+    if (family === 'primes')    return 'Scarface Claw';
+    if (family === 'squares' || family === 'pow2')   return 'Hercules Morse';
+    if (family === 'fibonacci') return 'Muffin McLay';
+    if (family === 'multiples') return 'Bottomley Potts';
+    return 'Rainbow Doggy';
+  }
+
+  // ── State ──
+  let seqState = null;
+  let seqHintUsed = false;
+  let _seqKeypadCtrl = null;
+
+  function genSequence() {
+    seqHintUsed = false;
+    document.getElementById('seqHintBtn').textContent = '💡 Hint';
+    document.getElementById('seqHintArea').style.display = 'none';
+    document.getElementById('seqFeedback').textContent = '';
+
+    const pool = SEQ_GENERATORS.filter(g => g.minDiff <= currentDiff);
+    const gen  = pool[Math.floor(Math.random() * pool.length)];
+    const seq  = gen.gen();
+    seqState = { ...seq, answered: false };
+
+    const narrName = seqNarratorForFamily(seq.family);
+    document.getElementById('seqNarrImg').src = getCharImage(narrName);
+    document.getElementById('seqNarrSpeech').textContent = `What comes next? Can you spot the pattern? 🐾`;
+
+    renderSeqChips(seq.terms);
+    drawSeqGraph(seq.terms, null);
+
+    if (_seqKeypadCtrl) { _seqKeypadCtrl.destroy(); _seqKeypadCtrl = null; }
+    _seqKeypadCtrl = makeKeypad('seqKeypadGrid', 'seqAnswer', submitSeq, { allowNegative: true });
+  }
+
+  function renderSeqChips(terms) {
+    const row = document.getElementById('seqChips');
+    row.innerHTML = '';
+    terms.forEach((v, i) => {
+      const chip = document.createElement('div');
+      chip.className = 'seq-chip';
+      chip.textContent = v;
+      chip.addEventListener('mouseenter', e => showTermPeek(v, e));
+      chip.addEventListener('mouseleave', hideTermPeek);
+      chip.addEventListener('touchstart', e => { showTermPeek(v, e.touches[0]); }, {passive:true});
+      chip.addEventListener('touchend', hideTermPeek, {passive:true});
+      row.appendChild(chip);
+    });
+    const q = document.createElement('div');
+    q.className = 'seq-chip unknown';
+    q.textContent = '?';
+    row.appendChild(q);
+  }
+
+  function showTermPeek(n, e) {
+    const card = document.getElementById('seqTermCard');
+    if (n >= 1 && n <= MAX_NUMBER && NUM_CACHE[n]) {
+      const rec = NUM_CACHE[n];
+      const props = [];
+      if (rec.isPrime) props.push('🔴 Prime');
+      if (rec.isEven)  props.push('Even'); else props.push('Odd');
+      if (rec.isSquare) props.push('🟦 Square');
+      if (rec.isTriangular) props.push('🔺 Triangular');
+      if (rec.isFibonacci) props.push('🌀 Fibonacci');
+      if (rec.isPow2) props.push('⚡ Power of 2');
+      if (rec.numClass === 'perfect') props.push('✨ Perfect');
+      card.innerHTML = `<strong style="font-size:.95rem;color:var(--text1);">${n}</strong><br>${props.slice(0,4).join(' · ') || 'Composite'}`;
+    } else {
+      // Out-of-range: show a tiny computed card
+      const sign = n > 0 ? '+' : (n < 0 ? '−' : '0');
+      const parity = (n % 2 === 0) ? 'Even' : 'Odd';
+      const desc = n === 0 ? 'Zero' : Math.abs(n) > MAX_NUMBER ? `Bigger than ${MAX_NUMBER}` : `Negative`;
+      card.innerHTML = `<strong style="font-size:.95rem;color:var(--text1);">${n}</strong><br><span style="font-size:.75rem;color:var(--text2);">${sign} · ${parity} · ${desc}</span>`;
+    }
+    const x = e.clientX || (e.pageX - window.scrollX);
+    const y = e.clientY || (e.pageY - window.scrollY);
+    card.style.left = Math.min(x + 12, window.innerWidth - 220) + 'px';
+    card.style.top  = (y + window.scrollY + 14) + 'px';
+    card.style.opacity = '1';
+  }
+
+  function hideTermPeek() {
+    document.getElementById('seqTermCard').style.opacity = '0';
+  }
+
+  // ── Cartesian graph ──
+  function drawSeqGraph(terms, answerVal) {
+    const canvas = document.getElementById('seqGraph');
+    const ctx = canvas.getContext('2d');
+    canvas.width = canvas.offsetWidth || 560;
+    canvas.height = 200;
+    const W = canvas.width, H = canvas.height;
+    const pad = 28;
+
+    // All values including the open-circle next position
+    const allVals = [...terms, answerVal !== null ? answerVal : terms[terms.length-1] + (terms[1]-terms[0])];
+    const minV = Math.min(0, ...allVals);
+    const maxV = Math.max(...allVals);
+    const rangeV = maxV - minV || 1;
+
+    const xs = terms.length + 1;
+    function tx(i) { return pad + (i / (xs)) * (W - pad*2); }
+    function ty(v) { return H - pad - ((v - minV) / rangeV) * (H - pad*2); }
+
+    // Style
+    const isDark = !document.body.classList.contains('theme-light');
+    const gridCol = isDark ? 'rgba(255,255,255,.07)' : 'rgba(0,0,0,.06)';
+    const axisCol = isDark ? 'rgba(255,255,255,.25)' : 'rgba(0,0,0,.2)';
+    const lineCol = isDark ? '#4ab8d4' : '#0d7fa0';
+    const dotFill = isDark ? '#4ab8d4' : '#0d7fa0';
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Grid lines
+    ctx.strokeStyle = gridCol; ctx.lineWidth = 1;
+    for (let r = 0; r <= 4; r++) {
+      const y = pad + (r/4)*(H-pad*2);
+      ctx.beginPath(); ctx.moveTo(pad, y); ctx.lineTo(W-pad, y); ctx.stroke();
+    }
+
+    // Axes (x at y=0, y at x=0)
+    const yZero = ty(0);
+    ctx.strokeStyle = axisCol; ctx.lineWidth = 1.5;
+    // x-axis at y=0
+    ctx.beginPath(); ctx.moveTo(pad, yZero); ctx.lineTo(W-pad, yZero); ctx.stroke();
+    // y-axis
+    ctx.beginPath(); ctx.moveTo(pad, pad); ctx.lineTo(pad, H-pad); ctx.stroke();
+
+    // Line through known points
+    ctx.strokeStyle = lineCol; ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    terms.forEach((v, i) => {
+      const x = tx(i+0.5), y = ty(v);
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    });
+    ctx.stroke();
+
+    // Filled dots for known terms
+    terms.forEach((v, i) => {
+      ctx.beginPath();
+      ctx.arc(tx(i+0.5), ty(v), 5, 0, Math.PI*2);
+      ctx.fillStyle = dotFill;
+      ctx.fill();
+    });
+
+    // Open circle for next term position
+    const nextX = tx(terms.length + 0.5);
+    const nextV = answerVal !== null ? answerVal : allVals[allVals.length-1];
+    const nextY = ty(nextV);
+    ctx.beginPath();
+    ctx.arc(nextX, nextY, 7, 0, Math.PI*2);
+    ctx.strokeStyle = lineCol; ctx.lineWidth = 2.5;
+    ctx.stroke();
+    ctx.fillStyle = isDark ? 'rgba(20,27,46,.92)' : 'rgba(252,249,244,.92)';
+    ctx.fill();
+
+    // Label the last dot if answer revealed
+    if (answerVal !== null) {
+      ctx.fillStyle = dotFill;
+      ctx.font = 'bold 13px Outfit,sans-serif';
+      ctx.fillText(answerVal, nextX + 8, nextY - 6);
+    }
+  }
+
+  function submitSeq(ans) {
+    if (!seqState || seqState.answered) return;
+    const correct = ans === seqState.next;
+    seqState.answered = true;
+    const fb = document.getElementById('seqFeedback');
+    if (correct) {
+      fb.textContent = `✅ Brilliant! The answer is ${seqState.next}! (${seqState.rule})`;
+      fb.style.color = 'var(--green)';
+      bumpCorrect(seqHintUsed, updateStatsDisplay);
+      showAnswerModal(true, seqExplain(seqState), seqHintUsed);
+      drawSeqGraph(seqState.terms, seqState.next);
+    } else {
+      fb.textContent = `Not quite — the answer is ${seqState.next}! (${seqState.rule})`;
+      fb.style.color = 'var(--red)';
+      bumpWrong(updateStatsDisplay);
+      showAnswerModal(false, seqExplain(seqState), false);
+      drawSeqGraph(seqState.terms, seqState.next);
+    }
+  }
+
+  function seqHint() {
+    if (!seqState) return;
+    seqHintUsed = true;
+    document.getElementById('seqHintBtn').textContent = '💡 Hinted';
+    document.getElementById('seqHintArea').style.display = 'flex';
+
+    const { d1, d2 } = diffLadder(seqState.terms);
+    const ladder = document.getElementById('seqDiffLadder');
+    const nudge = SEQ_HINT[seqState.family] || 'Look closely at how the numbers change from step to step!';
+    
+    let html = `
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
+        <span style="font-size:0.75rem; font-weight:800; color:var(--area-num); min-width:65px;">1st Diff:</span>
+        <div class="diff-ladder" style="margin:0; display:inline-flex; gap:4px;">
+          ${d1.map(v => `<span class="diff-chip">${v >= 0 ? '+' : ''}${v}</span>`).join('')}
+        </div>
+      </div>
+    `;
+    
+    if (d2) {
+      html += `
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:6px;">
+          <span style="font-size:0.75rem; font-weight:800; color:var(--purple); min-width:65px;">2nd Diff:</span>
+          <div class="diff-ladder" style="margin:0; display:inline-flex; gap:4px;">
+            ${d2.map(v => `<span class="diff-chip second">${v >= 0 ? '+' : ''}${v}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    html += `
+      <div class="sub-card nudge-bubble" style="margin-top:8px; padding:8px 10px; font-size:0.8rem; border-left:3px solid var(--accent); color:var(--text2); background:var(--surface-inset);">
+        <strong>💡 Nudge:</strong> ${nudge}
+      </div>
+    `;
+    
+    ladder.innerHTML = html;
+
+    // Update narrator with hint
+    document.getElementById('seqNarrSpeech').textContent = `💡 Hint: Look at the differences!`;
+  }
+
+  // Redraw graph on resize
+  window.addEventListener('resize', () => {
+    if (currentTab === 'sequences' && seqState) {
+      drawSeqGraph(seqState.terms, seqState.answered ? seqState.next : null);
+    }
+  });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', () => {
+    updateExploreCount();
+    buildLegend();
+    buildGrid();
+    updateStatsDisplay();
+    initRpj();
+    showIntroModal('numbers',
+      '<strong>Welcome to Number Explorers! 🔢</strong><br><br>Tap any number in the gallery to discover its secrets — is it prime? A square? A chemical element?<br><br>Try <strong>Quiz</strong> mode to test what you know, <strong>Build-a-Number</strong> to make numbers from tiles, and <strong>Sequences</strong> to spot what comes next!',
+      'Scarface Claw');
+  });
+
+  </script>
+  <img id="rpj" src="rainbow-pj.png" alt="Rainbow PJ" onclick="rpjClick()">
+</body>
+</html>

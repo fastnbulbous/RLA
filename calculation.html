@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculation Crew — Rainbow Learning Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text1); min-height: 100vh; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; padding: 12px 10px 60px; }
+    h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; font-weight: 800; }
+
+    /* Blobs */
+    .blob { position: fixed; border-radius: 50%; filter: blur(120px); pointer-events: none; z-index: 0; }
+    .blob-a { width: 400px; height: 400px; background: rgba(251,113,133,.12); top: -100px; right: -80px; }
+    .blob-b { width: 360px; height: 360px; background: rgba(253,164,175,.08); bottom: -80px; left: -80px; }
+
+    /* Override accent for this mode */
+    :root { --accent: var(--area-calc); --accent2: #fda4af; }
+
+    /* Header */
+    header {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1100px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 18px; margin-bottom: 12px;
+      background: var(--card); backdrop-filter: blur(12px);
+      border-radius: 20px; border: 1px solid var(--border);
+      flex-wrap: wrap; gap: 8px;
+    }
+    .logo-row { display: flex; align-items: center; gap: 10px; }
+    .logo-img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 8px var(--area-calc)); animation: pulse-glow 2.2s ease-in-out infinite; }
+    .logo-text h1 { font-size: 1.25rem; background: linear-gradient(to right, var(--area-calc), #fda4af); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: var(--logo-glow); }
+    .logo-text p { font-size: .7rem; color: var(--text2); text-transform: uppercase; letter-spacing: 2px; }
+    .stats-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .stat-badge.calc { color: var(--area-calc); }
+
+    /* Mode tabs */
+    .tab-bar {
+      position: relative; z-index: 2; width: 100%; max-width: 1100px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px; margin-bottom: 12px;
+      background: var(--surface-inset); backdrop-filter: blur(10px);
+      border-radius: 18px; border: 1px solid var(--border); padding: 6px;
+    }
+    .tab-btn {
+      background: transparent; border: 1px solid transparent;
+      color: var(--text2); padding: 10px 8px; border-radius: 13px;
+      cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700;
+      font-size: .82rem; text-align: center;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      transition: all .22s ease;
+    }
+    .tab-btn:hover:not(.active) { background: var(--card); color: var(--text1); }
+    .tab-btn.active { background: linear-gradient(135deg, #be123c, var(--area-calc)); color: var(--on-accent); border-color: transparent; box-shadow: 0 4px 14px rgba(251,113,133,.38); }
+
+    /* Screens */
+    .screen { position: relative; z-index: 1; width: 100%; max-width: 1100px; }
+
+    /* Table picker */
+    .table-picker-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr));
+      gap: 8px; margin-bottom: 16px;
+    }
+    .table-btn {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; cursor: pointer; padding: 10px 6px 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      transition: transform .2s, box-shadow .2s;
+      font-family: 'Outfit', sans-serif; min-height: 80px;
+      position: relative; overflow: hidden;
+    }
+    .table-btn::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; background: linear-gradient(to right, var(--area-calc), #fda4af); }
+    .table-btn:hover { transform: translateY(-4px) scale(1.06); box-shadow: 0 8px 24px rgba(251,113,133,.3); }
+    .table-btn.selected { border-color: var(--area-calc); box-shadow: 0 0 0 2px var(--area-calc); }
+    .table-num { font-weight: 900; font-size: 1.3rem; color: var(--text1); }
+    .table-emoji { font-size: 1.1rem; }
+    .table-stars { font-size: .65rem; letter-spacing: 1px; }
+
+    /* Skip-count strip */
+    .skip-strip {
+      display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; align-items: center;
+    }
+    .skip-chip {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 8px; padding: 5px 11px;
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: .9rem;
+      color: var(--text2); cursor: pointer; transition: all .18s;
+    }
+    .skip-chip:hover, .skip-chip.hit { background: var(--area-calc); color: var(--on-accent); border-color: var(--area-calc); transform: scale(1.06); }
+
+    /* Array display */
+    .array-display {
+      display: flex; flex-direction: column; gap: 4px; margin: 10px 0;
+      align-items: flex-start; overflow: auto; max-height: 260px;
+    }
+    .array-row { display: flex; gap: 3px; }
+    .array-dog { width: 28px; height: 28px; border-radius: 50%; object-fit: contain; cursor: pointer; transition: transform .15s; }
+    .array-dog:hover { transform: scale(1.2); }
+    .array-dog.counted { opacity: .4; }
+
+    /* Keypad */
+    .keypad-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 12px; }
+    .keypad-answer-display {
+      background: var(--surface-inset); border: 2px solid var(--area-calc);
+      border-radius: 14px; padding: 12px 24px;
+      font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2.4rem;
+      color: var(--area-calc); min-width: 120px; text-align: center;
+      letter-spacing: 2px;
+    }
+    .keypad-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 8px; width: 240px;
+    }
+    .kp-btn {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 14px 8px;
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.2rem;
+      color: var(--text1); cursor: pointer;
+      transition: all .15s cubic-bezier(.175,.885,.32,1.275);
+      min-height: 52px; display: flex; align-items: center; justify-content: center;
+    }
+    .kp-btn:hover { background: rgba(251,113,133,.2); border-color: var(--area-calc); transform: scale(1.04); }
+    .kp-btn:active { transform: scale(.92); }
+    .kp-btn.submit { grid-column: span 3; background: linear-gradient(135deg, #be123c, var(--area-calc)); color: var(--on-accent); border-color: transparent; font-size: 1rem; }
+    .kp-btn.submit:hover { filter: brightness(1.1); }
+    .kp-btn.del { background: rgba(251,113,133,.15); border-color: rgba(251,113,133,.3); color: var(--area-calc); }
+
+    /* Question display */
+    .question-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 22px; padding: 20px 22px; margin-bottom: 14px;
+    }
+    .question-text {
+      font-family: 'Outfit', sans-serif; font-weight: 900;
+      font-size: clamp(1.6rem, 4vw, 2.4rem); text-align: center;
+      color: var(--text1); margin: 10px 0;
+    }
+    .question-text span.factor { color: var(--area-calc); }
+
+    /* Stopwatch */
+    .stopwatch-display {
+      font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 2rem;
+      color: var(--area-calc); text-align: center; margin: 8px 0;
+    }
+
+    /* Progress bar */
+    .progress-row { display: flex; gap: 4px; margin-bottom: 10px; flex-wrap: wrap; }
+    .prog-dot {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: var(--surface-inset); border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; transition: all .2s;
+    }
+    .prog-dot.correct { background: rgba(52,211,153,.25); border-color: var(--green); }
+    .prog-dot.wrong   { background: rgba(251,113,133,.25); border-color: var(--red); }
+
+    /* Results screen */
+    .results-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 24px; padding: 28px 24px; text-align: center;
+    }
+    .medal-display { font-size: 4rem; margin: 10px 0; }
+    .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+    .stat-cell { background: var(--surface-inset); border: 1px solid var(--border); border-radius: 14px; padding: 14px 10px; }
+    .stat-cell .val { font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.5rem; color: var(--area-calc); }
+    .stat-cell .lbl { font-size: .78rem; color: var(--text2); margin-top: 4px; }
+
+    /* Treat box */
+    .treat-box-item {
+      display: flex; align-items: center; gap: 10px;
+      background: var(--surface-inset); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 14px; margin-bottom: 7px;
+      font-family: 'Outfit', sans-serif; font-weight: 700;
+    }
+
+    /* Narrator strip (shared style, local color) */
+    .narrator-strip { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .narrator-strip img { width: 48px; height: 48px; border-radius: 50%; object-fit: contain; border: 2px solid var(--area-calc); }
+    .narrator-bubble {
+      background: var(--card); border: 1px solid var(--border); padding: 9px 13px;
+      border-radius: 14px; font-size: .84rem; font-weight: 600; line-height: 1.5; flex: 1; position: relative;
+    }
+    .narrator-bubble::before {
+      content: ''; position: absolute; left: -6px; top: 50%;
+      transform: translateY(-50%) rotate(45deg); width: 10px; height: 10px;
+      background: var(--card); border-left: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    }
+
+    /* Slider */
+    .mix-slider-wrap { text-align: center; margin-bottom: 16px; }
+    .mix-slider { width: 100%; max-width: 360px; margin: 8px auto; }
+    .slider-options { display: flex; justify-content: space-between; max-width: 360px; margin: 0 auto 8px; }
+    .slider-opt {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 7px 18px;
+      font-family: 'Outfit', sans-serif; font-weight: 800; font-size: .9rem;
+      cursor: pointer; color: var(--text2); transition: all .18s;
+    }
+    .slider-opt.active { background: var(--area-calc); color: var(--on-accent); border-color: transparent; }
+
+    @media (max-width: 600px) {
+      .tab-bar { grid-template-columns: 1fr; }
+      .table-picker-grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); }
+      .keypad-grid { width: 210px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blob blob-a"></div>
+  <div class="blob blob-b"></div>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-row" style="gap:16px;">
+      <a href="index.html" class="home-avatar-btn" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;">
+        <img id="logoMascotImg" src="hairy_maclary.png" class="logo-img" style="width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 0 6px var(--accent-purple)); opacity:0.95; transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0;" alt="Mascot Mascot">
+        <span style="font-size:0.65rem;font-weight:800;color:var(--text2);font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:0.3px;background:rgba(30,41,59,0.6);border:1px solid var(--border);padding:2px 8px;border-radius:8px;transition:all 0.2s;white-space:nowrap;">🏠 Home avavav! 🐾</span>
+      </a>
+      <div class="logo-text">
+        <h1>Calculation Crew 🧮 — Rainbow Learning Academy</h1>
+        <p>Master times tables 1–20</p>
+      </div>
+    </div>
+    <div class="stats-bar">
+      <button id="themeToggleBtn" class="tool-btn" onclick="toggleTheme()">☀️ Light</button>
+      <button id="muteBtn" class="tool-btn" onclick="toggleMute()">🔊 Sound</button>
+      <div class="stat-badge stars">⭐ <span id="starsCount">0</span></div>
+      <div class="stat-badge streak">🔥 <span id="streakCount">0</span></div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('learn')" id="tabLearn">📚 Learn</button>
+    <button class="tab-btn nav-pulse" onclick="switchTab('trial')" id="tabTrial">⏱️ Time Trial</button>
+    <button class="tab-btn nav-pulse" onclick="switchTab('mixed')" id="tabMixed">🏆 Mixed Trial</button>
+  </div>
+
+  <!-- ═══════════ LEARN SCREEN ═══════════ -->
+  <div id="learnScreen" class="screen">
+    <div class="question-card" id="learnPicker">
+      <div class="narrator-strip">
+        <img src="hairy_maclary.png" alt="Hairy Maclary">
+        <div class="narrator-bubble">Pick a times table to explore! Each one has a special emoji 🐾</div>
+      </div>
+      <div class="table-picker-grid" id="learnTableGrid"></div>
+    </div>
+
+    <!-- Learn active view (hidden until table selected) -->
+    <div id="learnActive" style="display:none;">
+      <div class="question-card">
+        <div class="narrator-strip" id="learnNarrator">
+          <img src="hairy_maclary.png" id="learnNarrImg" alt="narrator">
+          <div class="narrator-bubble" id="learnNarrSpeech">Let's discover the table!</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+          <strong style="font-family:'Outfit',sans-serif;font-size:1.2rem;" id="learnTableLabel">Table of 3</strong>
+          <button class="tool-btn" onclick="learnBack()">← Choose Table</button>
+          <div id="learnModeToggle" style="display:flex;gap:6px;margin-left:auto;">
+            <button class="tool-btn active" id="learnModeSkip" onclick="learnSetMode('skip')">🔢 Skip Count</button>
+            <button class="tool-btn" id="learnModeArray" onclick="learnSetMode('array')">🐾 Arrays</button>
+            <button class="tool-btn" id="learnModePractice" onclick="learnSetMode('practice')">✏️ Practice</button>
+          </div>
+        </div>
+
+        <!-- Skip count -->
+        <div id="learnSkip">
+          <div style="font-size:.85rem;color:var(--text2);margin-bottom:8px;">Tap each number to count up in <strong id="skipTableNum">3</strong>s!</div>
+          <div class="skip-strip" id="skipStrip"></div>
+          <div style="font-size:.85rem;color:var(--text2);margin-top:8px;" id="skipSpeech"></div>
+        </div>
+
+        <!-- Array visualiser -->
+        <div id="learnArray" style="display:none;">
+          <div style="font-size:.85rem;color:var(--text2);margin-bottom:8px;">
+            Tap a row to count the <strong id="arrayFactLabel">3×4</strong> dogs — that's <strong id="arrayTotal" style="color:var(--area-calc);">12</strong>!
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+            <button class="tool-btn" onclick="arrayPrev()">← Prev</button>
+            <span id="arrayFactDisplay" style="font-family:'Outfit',sans-serif;font-weight:900;font-size:1.1rem;align-self:center;color:var(--area-calc);"></span>
+            <button class="tool-btn" onclick="arrayNext()">Next →</button>
+          </div>
+          <div class="array-display" id="arrayDisplay"></div>
+          <div style="font-size:.82rem;color:var(--text2);margin-top:6px;" id="arraySpeech"></div>
+        </div>
+
+        <!-- Practice -->
+        <div id="learnPractice" style="display:none;">
+          <div style="text-align:center;margin-bottom:10px;" id="practiceProgress"></div>
+          <div class="question-text" id="practiceQuestion"></div>
+          <div class="keypad-wrap">
+            <div class="keypad-answer-display" id="practiceAnswer">_</div>
+            <div class="keypad-grid" id="practiceKeypad"></div>
+          </div>
+          <div id="practiceFeedback" style="text-align:center;font-weight:800;font-size:1rem;margin-top:10px;min-height:24px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ TIME TRIAL SCREEN ═══════════ -->
+  <div id="trialScreen" class="screen" style="display:none;">
+    <!-- Table picker -->
+    <div id="trialPicker" class="question-card">
+      <div class="narrator-strip">
+        <img src="hercules_morse.png" alt="Hercules Morse">
+        <div class="narrator-bubble">Pick a table to race! How fast can you answer 10 questions? 🏆</div>
+      </div>
+      <div class="table-picker-grid" id="trialTableGrid"></div>
+    </div>
+
+    <!-- Trial active -->
+    <div id="trialActive" style="display:none;">
+      <div class="question-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:.8rem;color:var(--text2);">Time Trial — Table of <strong id="trialTableLabel" style="color:var(--area-calc);">3</strong></div>
+            <div class="stopwatch-display" id="trialStopwatch">0.0s</div>
+          </div>
+          <div>
+            <div class="progress-row" id="trialProgress"></div>
+            <div style="font-size:.8rem;color:var(--text2);text-align:right;margin-top:4px;">Question <span id="trialQNum">1</span> of 10</div>
+          </div>
+        </div>
+        <div class="narrator-strip" id="trialNarrator">
+          <img src="hercules_morse.png" id="trialNarrImg" alt="narrator">
+          <div class="narrator-bubble" id="trialNarrSpeech">Go! ⏱️</div>
+        </div>
+        <div class="question-text" id="trialQuestion"></div>
+        <div class="keypad-wrap">
+          <div class="keypad-answer-display" id="trialAnswer">_</div>
+          <div class="keypad-grid" id="trialKeypad"></div>
+        </div>
+        <div id="trialFeedback" style="text-align:center;font-weight:800;font-size:1rem;margin-top:8px;min-height:24px;"></div>
+      </div>
+    </div>
+
+    <!-- Trial results -->
+    <div id="trialResults" style="display:none;">
+      <div class="results-card">
+        <div id="trialResultsNarrator" class="narrator-strip" style="margin-bottom:14px;"></div>
+        <div class="medal-display" id="trialMedalDisplay">🏅</div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:900;font-size:1.4rem;" id="trialResultsTitle">Great work!</div>
+        <div class="stat-grid">
+          <div class="stat-cell"><div class="val" id="trialResTime">-</div><div class="lbl">Total time</div></div>
+          <div class="stat-cell"><div class="val" id="trialResScore">-</div><div class="lbl">Score</div></div>
+          <div class="stat-cell"><div class="val" id="trialResBest">-</div><div class="lbl">Best time</div></div>
+          <div class="stat-cell"><div class="val" id="trialResSpeedMedal">-</div><div class="lbl">Speed medal</div></div>
+        </div>
+        <div id="trialStarsEarned" style="font-size:1.1rem;margin-bottom:14px;"></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="primary-btn" onclick="trialStart(currentTrialTable)">🔄 Try Again</button>
+          <button class="tool-btn" onclick="showTrialPicker()">← Choose Table</button>
+          <button class="tool-btn" onclick="showTreatBox()">🦴 Treat Box (</button>
+        </div>
+      </div>
+      <div id="trialTreatReview" style="display:none;margin-top:14px;">
+        <div class="question-card">
+          <strong style="font-family:'Outfit',sans-serif;">🦴 Doggy's Treat Box — tricky ones!</strong>
+          <div id="treatBoxList" style="margin-top:10px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════ MIXED TRIAL SCREEN ═══════════ -->
+  <div id="mixedScreen" class="screen" style="display:none;">
+    <!-- Mixed picker -->
+    <div id="mixedPicker" class="question-card">
+      <div class="narrator-strip">
+        <img src="bottomley_potts.png" alt="Bottomley Potts">
+        <div class="narrator-bubble">Mixed Trial! Pick your max table and answer 10 random facts. Go for the Champion trophy! 🏆</div>
+      </div>
+      <div class="mix-slider-wrap">
+        <div style="font-size:.9rem;color:var(--text2);margin-bottom:8px;">Mix up to table of: <strong id="mixMaxLabel" style="color:var(--area-calc);">12</strong></div>
+        <div class="slider-options">
+          <button class="slider-opt" onclick="setMixMax(5)" id="mixOpt5">× 5</button>
+          <button class="slider-opt active" onclick="setMixMax(12)" id="mixOpt12">× 12</button>
+          <button class="slider-opt" onclick="setMixMax(20)" id="mixOpt20">× 20</button>
+        </div>
+        <div style="font-size:.8rem;color:var(--text2);margin-top:8px;" id="mixedBestDisplay"></div>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+        <button class="primary-btn" onclick="mixedStart()">🏆 Start Mixed Trial</button>
+      </div>
+      <div id="mixedTrophyRow" style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center;"></div>
+    </div>
+
+    <!-- Mixed active -->
+    <div id="mixedActive" style="display:none;">
+      <div class="question-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
+          <div>
+            <div style="font-size:.8rem;color:var(--text2);">Mixed Trial — up to ×<span id="mixedMaxDisplay" style="color:var(--area-calc);">12</span></div>
+            <div class="stopwatch-display" id="mixedStopwatch">0.0s</div>
+          </div>
+          <div>
+            <div class="progress-row" id="mixedProgress"></div>
+            <div style="font-size:.8rem;color:var(--text2);text-align:right;margin-top:4px;">Question <span id="mixedQNum">1</span> of 10</div>
+          </div>
+        </div>
+        <div class="narrator-strip">
+          <img src="bottomley_potts.png" alt="Bottomley Potts">
+          <div class="narrator-bubble" id="mixedNarrSpeech">Mixed challenge — any table could come up! 🎲</div>
+        </div>
+        <div class="question-text" id="mixedQuestion"></div>
+        <div class="keypad-wrap">
+          <div class="keypad-answer-display" id="mixedAnswer">_</div>
+          <div class="keypad-grid" id="mixedKeypad"></div>
+        </div>
+        <div id="mixedFeedback" style="text-align:center;font-weight:800;font-size:1rem;margin-top:8px;min-height:24px;"></div>
+      </div>
+    </div>
+
+    <!-- Mixed results -->
+    <div id="mixedResults" style="display:none;">
+      <div class="results-card">
+        <div class="medal-display" id="mixedMedalDisplay">🏅</div>
+        <div style="font-family:'Outfit',sans-serif;font-weight:900;font-size:1.4rem;" id="mixedResultsTitle">Well done!</div>
+        <div class="stat-grid">
+          <div class="stat-cell"><div class="val" id="mixedResTime">-</div><div class="lbl">Total time</div></div>
+          <div class="stat-cell"><div class="val" id="mixedResScore">-</div><div class="lbl">Score</div></div>
+          <div class="stat-cell"><div class="val" id="mixedResBest">-</div><div class="lbl">Best time</div></div>
+          <div class="stat-cell"><div class="val" id="mixedResSpeedMedal">-</div><div class="lbl">Speed medal</div></div>
+        </div>
+        <div id="mixedTrophyEarned" style="font-size:1.2rem;margin-bottom:14px;"></div>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="primary-btn" onclick="mixedStart()">🔄 Try Again</button>
+          <button class="tool-btn" onclick="showMixedPicker()">← Change Max</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="shared.js"></script>
+  <script>
+  // ═══════════════════════════════════════════════════════════════════
+  // CONSTANTS & DATA
+  // ═══════════════════════════════════════════════════════════════════
+
+  const MAX_TABLE = 20;
+  const FACTS_PER_TABLE = 12;
+  const TRIAL_TOTAL = 10;
+
+  const TABLE_EMOJIS = {
+    1:'🐾', 2:'💗', 3:'🦴', 4:'🍪', 5:'✋', 6:'🌸', 7:'🌈', 8:'🐙',
+    9:'🎈', 10:'🐾', 11:'🧁', 12:'🍩', 13:'🌟', 14:'🍒', 15:'🍕',
+    16:'🍬', 17:'🍇', 18:'🍓', 19:'🎨', 20:'🏆',
+  };
+
+  const TABLE_NARRATORS = {
+    2:'Rainbow Doggy', 3:'Hairy Maclary', 4:'Hercules Morse', 5:'Muffin McLay',
+    6:'Bottomley Potts', 7:'Scarface Claw', 8:'Rainbow Doggy', 9:'Hairy Maclary',
+    10:'Kind Dog', 11:'Bitzer Maloney', 12:'Bottomley Potts',
+  };
+
+  function getTableNarrator(t) {
+    return TABLE_NARRATORS[t] || 'Rainbow Doggy';
+  }
+
+  // ── REWARDS STORAGE ──────────────────────────────────────────────
+  // tables_stars: { "3": { bronze: bool, silver: bool, gold: bool } }
+  // tables_best: { "3": <seconds float> }
+  // tables_treatbox: [ {a, b} ]
+  // tables_champion: { "5": bool, "12": bool, "20": bool }
+  // tables_mixed_best: { "5": <s>, "12": <s>, "20": <s> }
+
+  function getTableStars() { return safeJSON('tables_stars', {}); }
+  function saveTableStars(o) { safeSet('tables_stars', JSON.stringify(o)); }
+  function getTableBest() { return safeJSON('tables_best', {}); }
+  function saveTableBest(o) { safeSet('tables_best', JSON.stringify(o)); }
+  function getTreatBox() { return safeJSON('tables_treatbox', []); }
+  function saveTreatBox(arr) { safeSet('tables_treatbox', JSON.stringify(arr)); }
+  function getChampions() { return safeJSON('tables_champion', {}); }
+  function saveChampions(o) { safeSet('tables_champion', JSON.stringify(o)); }
+  function getMixedBest() { return safeJSON('tables_mixed_best', {}); }
+  function saveMixedBest(o) { safeSet('tables_mixed_best', JSON.stringify(o)); }
+
+  function addToTreatBox(a, b) {
+    const box = getTreatBox();
+    if (!box.find(x => x.a === a && x.b === b)) { box.push({ a, b }); saveTreatBox(box); }
+  }
+
+  function starsForTable(t) {
+    const s = getTableStars();
+    return s[String(t)] || { bronze: false, silver: false, gold: false };
+  }
+
+  function starsLabel(t) {
+    const s = starsForTable(t);
+    let r = '';
+    if (s.bronze) r += '🥉';
+    if (s.silver) r += '🥈';
+    if (s.gold)   r += '🥇';
+    return r || '·';
+  }
+
+  function speedMedal(secs) {
+    if (secs < 15) return { medal: '🐆', label: 'Cheetah! <15s' };
+    if (secs < 30) return { medal: '🐎', label: 'Pony! <30s' };
+    if (secs < 60) return { medal: '🐢', label: 'Steady Walker!' };
+    return { medal: '🌟', label: 'You finished!' };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // TAB SWITCHING
+  // ═══════════════════════════════════════════════════════════════════
+  let currentTab = 'learn';
+
+  function switchTab(t) {
+    currentTab = t;
+    ['learn', 'trial', 'mixed'].forEach(id => {
+      const s = document.getElementById(id + 'Screen');
+      const b = document.getElementById('tab' + id.charAt(0).toUpperCase() + id.slice(1));
+      if (s) s.style.display = t === id ? '' : 'none';
+      if (b) {
+        b.classList.toggle('active', t === id);
+        b.classList.toggle('nav-pulse', t !== id);
+      }
+    });
+    if (t === 'trial') renderTrialPicker();
+    if (t === 'mixed') renderMixedPicker();
+    if (t === 'learn') renderLearnPicker();
+  }
+
+  // makeKeypad is in shared.js
+
+  // ═══════════════════════════════════════════════════════════════════
+  // LEARN MODE
+  // ═══════════════════════════════════════════════════════════════════
+  let currentLearnTable = 3;
+  let learnMode = 'skip';
+  let arrayFact = 1;
+  let practiceQ = 0;
+  let practiceAnswered = 0;
+  let practiceKeypadCtrl = null;
+
+  function renderLearnPicker() {
+    const grid = document.getElementById('learnTableGrid');
+    grid.innerHTML = '';
+    for (let t = 1; t <= MAX_TABLE; t++) {
+      const btn = document.createElement('button');
+      btn.className = 'table-btn';
+      btn.innerHTML = `<div class="table-emoji">${TABLE_EMOJIS[t]||'🐾'}</div><div class="table-num">${t}</div><div class="table-stars">${starsLabel(t)}</div>`;
+      btn.addEventListener('click', () => learnSelect(t));
+      grid.appendChild(btn);
+    }
+  }
+
+  function learnSelect(t) {
+    currentLearnTable = t;
+    document.getElementById('learnPicker').style.display = 'none';
+    document.getElementById('learnActive').style.display = '';
+    document.getElementById('learnTableLabel').textContent = `Table of ${t}`;
+    document.getElementById('skipTableNum').textContent = t;
+    const narr = getTableNarrator(t);
+    document.getElementById('learnNarrImg').src = getCharImage(narr);
+    document.getElementById('learnNarrSpeech').textContent = `Let's explore the ${t} times table! 🐾`;
+    learnSetMode('skip');
+    arrayFact = 1;
+    buildSkipStrip(t);
+  }
+
+  function learnBack() {
+    document.getElementById('learnActive').style.display = 'none';
+    document.getElementById('learnPicker').style.display = '';
+    renderLearnPicker();
+    if (practiceKeypadCtrl) { practiceKeypadCtrl.destroy(); practiceKeypadCtrl = null; }
+  }
+
+  function learnSetMode(m) {
+    learnMode = m;
+    ['skip','array','practice'].forEach(id => {
+      const el = document.getElementById('learnMode' + id.charAt(0).toUpperCase() + id.slice(1));
+      if (el) el.classList.toggle('active', id === m);
+      const scr = document.getElementById('learn' + id.charAt(0).toUpperCase() + id.slice(1));
+      if (scr) scr.style.display = id === m ? '' : 'none';
+    });
+    if (m === 'array') renderArray();
+    if (m === 'practice') startPractice();
+    if (m === 'skip') buildSkipStrip(currentLearnTable);
+  }
+
+  function buildSkipStrip(t) {
+    const strip = document.getElementById('skipStrip');
+    strip.innerHTML = '';
+    for (let i = 1; i <= 12; i++) {
+      const chip = document.createElement('button');
+      chip.className = 'skip-chip';
+      chip.textContent = String(t * i);
+      chip.dataset.idx = i;
+      chip.addEventListener('click', () => {
+        chip.classList.add('hit');
+        document.getElementById('skipSpeech').textContent = `${t} × ${i} = ${t*i}! 🐾`;
+        playBark();
+      });
+      strip.appendChild(chip);
+    }
+  }
+
+  function renderArray() {
+    const t = currentLearnTable;
+    document.getElementById('arrayFactLabel').textContent = `${t}×${arrayFact}`;
+    document.getElementById('arrayTotal').textContent = t * arrayFact;
+    document.getElementById('arrayFactDisplay').textContent = `${t} × ${arrayFact} = ${t*arrayFact}`;
+    const display = document.getElementById('arrayDisplay');
+    display.innerHTML = '';
+    const dogImg = getCharImage(getTableNarrator(t));
+    for (let r = 0; r < t; r++) {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'array-row';
+      for (let c = 0; c < arrayFact; c++) {
+        const img = document.createElement('img');
+        img.src = dogImg;
+        img.className = 'array-dog';
+        img.addEventListener('click', () => {
+          img.classList.toggle('counted');
+          const counted = display.querySelectorAll('.array-dog.counted').length;
+          const total = t * arrayFact;
+          document.getElementById('arraySpeech').textContent = counted > 0 ? `Counted ${counted} out of ${total}!` : '';
+          playBark();
+        });
+        rowEl.appendChild(img);
+      }
+      display.appendChild(rowEl);
+    }
+    document.getElementById('arraySpeech').textContent = `Tap a dog to count!`;
+  }
+
+  function arrayNext() { if (arrayFact < 12) { arrayFact++; renderArray(); } }
+  function arrayPrev() { if (arrayFact > 1)  { arrayFact--; renderArray(); } }
+
+  function startPractice() {
+    practiceQ = 0;
+    practiceAnswered = 0;
+    if (practiceKeypadCtrl) practiceKeypadCtrl.destroy();
+    practiceKeypadCtrl = makeKeypad('practiceKeypad', 'practiceAnswer', submitPractice);
+    nextPracticeQ();
+  }
+
+  let _practiceFacts = [];
+
+  function nextPracticeQ() {
+    const t = currentLearnTable;
+    if (practiceQ === 0) {
+      _practiceFacts = Array.from({ length: FACTS_PER_TABLE }, (_, i) => i + 1);
+    }
+    if (practiceQ >= FACTS_PER_TABLE) {
+      // All done — award bronze
+      const stars = getTableStars();
+      if (!stars[t]) stars[t] = {};
+      stars[t].bronze = true;
+      saveTableStars(stars);
+      bumpCorrect(false, updateStatsDisplay);
+      document.getElementById('practiceQuestion').innerHTML = `🎉 Table of ${t} complete! 🥉 Bronze star earned!`;
+      document.getElementById('practiceFeedback').textContent = '';
+      document.getElementById('practiceProgress').textContent = `✅ ${FACTS_PER_TABLE}/${FACTS_PER_TABLE} — Well done!`;
+      renderLearnPicker();
+      return;
+    }
+    const multiplier = _practiceFacts[practiceQ];
+    document.getElementById('practiceQuestion').innerHTML = `<span class="factor">${t}</span> × <span class="factor">${multiplier}</span> = ?`;
+    document.getElementById('practiceFeedback').textContent = '';
+    document.getElementById('practiceProgress').textContent = `${practiceQ + 1} / ${FACTS_PER_TABLE}`;
+    if (practiceKeypadCtrl) practiceKeypadCtrl.reset();
+  }
+
+  function submitPractice(ans) {
+    const t = currentLearnTable;
+    const multiplier = _practiceFacts[practiceQ];
+    const correct = ans === t * multiplier;
+    const fb = document.getElementById('practiceFeedback');
+    if (correct) {
+      fb.textContent = `✅ Correct! ${t} × ${multiplier} = ${t*multiplier} 🐾`;
+      fb.style.color = 'var(--green)';
+      playSound('correct');
+      practiceAnswered++;
+      practiceQ++;
+      setTimeout(nextPracticeQ, 800);
+    } else {
+      fb.textContent = `Ooh, so close! ${t} × ${multiplier} = ${t*multiplier} 🐾 Try again!`;
+      fb.style.color = 'var(--area-calc)';
+      playSound('wrong');
+      if (practiceKeypadCtrl) practiceKeypadCtrl.reset();
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // SHARED TRIAL ENGINE
+  // ═══════════════════════════════════════════════════════════════════
+  function runTimedTrial(cfg) {
+    // cfg: { total, facts, progressId, keypadId, answerId, questionId,
+    //        feedbackId, qNumId, stopwatchId, onWrong, onEnd }
+    let qIdx = 0, correct = 0;
+    let timer = null, elapsed = 0, startTime = null;
+    let keypadCtrl = null;
+
+    // Build progress dots
+    const prog = document.getElementById(cfg.progressId);
+    prog.innerHTML = '';
+    const dots = Array.from({ length: cfg.total }, (_, i) => {
+      const d = document.createElement('div');
+      d.className = 'prog-dot'; d.textContent = i + 1;
+      prog.appendChild(d); return d;
+    });
+
+    // Keypad
+    if (keypadCtrl) keypadCtrl.destroy();
+    keypadCtrl = makeKeypad(cfg.keypadId, cfg.answerId, submitFn);
+
+    // Stopwatch
+    elapsed = 0; startTime = performance.now();
+    if (timer) clearInterval(timer);
+    timer = setInterval(() => {
+      elapsed = (performance.now() - startTime) / 1000;
+      document.getElementById(cfg.stopwatchId).textContent = elapsed.toFixed(1) + 's';
+    }, 100);
+
+    showQ();
+
+    function showQ() {
+      if (qIdx >= cfg.total) { finish(); return; }
+      const f = cfg.facts[qIdx];
+      document.getElementById(cfg.qNumId).textContent = qIdx + 1;
+      document.getElementById(cfg.questionId).innerHTML =
+        `<span class="factor">${f.a}</span> × <span class="factor">${f.b}</span> = ?`;
+      document.getElementById(cfg.feedbackId).textContent = '';
+      if (keypadCtrl) keypadCtrl.reset();
+    }
+
+    function submitFn(ans) {
+      const f = cfg.facts[qIdx];
+      const ok = ans === f.ans;
+      const fb = document.getElementById(cfg.feedbackId);
+      const dot = dots[qIdx];
+      if (ok) {
+        fb.textContent = `✅ ${f.a} × ${f.b} = ${f.ans} 🐾`;
+        fb.style.color = 'var(--green)';
+        dot.classList.add('correct'); dot.textContent = '✓';
+        correct++; playSound('correct'); qIdx++;
+        setTimeout(() => { fb.textContent = ''; showQ(); }, 600);
+      } else {
+        fb.textContent = `Ooh! ${f.a} × ${f.b} = ${f.ans} 🐾`;
+        fb.style.color = 'var(--area-calc)';
+        dot.classList.add('wrong'); dot.textContent = '✗';
+        if (cfg.onWrong) cfg.onWrong(f);
+        playSound('wrong'); qIdx++;
+        setTimeout(() => { fb.textContent = ''; showQ(); }, 900);
+      }
+    }
+
+    function finish() {
+      clearInterval(timer);
+      elapsed = (performance.now() - startTime) / 1000;
+      document.getElementById(cfg.stopwatchId).textContent = elapsed.toFixed(1) + 's';
+      if (keypadCtrl) { keypadCtrl.destroy(); keypadCtrl = null; }
+      cfg.onEnd({ elapsed, correct, total: cfg.total, facts: cfg.facts });
+    }
+
+    return { stop() { clearInterval(timer); if (keypadCtrl) keypadCtrl.destroy(); } };
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // TIME TRIAL MODE
+  // ═══════════════════════════════════════════════════════════════════
+  let currentTrialTable = 3;
+  let trialFacts = [];
+
+  function renderTrialPicker() {
+    document.getElementById('trialPicker').style.display = '';
+    document.getElementById('trialActive').style.display = 'none';
+    document.getElementById('trialResults').style.display = 'none';
+    const grid = document.getElementById('trialTableGrid');
+    grid.innerHTML = '';
+    const bests = getTableBest();
+    for (let t = 1; t <= MAX_TABLE; t++) {
+      const btn = document.createElement('button');
+      const best = bests[String(t)];
+      btn.className = 'table-btn';
+      btn.innerHTML = `<div class="table-emoji">${TABLE_EMOJIS[t]||'🐾'}</div><div class="table-num">${t}</div><div class="table-stars">${starsLabel(t)}</div>${best ? `<div style="font-size:.6rem;color:var(--area-calc);">Best: ${best.toFixed(1)}s</div>` : ''}`;
+      btn.addEventListener('click', () => trialStart(t));
+      grid.appendChild(btn);
+    }
+  }
+
+  function showTrialPicker() { renderTrialPicker(); }
+
+  function trialStart(t) {
+    currentTrialTable = t;
+    document.getElementById('trialPicker').style.display = 'none';
+    document.getElementById('trialResults').style.display = 'none';
+    document.getElementById('trialActive').style.display = '';
+    document.getElementById('trialTableLabel').textContent = t;
+    document.getElementById('trialTreatReview').style.display = 'none';
+
+    // Generate 10 shuffled facts
+    const pool = [];
+    for (let i = 1; i <= 10; i++) pool.push({ a: t, b: i, ans: t * i });
+    trialFacts = shuffle(pool).slice(0, TRIAL_TOTAL);
+
+    // Narrator
+    const narr = getTableNarrator(t);
+    document.getElementById('trialNarrImg').src = getCharImage(narr);
+    document.getElementById('trialNarrSpeech').textContent = `10 questions, go! ⏱️`;
+
+    runTimedTrial({
+      total: TRIAL_TOTAL,
+      facts: trialFacts,
+      progressId: 'trialProgress',
+      keypadId: 'trialKeypad',
+      answerId: 'trialAnswer',
+      questionId: 'trialQuestion',
+      feedbackId: 'trialFeedback',
+      qNumId: 'trialQNum',
+      stopwatchId: 'trialStopwatch',
+      onWrong: (f) => addToTreatBox(f.a, f.b),
+      onEnd: (stats) => endTrial(stats),
+    });
+  }
+
+  function endTrial(stats) {
+    document.getElementById('trialActive').style.display = 'none';
+    document.getElementById('trialResults').style.display = '';
+
+    const t = currentTrialTable;
+    const bests = getTableBest();
+    const prevBest = bests[String(t)];
+    let isNewBest = !prevBest || stats.elapsed < prevBest;
+    if (isNewBest) { bests[String(t)] = stats.elapsed; saveTableBest(bests); }
+
+    // Stars
+    const allStars = getTableStars();
+    if (!allStars[t]) allStars[t] = {};
+    const sm = speedMedal(stats.elapsed);
+    let newStars = [];
+    if (stats.correct === TRIAL_TOTAL) {
+      if (!allStars[t].silver) { allStars[t].silver = true; newStars.push('🥈'); }
+      if (stats.elapsed < 60 && !allStars[t].gold) { allStars[t].gold = true; newStars.push('🥇'); }
+    }
+    saveTableStars(allStars);
+
+    // Update display
+    document.getElementById('trialResTime').textContent = stats.elapsed.toFixed(1) + 's';
+    document.getElementById('trialResScore').textContent = `${stats.correct}/${TRIAL_TOTAL}`;
+    document.getElementById('trialResBest').textContent = bests[String(t)].toFixed(1) + 's' + (isNewBest ? ' 🎉' : '');
+    document.getElementById('trialResSpeedMedal').textContent = sm.medal;
+
+    let title = stats.correct === TRIAL_TOTAL ? '🎉 Perfect Score!' : stats.correct >= 7 ? 'Great effort! 🐾' : 'Keep practising! 🦴';
+    if (isNewBest && prevBest) title = '🎉 New Best Time!';
+    document.getElementById('trialResultsTitle').textContent = title;
+
+    const starsEarned = document.getElementById('trialStarsEarned');
+    starsEarned.innerHTML = newStars.length ? `Stars earned this run: ${newStars.join(' ')}` : `Stars: ${starsLabel(t)}`;
+
+    // Narrator results
+    const narr = getTableNarrator(t);
+    document.getElementById('trialResultsNarrator').innerHTML = `<img src="${getCharImage(narr)}" alt="${narr}" style="width:48px;height:48px;border-radius:50%;object-fit:contain;border:2px solid var(--area-calc);"><div class="narrator-bubble">${isNewBest && prevBest ? '🎉 New personal best!' : stats.correct === TRIAL_TOTAL ? 'Perfect! You\'re a champion! 🏆' : `${stats.correct} correct — well done! 🐾`}</div>`;
+
+    const sm2 = speedMedal(stats.elapsed);
+    document.getElementById('trialMedalDisplay').textContent = sm2.medal;
+
+    // Fix treat box button label
+    document.querySelector('#trialResults .tool-btn[onclick="showTreatBox()"]').textContent = `🦴 Treat Box (${getTreatBox().length})`;
+
+    if (isNewBest && prevBest) { triggerConfetti(); playSound('levelup'); }
+    else if (stats.correct === TRIAL_TOTAL) { triggerConfetti(); playSound('correct'); }
+    else { playSound('correct'); }
+
+    if (stats.correct > 0) bumpCorrect(false, updateStatsDisplay);
+    renderTrialPicker();
+  }
+
+  function showTreatBox() {
+    const el = document.getElementById('trialTreatReview');
+    const list = document.getElementById('treatBoxList');
+    const box = getTreatBox();
+    list.innerHTML = box.length
+      ? box.map(({a,b}) => `<div class="treat-box-item">🦴 ${a} × ${b} = <strong style="color:var(--area-calc);">${a*b}</strong></div>`).join('')
+      : '<div style="color:var(--text2);">No tricky ones yet — keep going! 🐾</div>';
+    el.style.display = el.style.display === 'none' ? '' : 'none';
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // MIXED TRIAL MODE
+  // ═══════════════════════════════════════════════════════════════════
+  let mixMax = 12;
+  let mixedFacts = [];
+
+  function setMixMax(v) {
+    mixMax = v;
+    [5,12,20].forEach(n => document.getElementById('mixOpt'+n).classList.toggle('active', n===v));
+    document.getElementById('mixMaxLabel').textContent = v;
+    updateMixedBestDisplay();
+  }
+
+  function updateMixedBestDisplay() {
+    const bests = getMixedBest();
+    const b = bests[String(mixMax)];
+    document.getElementById('mixedBestDisplay').textContent = b ? `Best for ×${mixMax}: ${b.toFixed(1)}s` : '';
+  }
+
+  function renderMixedPicker() {
+    document.getElementById('mixedPicker').style.display = '';
+    document.getElementById('mixedActive').style.display = 'none';
+    document.getElementById('mixedResults').style.display = 'none';
+    setMixMax(mixMax);
+    renderTrophyRow();
+  }
+
+  function renderTrophyRow() {
+    const champs = getChampions();
+    const row = document.getElementById('mixedTrophyRow');
+    row.innerHTML = [5,12,20].filter(n => champs[String(n)])
+      .map(n => `<div style="background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.35);border-radius:12px;padding:7px 14px;font-family:'Outfit',sans-serif;font-weight:800;font-size:.85rem;color:#fbbf24;">🏆 ×${n} Champion!</div>`)
+      .join('') || '';
+  }
+
+  function showMixedPicker() { renderMixedPicker(); }
+
+  function mixedStart() {
+    document.getElementById('mixedPicker').style.display = 'none';
+    document.getElementById('mixedResults').style.display = 'none';
+    document.getElementById('mixedActive').style.display = '';
+    document.getElementById('mixedMaxDisplay').textContent = mixMax;
+
+    const pool = [];
+    for (let a = 1; a <= mixMax; a++) for (let b = 1; b <= 10; b++) pool.push({ a, b, ans: a*b });
+    mixedFacts = shuffle(pool).slice(0, 10);
+
+    runTimedTrial({
+      total: 10,
+      facts: mixedFacts,
+      progressId: 'mixedProgress',
+      keypadId: 'mixedKeypad',
+      answerId: 'mixedAnswer',
+      questionId: 'mixedQuestion',
+      feedbackId: 'mixedFeedback',
+      qNumId: 'mixedQNum',
+      stopwatchId: 'mixedStopwatch',
+      onWrong: (f) => addToTreatBox(f.a, f.b),
+      onEnd: (stats) => endMixed(stats),
+    });
+  }
+
+  function endMixed(stats) {
+    document.getElementById('mixedActive').style.display = 'none';
+    document.getElementById('mixedResults').style.display = '';
+
+    const bests = getMixedBest();
+    const prevBest = bests[String(mixMax)];
+    let isNewBest = !prevBest || stats.elapsed < prevBest;
+    if (isNewBest) { bests[String(mixMax)] = stats.elapsed; saveMixedBest(bests); }
+
+    // Champion trophy
+    const champs = getChampions();
+    let firstTrophy = false;
+    if (!champs[String(mixMax)]) { champs[String(mixMax)] = true; saveChampions(champs); firstTrophy = true; }
+
+    const sm = speedMedal(stats.elapsed);
+    document.getElementById('mixedResTime').textContent = stats.elapsed.toFixed(1) + 's';
+    document.getElementById('mixedResScore').textContent = `${stats.correct}/10`;
+    document.getElementById('mixedResBest').textContent = bests[String(mixMax)].toFixed(1) + 's' + (isNewBest ? ' 🎉' : '');
+    document.getElementById('mixedResSpeedMedal').textContent = sm.medal;
+
+    const title = firstTrophy ? '🏆 Champion Trophy Earned!' : isNewBest && prevBest ? '🎉 New Best Time!' : stats.correct >= 8 ? 'Amazing work! 🐾' : 'Well done! 🐾';
+    document.getElementById('mixedResultsTitle').textContent = title;
+    document.getElementById('mixedMedalDisplay').textContent = firstTrophy ? '🏆' : sm.medal;
+
+    const trophyEl = document.getElementById('mixedTrophyEarned');
+    trophyEl.textContent = firstTrophy ? `🏆 You are a ×${mixMax} Champion!` : `🏆 ×${mixMax} Champion (held)`;
+
+    if (firstTrophy || (isNewBest && prevBest)) { triggerConfetti(); playSound('levelup'); }
+    else if (stats.correct >= 5) { playSound('correct'); }
+
+    if (stats.correct > 0) bumpCorrect(false, updateStatsDisplay);
+    updateMixedBestDisplay();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // INIT
+  // ═══════════════════════════════════════════════════════════════════
+  document.addEventListener('DOMContentLoaded', () => {
+    renderLearnPicker();
+    updateStatsDisplay();
+    initRpj();
+    showIntroModal('calculation',
+      '<strong>Welcome to Calculation Crew! ✖️</strong><br><br>Pick a times table to <strong>Learn</strong> it with arrays, then race the clock in <strong>Time Trial</strong>, or face the <strong>Mixed Board</strong> for the ultimate Champion trophy! 🏆',
+      'Hairy Maclary');
+  });
+  </script>
+  <img id="rpj" src="rainbow-pj.png" alt="Rainbow PJ" onclick="rpjClick()">
+</body>
+</html>

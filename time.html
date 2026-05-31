@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rainbow's Time Fun ⏰ - Rainbow's Number Fun</title>
+    <title>Time Travellers — Rainbow Learning Academy</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,6 +12,8 @@
 
     <style>
         :root {
+            --accent: var(--accent-purple);
+            --accent2: var(--accent-pink);
             --past-bg: rgba(46, 204, 113, 0.1);
             --past-border: #2ecc71;
             --past-glow: rgba(46, 204, 113, 0.4);
@@ -74,6 +76,7 @@
             background: linear-gradient(to right, #c084fc, #f472b6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            filter: var(--logo-glow);
         }
 
         .logo-text p {
@@ -412,6 +415,7 @@
             transform-origin: 150px 150px;
             transition: transform 0.05s linear;
             cursor: grab;
+            touch-action: none;
         }
 
         .clock-hand:active {
@@ -892,9 +896,9 @@
         }
 
         .modal-content {
-            background: #1e293b;
+            background: var(--card);
             border: 1px solid var(--card-border);
-            max-width: 500px;
+            max-width: 640px;
             width: 100%;
             border-radius: 28px;
             padding: 30px;
@@ -1134,6 +1138,7 @@
             margin-bottom: 10px;
             background: linear-gradient(to right, #c084fc, #f472b6);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            filter: var(--logo-glow);
         }
         .mcc-quote {
             font-size: 0.95rem;
@@ -1146,17 +1151,6 @@
             50% { transform: translateY(-8px); }
         }
 
-        /* Combined Home Avatar Button hover styles */
-        .home-avatar-btn:hover .logo-icon {
-            transform: scale(1.18) rotate(-8deg);
-            filter: drop-shadow(0 0 12px var(--accent-purple));
-        }
-        .home-avatar-btn:hover span {
-            color: var(--text-primary) !important;
-            border-color: var(--accent-purple) !important;
-            background: rgba(30, 41, 59, 0.9) !important;
-            box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
-        }
     </style>
 </head>
 <body>
@@ -1169,8 +1163,8 @@
     <canvas id="confettiCanvas"></canvas>
 
     <!-- Answer result modal -->
-    <div id="answerModal" style="display:none;position:fixed;inset:0;background:rgba(10,15,30,.88);backdrop-filter:blur(10px);z-index:1100;align-items:center;justify-content:center;padding:20px;">
-      <div style="background:#1e293b;border:1px solid var(--card-border);max-width:420px;width:100%;border-radius:28px;padding:28px 24px;box-shadow:0 25px 50px rgba(0,0,0,.5);animation:modalSlide .3s cubic-bezier(.175,.885,.32,1.275);text-align:center;">
+    <div id="answerModal" style="display:none;position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(10px);z-index:1100;align-items:center;justify-content:center;padding:20px;">
+      <div style="background:var(--card);border:1px solid var(--card-border);max-width:640px;width:100%;border-radius:28px;padding:28px 24px;box-shadow:0 25px 50px rgba(0,0,0,.5);animation:modalSlide .3s cubic-bezier(.175,.885,.32,1.275);text-align:center;">
         <div id="answerModalIcon" style="font-size:2.4rem;margin-bottom:8px;"></div>
         <div id="answerModalBody" style="font-size:.95rem;line-height:1.6;color:var(--text-secondary);text-align:left;"></div>
         <button id="answerModalNext" onclick="dismissAnswerModal()" style="margin-top:18px;width:100%;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3);">🎲 Next!</button>
@@ -1184,7 +1178,7 @@
                 <span style="font-size:0.65rem;font-weight:800;color:var(--text-secondary);font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:0.3px;background:rgba(30,41,59,0.6);border:1px solid var(--card-border);padding:2px 8px;border-radius:8px;transition:all 0.2s;white-space:nowrap;">🏠 Home avavav! 🐾</span>
             </a>
             <div class="logo-text">
-                <h1>Rainbow's Time Fun 🌈</h1>
+                <h1>Time Travellers ⏰ — Rainbow Learning Academy</h1>
                 <p>Learn time with Rainbow Doggy 🐶</p>
             </div>
         </div>
@@ -1226,17 +1220,17 @@
                     <strong>Explore & Learn</strong>
                     <small id="progStars0" style="font-size: 0.7rem; color: var(--accent-yellow);">⭐ Unlocked</small>
                 </button>
-                <button class="tab-btn" id="tab1" onclick="selectQuestPhase(1)" style="flex: 1;">
+                <button class="tab-btn nav-pulse" id="tab1" onclick="selectQuestPhase(1)" style="flex: 1;">
                     <span>Phase 1 📖</span>
                     <strong>Reinforce Q&A</strong>
                     <small id="progStars1" style="font-size: 0.7rem; color: var(--text-secondary);">⚪ ⚪ ⚪ ⚪ ⚪</small>
                 </button>
-                <button class="tab-btn" id="tab2" onclick="selectQuestPhase(2)" style="flex: 1;">
+                <button class="tab-btn nav-pulse" id="tab2" onclick="selectQuestPhase(2)" style="flex: 1;">
                     <span>Phase 2 🛠️</span>
                     <strong>Set Hands</strong>
                     <small id="progStars2" style="font-size: 0.7rem; color: var(--text-secondary);">⚪ ⚪ ⚪ ⚪ ⚪</small>
                 </button>
-                <button class="tab-btn" id="tab3" onclick="selectQuestPhase(3)" style="flex: 1;">
+                <button class="tab-btn nav-pulse" id="tab3" onclick="selectQuestPhase(3)" style="flex: 1;">
                     <span>Phase 3 👑</span>
                     <strong>Rainbow Quest</strong>
                     <small id="progStars3" style="font-size: 0.7rem; color: var(--text-secondary);">⚪ ⚪ ⚪ ⚪ ⚪</small>
@@ -1606,6 +1600,9 @@
 
     <script src="shared.js"></script>
     <script>
+        const RZ = 'Rainbow Zoom ⚡ (the minute hand)';
+        const RF = 'Rainbow Float 🌈 (the hour hand)';
+
         function injectInlineIcons(text) {
           const charList = [
             { name: 'Schnitzel von Krumm', img: 'schnitzel_von_krumm.png' },
@@ -1617,8 +1614,7 @@
             { name: 'Bitzer Maloney', img: 'bitzer_maloney.png' },
             { name: 'Hairy Maclary', img: 'hairy_maclary.png' },
             { name: 'Muffin McLay', img: 'muffin_mclay.png' },
-            { name: 'Schnitzel', img: 'schnitzel_von_krumm.png' },
-            { name: 'Rainbow Doggy', img: 'head.png' }
+            { name: 'Schnitzel', img: 'schnitzel_von_krumm.png' }
           ];
           let result = text;
           charList.forEach(c => {
@@ -2294,11 +2290,12 @@
             updateClockFaceVisuals();
         });
 
-        // Click-and-Drag Rotation Logic for Clock Hands
+        // Click-and-Drag Rotation Logic for Clock Hands (Unified PointerEvents)
         let activeDragHand = null;
 
         function startHandDrag(e) {
             if (drawingModeActive) return; // Don't drag while board drawing is active
+            if (e.button !== 0 && e.pointerType === 'mouse') return; // Only allow left clicks
             e.preventDefault();
             e.stopPropagation();
 
@@ -2308,10 +2305,13 @@
                 activeDragHand = 'minute';
             }
 
-            document.addEventListener('mousemove', handleHandDrag);
-            document.addEventListener('mouseup', stopHandDrag);
-            document.addEventListener('touchmove', handleHandDrag, { passive: false });
-            document.addEventListener('touchend', stopHandDrag);
+            try {
+                this.setPointerCapture(e.pointerId);
+            } catch (err) {}
+
+            document.addEventListener('pointermove', handleHandDrag);
+            document.addEventListener('pointerup', stopHandDrag);
+            document.addEventListener('pointercancel', stopHandDrag);
         }
 
         function handleHandDrag(e) {
@@ -2323,11 +2323,6 @@
 
             let clientX = e.clientX;
             let clientY = e.clientY;
-
-            if (e.touches && e.touches.length > 0) {
-                clientX = e.touches[0].clientX;
-                clientY = e.touches[0].clientY;
-            }
 
             // Translate page coordinate to local SVG width coordinate space (0-300)
             const svgX = ((clientX - rect.left) / rect.width) * 300;
@@ -2355,17 +2350,14 @@
 
         function stopHandDrag() {
             activeDragHand = null;
-            document.removeEventListener('mousemove', handleHandDrag);
-            document.removeEventListener('mouseup', stopHandDrag);
-            document.removeEventListener('touchmove', handleHandDrag);
-            document.removeEventListener('touchend', stopHandDrag);
+            document.removeEventListener('pointermove', handleHandDrag);
+            document.removeEventListener('pointerup', stopHandDrag);
+            document.removeEventListener('pointercancel', stopHandDrag);
         }
 
-        // Attach mouse and touch drag listeners to SVG hands groups
-        document.getElementById('svgHourHand').addEventListener('mousedown', startHandDrag);
-        document.getElementById('svgHourHand').addEventListener('touchstart', startHandDrag);
-        document.getElementById('svgMinuteHand').addEventListener('mousedown', startHandDrag);
-        document.getElementById('svgMinuteHand').addEventListener('touchstart', startHandDrag);
+        // Attach pointer drag listeners to SVG hands groups
+        document.getElementById('svgHourHand').addEventListener('pointerdown', startHandDrag);
+        document.getElementById('svgMinuteHand').addEventListener('pointerdown', startHandDrag);
 
         function toggleZones() {
             const toggle = document.getElementById('zoneToggle');
@@ -2443,6 +2435,7 @@
                 const btn = document.getElementById(`tab${i}`);
                 if (btn) {
                     btn.classList.toggle('active', i === phase);
+                    btn.classList.toggle('nav-pulse', i !== phase);
                 }
             }
 
@@ -2570,16 +2563,16 @@
 
             // ── Rainbow Zoom description (1 line) ──
             let zoomLine;
-            if (m === 0)       zoomLine = `Rainbow Zoom ⚡ is pointing straight up at the 12 — a brand new hour!`;
-            else if (m === 15) zoomLine = `Rainbow Zoom ⚡ has zoomed ¼ of the way round — a quarter of the hour done!`;
-            else if (m === 30) zoomLine = `Rainbow Zoom ⚡ is halfway round — exactly half the hour gone!`;
-            else if (m === 45) zoomLine = `Rainbow Zoom ⚡ has zoomed ¾ of the way round — just a quarter left to reach ${nextHour}.`;
-            else if (m < 30)   zoomLine = `Rainbow Zoom ⚡ has zoomed ${m} minutes past the ${h}.`;
-            else               zoomLine = `Rainbow Zoom ⚡ has ${minsTo} minutes left before reaching ${nextHour}:00.`;
+            if (m === 0)       zoomLine = `${RZ} is pointing straight up at the 12 — a brand new hour!`;
+            else if (m === 15) zoomLine = `${RZ} has zoomed ¼ of the way round — a quarter of the hour done!`;
+            else if (m === 30) zoomLine = `${RZ} is halfway round — exactly half the hour gone!`;
+            else if (m === 45) zoomLine = `${RZ} has zoomed ¾ of the way round — just a quarter left to reach ${nextHour}.`;
+            else if (m < 30)   zoomLine = `${RZ} has zoomed ${m} minutes past the ${h}.`;
+            else               zoomLine = `${RZ} has ${minsTo} minutes left before reaching ${nextHour}:00.`;
 
             // ── Float Trick warning only when minutes ≥ 40 ──
             const floatLine = m >= 40
-                ? `🌈 Rainbow Float looks nearly on the ${nextHour}, but the hour is still <strong>${h}</strong> until Rainbow Zoom finishes the lap!`
+                ? `${RF} looks nearly on the ${nextHour}, but the hour is still <strong>${h}</strong> until ${RZ} finishes the lap!`
                 : '';
 
             return `
@@ -2663,7 +2656,7 @@
                     setupM = mins;
 
                     const displayM = mins < 10 ? '0' + mins : mins;
-                    qText = `The digital display shows <strong>${hour}:${displayM}</strong>. Where should Rainbow Float 🌈 (the hour hand) be pointing?`;
+                    qText = `The digital display shows <strong>${hour}:${displayM}</strong>. Where should <strong>${RF}</strong> be pointing?`;
 
                     let correctDesc = "";
                     if (mins === 0) {
@@ -2693,7 +2686,7 @@
                     let distractors = shuffle(allPossible.filter(o => o !== correctDesc));
                     while (distractors.length < 3) distractors.push(distractors[0]); // safety pad (shouldn't happen)
                     options = shuffle([correctDesc, distractors[0], distractors[1], distractors[2]]);
-                    hint = "Remember, Rainbow Float 🌈 floats slowly from one number to the next. At 00 sharp she points right at the number, and near 50 she is almost touching the next number — but the hour doesn't change until Rainbow Zoom completes the full lap!";
+                    hint = `Remember, ${RF} floats slowly from one number to the next. At 00 sharp she points right at the number, and near 50 she is almost touching the next number — but the hour doesn't change until ${RZ} completes the full lap!`;
                 } else if (type === 'linguistic') {
                     // Linguistic translation time translation questions
                     // If in Tutorial Mode (first 2 questions), keep it simple with quarters (15, 30, 45).
@@ -2803,10 +2796,10 @@
 
                     // Question phrasing variants
                     const mhVariants = [
-                        `<strong>${mhChar}</strong> is checking the clock — it reads <strong>${hour}:${displayM}</strong>. Which number is <strong>Rainbow Zoom ⚡</strong> (the minute hand) pointing at?`,
-                        `The digital display shows <strong>${hour}:${displayM}</strong>. <strong>${mhChar}</strong> asks: "Where is <strong>Rainbow Zoom ⚡</strong> pointing right now?"`,
-                        `<strong>${mhChar}</strong> says: "It's <strong>${hour}:${displayM}</strong> — quick! Which number on the clock is <strong>Rainbow Zoom ⚡</strong> (the minute hand) touching?"`,
-                        `Rainbow Zoom ⚡ (the speedy minute hand) has zoomed to a number! The time is <strong>${hour}:${displayM}</strong>. <strong>${mhChar}</strong> wants to know — which number?`
+                        `<strong>${mhChar}</strong> is checking the clock — it reads <strong>${hour}:${displayM}</strong>. Which number is <strong>${RZ}</strong> pointing at?`,
+                        `The digital display shows <strong>${hour}:${displayM}</strong>. <strong>${mhChar}</strong> asks: "Where is <strong>${RZ}</strong> pointing right now?"`,
+                        `<strong>${mhChar}</strong> says: "It's <strong>${hour}:${displayM}</strong> — quick! Which number on the clock is <strong>${RZ}</strong> touching?"`,
+                        `<strong>${RZ}</strong> has zoomed to a number! The time is <strong>${hour}:${displayM}</strong>. <strong>${mhChar}</strong> wants to know — which number?`
                     ];
                     qText = mhVariants[Math.floor(Math.random() * mhVariants.length)];
                     qText = injectInlineIcons(qText);
@@ -2815,7 +2808,7 @@
                     const allNums = [1,2,3,4,5,6,7,8,9,10,11,12].filter(n => n !== pointsAt);
                     const shuffledNums = shuffle(allNums);
                     options = shuffle([`${pointsAt}`, `${shuffledNums[0]}`, `${shuffledNums[1]}`, `${shuffledNums[2]}`]);
-                    hint = "Rainbow Zoom ⚡ zooms around the clock once every hour! Each number is worth 5 minutes — the 1 means 5 minutes, the 2 means 10, the 3 means 15… all the way to the 12 which means 0 (or 60) minutes.";
+                    hint = `Remember, ${RZ} zooms around the clock once every hour! Each number is worth 5 minutes — the 1 means 5 minutes, the 2 means 10, the 3 means 15… all the way to the 12 which means 0 (or 60) minutes.`;
                 } else if (type === 'minuteBetween') {
                     // Harder: minute hand is between two numbers (non-multiples of 5)
                     const nonFiveMins = [1,2,3,4,6,7,8,9,11,12,13,14,16,17,18,19,21,22,23,24,26,27,28,29,31,32,33,34,36,37,38,39,41,42,43,44,46,47,48,49,51,52,53,54,56,57,58,59];
@@ -2832,10 +2825,10 @@
 
                     // Question phrasing variants
                     const mbVariants = [
-                        `<strong>${mbChar}</strong> spots the clock at <strong>${hour}:${displayM}</strong>. <strong>Rainbow Zoom ⚡</strong> (the minute hand) isn't exactly on a number — which two numbers is it between?`,
-                        `The time is <strong>${hour}:${displayM}</strong>. <strong>${mbChar}</strong> notices <strong>Rainbow Zoom ⚡</strong> is sneaking between two numbers. Which ones?`,
-                        `<strong>Rainbow Zoom ⚡</strong> is mid-zoom! The clock reads <strong>${hour}:${displayM}</strong>. <strong>${mbChar}</strong> asks: "Which two numbers is the minute hand stuck between?"`,
-                        `<strong>${mbChar}</strong> sees the time is <strong>${hour}:${displayM}</strong>. <strong>Rainbow Zoom ⚡</strong> hasn't reached the next number yet — which two numbers is it travelling between?`
+                        `<strong>${mbChar}</strong> spots the clock at <strong>${hour}:${displayM}</strong>. <strong>${RZ}</strong> isn't exactly on a number — which two numbers is it between?`,
+                        `The time is <strong>${hour}:${displayM}</strong>. <strong>${mbChar}</strong> notices <strong>${RZ}</strong> is sneaking between two numbers. Which ones?`,
+                        `<strong>${RZ}</strong> is mid-zoom! The clock reads <strong>${hour}:${displayM}</strong>. <strong>${mbChar}</strong> asks: "Which two numbers is the minute hand stuck between?"`,
+                        `<strong>${mbChar}</strong> sees the time is <strong>${hour}:${displayM}</strong>. <strong>${RZ}</strong> hasn't reached the next number yet — which two numbers is it travelling between?`
                     ];
                     qText = mbVariants[Math.floor(Math.random() * mbVariants.length)];
                     qText = injectInlineIcons(qText);

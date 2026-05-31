@@ -6,7 +6,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rainbow's Fraction Fun 🍕 - Rainbow's Number Fun</title>
+  <title>Fraction Friends — Rainbow Learning Academy</title>
   <meta name="description" content="Compare, sort and explore fractions up to 1/16 with Rainbow Doggy! Visual fraction strips, number lines, and common denominators for Year 2–4.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,7 +50,7 @@
     }
     .home-btn:hover { color:var(--text1); border-color:var(--accent); }
     .logo-img { width:38px; height:38px; object-fit:contain; filter:drop-shadow(0 0 8px var(--accent)); animation:pulse-glow 2.2s ease-in-out infinite; }
-    .logo-text h1 { font-size:1.35rem; background:linear-gradient(to right,#f97316,#facc15); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .logo-text h1 { font-size:1.35rem; background:linear-gradient(to right,#f97316,#facc15); -webkit-background-clip:text; -webkit-text-fill-color:transparent; filter: var(--logo-glow); }
     .logo-text p { font-size:.72rem; color:var(--text2); text-transform:uppercase; letter-spacing:2px; }
     .stats-bar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
     .stat-badge { background:rgba(30,41,59,.9); border:1px solid var(--border); padding:7px 12px; border-radius:11px; display:flex; align-items:center; gap:7px; font-weight:700; font-family:'Outfit',sans-serif; font-size:.88rem; }
@@ -110,7 +110,7 @@
 
     /* ── PANEL ── */
     .panel {
-      background:radial-gradient(circle at top left,rgba(30,41,59,.88),rgba(15,23,42,.96));
+      background: var(--card);
       backdrop-filter:blur(12px);
       border-radius:24px; border:1px solid var(--border);
       padding:20px; box-shadow:0 20px 40px rgba(0,0,0,.4);
@@ -123,11 +123,11 @@
     /* ── MASCOT HUD ── */
     .mascot-hud { display:flex; align-items:center; gap:12px; background:rgba(249,115,22,.07); border:1px dashed #f97316; padding:10px 14px; border-radius:18px; }
     .mascot-hud img { width:42px; height:42px; border-radius:50%; object-fit:contain; border:2px solid #f97316; background:rgba(255,255,255,.08); }
-    .mascot-speech { background:rgba(15,23,42,.8); border:1px solid var(--border); padding:8px 12px; border-radius:14px; font-size:.84rem; font-weight:600; line-height:1.45; flex-grow:1; position:relative; }
-    .mascot-speech::before { content:''; position:absolute; left:-6px; top:50%; transform:translateY(-50%) rotate(45deg); width:10px; height:10px; background:#0f172a; border-left:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .mascot-speech { background: var(--card); border:1px solid var(--border); padding:8px 12px; border-radius:14px; font-size:.84rem; font-weight:600; line-height:1.45; flex-grow:1; position:relative; }
+    .mascot-speech::before { content:''; position:absolute; left:-6px; top:50%; transform:translateY(-50%) rotate(45deg); width:10px; height:10px; background: var(--card); border-left:1px solid var(--border); border-bottom:1px solid var(--border); }
 
     /* ── CHALLENGE CARD ── */
-    .challenge-card { background:radial-gradient(circle at top left,rgba(30,41,59,.5),rgba(15,23,42,.8)); border:1px solid var(--border); padding:18px; border-radius:18px; display:flex; flex-direction:column; gap:12px; animation:fadeIn .4s ease; position:relative; overflow:hidden; }
+    .challenge-card { background: var(--card); border:1px solid var(--border); padding:18px; border-radius:18px; display:flex; flex-direction:column; gap:12px; animation:fadeIn .4s ease; position:relative; overflow:hidden; }
     .challenge-card::before { content:''; position:absolute; inset:0; background:url('doggy-watermark.png') center/contain no-repeat; opacity:.06; mix-blend-mode:screen; pointer-events:none; z-index:0; }
     .challenge-card>* { position:relative; z-index:1; }
     .challenge-text { font-size:1.05rem; line-height:1.55; color:var(--text1); font-weight:600; }
@@ -143,8 +143,8 @@
     .primary-btn:hover { transform:translateY(-2px) scale(1.03); background-position:right center; box-shadow:0 10px 25px rgba(234,88,12,.5); }
 
     .choices-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .choice-btn { background:rgba(15,23,42,.6); border:2px solid var(--border); padding:13px 16px; color:var(--text1); border-radius:13px; cursor:pointer; font-size:.95rem; font-weight:700; font-family:'Outfit',sans-serif; text-align:center; transition:all .2s cubic-bezier(.175,.885,.32,1.275); }
-    .choice-btn:hover:not(:disabled) { background:rgba(30,41,59,.9); border-color:var(--accent); transform:translateY(-2px); box-shadow:0 4px 12px rgba(249,115,22,.15); }
+    .choice-btn { background: var(--card); border:2px solid var(--border); padding:13px 16px; color:var(--text1); border-radius:13px; cursor:pointer; font-size:.95rem; font-weight:700; font-family:'Outfit',sans-serif; text-align:center; transition:all .2s cubic-bezier(.175,.885,.32,1.275); }
+    .choice-btn:hover:not(:disabled) { background: var(--surface-inset); border-color:var(--accent); transform:translateY(-2px); box-shadow:0 4px 12px rgba(249,115,22,.15); }
     .choice-btn:disabled { cursor:not-allowed; opacity:.6; }
     .choice-btn.correct { background:rgba(34,197,94,.2)!important; border-color:#22c55e!important; color:#22c55e!important; box-shadow:0 0 14px rgba(34,197,94,.2); }
     .choice-btn.incorrect { background:rgba(239,68,68,.2)!important; border-color:#ef4444!important; color:#ef4444!important; }
@@ -152,11 +152,11 @@
 
     /* ══════════════════════════
        FRACTION STRIPS (Sandbox)
-    ══════════════════════════ */
+     ══════════════════════════ */
     .strip-wrap { display:flex; flex-direction:column; gap:5px; }
     .strip-row { display:flex; align-items:center; gap:8px; }
-    .strip-lbl { font-family:'Outfit',sans-serif; font-weight:800; font-size:.78rem; color:var(--text2); width:30px; text-align:right; flex-shrink:0; }
-    .strip-track { flex:1; height:27px; border-radius:6px; overflow:hidden; display:flex; gap:2px; background:rgba(15,23,42,.5); border:1px solid rgba(255,255,255,.06); cursor:pointer; }
+    .strip-lbl { font-family:'Outfit',sans-serif; font-weight:800; font-size:.78rem; color:var(--text2); width:36px; text-align:right; flex-shrink:0; line-height:1.2; }
+    .strip-track { flex:1; height:27px; border-radius:6px; overflow:hidden; display:flex; gap:2px; background: var(--surface-inset); border:1px solid rgba(255,255,255,.06); cursor:pointer; }
     .strip-seg { flex:1; height:100%; display:flex; align-items:center; justify-content:center; font-size:.52rem; font-weight:800; border-radius:3px; transition:all .18s ease; user-select:none; }
     .strip-seg:hover { filter:brightness(1.4); transform:scaleY(1.06); }
     .strip-seg.hl { background:var(--seg-color) !important; color:#ffffff !important; font-weight:900; box-shadow:0 0 0 2px #ffffff, 0 0 10px 2px var(--seg-color); z-index:1; transform:scaleY(1.08); filter:brightness(1.15); }
@@ -165,8 +165,8 @@
 
     /* ══════════════════════════
        COMPARE MODE
-    ══════════════════════════ */
-    .compare-row { display:flex; align-items:center; gap:14px; justify-content:center; flex-wrap:wrap; padding:14px; background:rgba(15,23,42,.3); border-radius:14px; border:1px solid var(--border); }
+     ══════════════════════════ */
+    .compare-row { display:flex; align-items:center; gap:14px; justify-content:center; flex-wrap:wrap; padding:14px; background: var(--surface-inset); border-radius:14px; border:1px solid var(--border); }
     .cmp-block { flex:1; min-width:130px; display:flex; flex-direction:column; align-items:center; gap:8px; }
     .cmp-frac { font-family:'Outfit',sans-serif; font-weight:900; font-size:2.4rem; display:flex; flex-direction:column; align-items:center; line-height:1; }
     .cmp-frac .line { width:44px; height:3px; background:var(--text1); border-radius:2px; margin:4px 0; }
@@ -176,13 +176,13 @@
 
     /* ══════════════════════════
        SORT MODE
-    ══════════════════════════ */
-    .sort-pool { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; min-height:66px; padding:12px; background:rgba(15,23,42,.3); border-radius:14px; border:2px dashed var(--border); transition:border-color .2s; }
+     ══════════════════════════ */
+    .sort-pool { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; min-height:66px; padding:12px; background: var(--surface-inset); border-radius:14px; border:2px dashed var(--border); transition:border-color .2s; }
     .sort-pool.drag-over { border-color:var(--accent); background:rgba(249,115,22,.05); }
-    .sort-zone { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; align-items:center; padding:12px; background:rgba(15,23,42,.2); border-radius:14px; border:2px dashed rgba(34,197,94,.3); min-height:66px; transition:all .2s; }
+    .sort-zone { display:flex; flex-wrap:wrap; gap:9px; justify-content:center; align-items:center; padding:12px; background: var(--surface-inset); border-radius:14px; border:2px dashed rgba(34,197,94,.3); min-height:66px; transition:all .2s; }
     .sort-zone.drag-over { border-color:#22c55e; background:rgba(34,197,94,.05); }
     .sort-zone-hint { color:var(--text2); font-size:.82rem; }
-    .frac-card { background:linear-gradient(135deg,rgba(30,41,59,.9),rgba(15,23,42,.95)); border:2px solid var(--border); border-radius:13px; padding:11px 16px; cursor:grab; user-select:none; display:flex; flex-direction:column; align-items:center; gap:1px; transition:all .2s cubic-bezier(.175,.885,.32,1.275); min-width:60px; font-family:'Outfit',sans-serif; font-weight:800; }
+    .frac-card { background: var(--card); border:2px solid var(--border); border-radius:13px; padding:11px 16px; cursor:grab; user-select:none; display:flex; flex-direction:column; align-items:center; gap:1px; transition:all .2s cubic-bezier(.175,.885,.32,1.275); min-width:60px; font-family:'Outfit',sans-serif; font-weight:800; }
     .frac-card:hover { border-color:var(--accent); transform:translateY(-3px) scale(1.09); box-shadow:0 8px 20px rgba(249,115,22,.22); }
     .frac-card.dragging { opacity:.4; transform:scale(.9); cursor:grabbing; }
     .frac-card .fc-n { font-size:1.35rem; color:var(--text1); line-height:1; border-bottom:3px solid var(--text2); width:100%; text-align:center; padding-bottom:3px; }
@@ -191,50 +191,50 @@
 
     /* ══════════════════════════
        LCD MODE
-    ══════════════════════════ */
-    .lcd-box { display:flex; flex-direction:column; gap:12px; padding:14px; background:rgba(15,23,42,.3); border-radius:14px; border:1px solid var(--border); }
+     ══════════════════════════ */
+    .lcd-box { display:flex; flex-direction:column; gap:12px; padding:14px; background: var(--surface-inset); border-radius:14px; border:1px solid var(--border); }
     .lcd-fracs { display:flex; align-items:center; justify-content:center; gap:22px; }
     .lcd-frac { display:flex; flex-direction:column; align-items:center; font-family:'Outfit',sans-serif; font-weight:900; font-size:2.2rem; line-height:1; }
     .lcd-frac .lline { width:50px; height:3px; background:var(--text1); border-radius:2px; margin:4px 0; }
-    .lcd-hint { display:none; flex-direction:column; gap:9px; padding:12px; background:rgba(30,41,59,.5); border-radius:11px; border:1px solid var(--border); animation:fadeIn .4s ease; }
+    .lcd-hint { display:none; flex-direction:column; gap:9px; padding:12px; background: var(--surface-inset); border-radius:11px; border:1px solid var(--border); animation:fadeIn .4s ease; }
     .lcd-hint.show { display:flex; }
     .lcd-hint-title { font-size:.75rem; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:var(--accent); }
     .mult-row { display:flex; gap:5px; flex-wrap:wrap; align-items:center; }
-    .mult-chip { background:rgba(30,41,59,.7); border:1px solid var(--border); border-radius:7px; padding:3px 7px; font-size:.78rem; font-weight:700; font-family:'Outfit',sans-serif; transition:all .2s; }
+    .mult-chip { background: var(--card); border:1px solid var(--border); border-radius:7px; padding:3px 7px; font-size:.78rem; font-weight:700; font-family:'Outfit',sans-serif; transition:all .2s; }
     .mult-chip.match { background:rgba(34,197,94,.2); border-color:#22c55e; color:#22c55e; transform:scale(1.12); }
 
     /* ══════════════════════════
        NUMBER LINE MODE
-    ══════════════════════════ */
-    .nl-wrap { display:flex; flex-direction:column; gap:14px; padding:16px; background:rgba(15,23,42,.3); border-radius:14px; border:1px solid var(--border); }
-    .nl-track { position:relative; height:68px; margin:8px 0; }
+     ══════════════════════════ */
+    .nl-wrap { display:flex; flex-direction:column; gap:14px; padding:16px; background: var(--surface-inset); border-radius:14px; border:1px solid var(--border); }
+    .nl-track { position:relative; height:68px; margin:8px 0; touch-action:none; }
     .nl-line { position:absolute; top:50%; left:20px; right:20px; height:5px; background:linear-gradient(to right,#c084fc,#f97316); border-radius:3px; transform:translateY(-50%); }
     .nl-tick { position:absolute; top:50%; transform:translate(-50%,-50%); display:flex; flex-direction:column; align-items:center; pointer-events:none; }
     .nl-tick-bar { width:2px; height:14px; background:rgba(255,255,255,.45); }
     .nl-tick-vline { position:absolute; top:0; width:2px; height:100%; background:rgba(255,255,255,.10); pointer-events:none; transform:translateX(-50%); }
     .nl-tick-lbl { font-size:.68rem; font-weight:800; font-family:'Outfit',sans-serif; color:var(--text2); margin-top:18px; white-space:nowrap; }
-    .nl-dragger { position:absolute; top:50%; transform:translate(-50%,-50%); width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#f97316,#ea580c); border:3px solid white; box-shadow:0 4px 12px rgba(234,88,12,.6); cursor:ew-resize; z-index:10; display:flex; align-items:center; justify-content:center; font-size:.6rem; font-weight:800; color:white; font-family:'Outfit',sans-serif; transition:box-shadow .2s; }
+    .nl-dragger { position:absolute; top:50%; transform:translate(-50%,-50%); width:34px; height:34px; border-radius:50%; background:linear-gradient(135deg,#f97316,#ea580c); border:3px solid white; box-shadow:0 4px 12px rgba(234,88,12,.6); cursor:ew-resize; z-index:10; display:flex; align-items:center; justify-content:center; font-size:.6rem; font-weight:800; color:white; font-family:'Outfit',sans-serif; transition:box-shadow .2s; touch-action:none; user-select:none; -webkit-user-select:none; }
     .nl-dragger:hover { box-shadow:0 6px 20px rgba(234,88,12,.8); }
     .nl-correct-dot { position:absolute; top:50%; transform:translate(-50%,-50%); width:14px; height:14px; border-radius:50%; background:#22c55e; border:2px solid white; z-index:5; pointer-events:none; animation:pop-in .4s ease; display:none; }
-    .nl-area { display:none; flex-direction:column; gap:7px; padding:11px; background:rgba(30,41,59,.45); border-radius:11px; border:1px solid var(--border); animation:fadeIn .4s ease; }
+    .nl-area { display:none; flex-direction:column; gap:7px; padding:11px; background: var(--surface-inset); border-radius:11px; border:1px solid var(--border); animation:fadeIn .4s ease; }
     .nl-area.show { display:flex; }
-    .area-bar { height:28px; background:rgba(15,23,42,.5); border-radius:7px; overflow:hidden; display:flex; border:1px solid var(--border); }
+    .area-bar { height:28px; background: var(--surface-inset); border-radius:7px; overflow:hidden; display:flex; border:1px solid var(--border); }
     .area-fill { height:100%; border-radius:6px; transition:width .65s ease; display:flex; align-items:center; justify-content:flex-end; padding-right:7px; font-size:.68rem; font-weight:800; color:white; font-family:'Outfit',sans-serif; }
 
     /* ══════════════════════════
        STACK COMPARATOR MODE
-    ══════════════════════════ */
-    .stack-wrap { display:flex; flex-direction:column; gap:10px; padding:14px; background:rgba(15,23,42,.3); border-radius:14px; border:1px solid var(--border); }
+     ══════════════════════════ */
+    .stack-wrap { display:flex; flex-direction:column; gap:10px; padding:14px; background: var(--surface-inset); border-radius:14px; border:1px solid var(--border); }
     .stack-row { display:flex; align-items:center; gap:8px; }
     .stack-lbl { font-family:'Outfit',sans-serif; font-weight:800; font-size:.78rem; color:var(--text2); width:36px; text-align:right; flex-shrink:0; }
-    .stack-track { flex:1; height:26px; background:rgba(15,23,42,.5); border-radius:6px; border:1px solid var(--border); overflow:hidden; position:relative; }
+    .stack-track { flex:1; height:26px; background: var(--surface-inset); border-radius:6px; border:1px solid var(--border); overflow:hidden; position:relative; }
     .stack-fill { height:100%; border-radius:5px; display:flex; align-items:center; padding-left:6px; font-size:.62rem; font-weight:800; color:rgba(255,255,255,.9); font-family:'Outfit',sans-serif; transition:width .5s ease; }
     .stack-half-line { position:absolute; top:0; bottom:0; width:2px; background:rgba(250,204,21,.7); left:50%; transform:translateX(-50%); pointer-events:none; }
     .stack-marker { position:absolute; top:-4px; bottom:-4px; width:3px; background:#f43f5e; border-radius:2px; cursor:ew-resize; box-shadow:0 0 8px rgba(244,63,94,.8); z-index:5; touch-action:none; }
-    .seesaw-wrap { display:flex; flex-direction:column; gap:12px; padding:14px; background:rgba(15,23,42,.3); border-radius:14px; border:1px solid var(--border); }
+    .seesaw-wrap { display:flex; flex-direction:column; gap:12px; padding:14px; background: var(--surface-inset); border-radius:14px; border:1px solid var(--border); }
     .seesaw-frac { font-family:'Outfit',sans-serif; font-weight:900; font-size:2.2rem; text-align:center; color:var(--accent); }
     .seesaw-buckets { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-    .seesaw-bucket { flex:1; min-width:90px; max-width:160px; padding:16px 10px; border-radius:14px; border:2px solid var(--border); background:rgba(30,41,59,.6); cursor:pointer; font-family:'Outfit',sans-serif; font-weight:800; font-size:.85rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px; transition:all .22s cubic-bezier(.175,.885,.32,1.275); color:var(--text2); }
+    .seesaw-bucket { flex:1; min-width:90px; max-width:160px; padding:16px 10px; border-radius:14px; border:2px solid var(--border); background: var(--card); cursor:pointer; font-family:'Outfit',sans-serif; font-weight:800; font-size:.85rem; text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px; transition:all .22s cubic-bezier(.175,.885,.32,1.275); color:var(--text2); }
     .seesaw-bucket:hover { transform:translateY(-4px) scale(1.04); border-color:var(--accent); color:var(--text1); }
     .seesaw-bucket.correct { border-color:#22c55e; background:rgba(34,197,94,.15); color:#22c55e; }
     .seesaw-bucket.wrong { border-color:#ef4444; background:rgba(239,68,68,.15); color:#ef4444; }
@@ -244,12 +244,12 @@
 
     /* ══════════════════════════
        GUIDE SECTION
-    ══════════════════════════ */
+     ══════════════════════════ */
     .guide-wrap { width:100%; max-width:1100px; position:relative; z-index:1; margin-bottom:30px; }
     .guide-wrap .panel::before { background:linear-gradient(to right,#7c3aed,#c084fc,#f97316); }
     .guide-grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
     @media(max-width:680px) { .guide-grid { grid-template-columns:1fr; } }
-    .guide-card { background:rgba(15,23,42,.35); border:1px solid var(--border); border-radius:15px; padding:16px; }
+    .guide-card { background: var(--card); border:1px solid var(--border); border-radius:15px; padding:16px; }
     .guide-card h4 { font-size:.9rem; margin-bottom:10px; display:flex; align-items:center; gap:6px; }
     .guide-card p, .guide-card li { font-size:.84rem; line-height:1.6; color:var(--text2); }
     .guide-card ul { list-style:none; display:flex; flex-direction:column; gap:6px; }
@@ -275,14 +275,17 @@
     #guideDrawer {
       position: fixed; right: -420px; top: 0; height: 100vh; width: min(420px, 92vw);
       z-index: 199; overflow-y: auto;
-      background: rgba(10, 8, 25, 0.97); backdrop-filter: blur(16px);
-      border-left: 1.5px solid rgba(249, 115, 22, 0.3);
-      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.6);
+      background: var(--card); backdrop-filter: blur(16px);
+      border-left: 1.5px solid var(--border);
+      box-shadow: -8px 0 40px rgba(0, 0, 0, 0.25);
       padding: 20px 18px 40px; transition: right 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.1);
     }
     #guideDrawer .guide-card {
       margin-bottom: 14px;
-      background: rgba(30, 41, 59, 0.45);
+      background: var(--surface-inset);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
     }
 
     /* ── CONFETTI ── */
@@ -386,6 +389,7 @@
         margin-bottom: 10px;
         background: linear-gradient(to right, #f97316, #facc15);
         -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        filter: var(--logo-glow);
     }
     .mcc-quote {
         font-size: 0.95rem;
@@ -398,17 +402,6 @@
         50% { transform: translateY(-8px); }
     }
 
-    /* Combined Home Avatar Button hover styles */
-    .home-avatar-btn:hover .logo-img {
-        transform: scale(1.18) rotate(-8deg);
-        filter: drop-shadow(0 0 12px var(--accent-purple));
-    }
-    .home-avatar-btn:hover span {
-        color: var(--text1) !important;
-        border-color: var(--accent-purple) !important;
-        background: rgba(30, 41, 59, 0.9) !important;
-        box-shadow: 0 4px 10px rgba(168, 85, 247, 0.2);
-    }
   </style>
 </head>
 <body>
@@ -417,8 +410,8 @@
   <canvas id="confettiCanvas"></canvas>
 
   <!-- Answer result modal -->
-  <div id="answerModal" style="display:none;position:fixed;inset:0;background:rgba(10,15,30,.88);backdrop-filter:blur(10px);z-index:1100;align-items:center;justify-content:center;padding:20px;">
-    <div style="background:#1e293b;border:1px solid var(--border);max-width:420px;width:100%;border-radius:28px;padding:28px 24px;box-shadow:0 25px 50px rgba(0,0,0,.5);animation:fadeIn .3s ease;text-align:center;">
+  <div id="answerModal" style="display:none;position:fixed;inset:0;background:var(--modal-overlay);backdrop-filter:blur(10px);z-index:1100;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:var(--card);border:1px solid var(--border);max-width:640px;width:100%;border-radius:28px;padding:28px 24px;box-shadow:0 25px 50px rgba(0,0,0,.5);animation:fadeIn .3s ease;text-align:center;">
       <div id="answerModalIcon" style="font-size:2.4rem;margin-bottom:8px;"></div>
       <div id="answerModalBody" style="font-size:.95rem;line-height:1.6;color:var(--text2);text-align:left;"></div>
       <button id="answerModalNext" onclick="dismissAnswerModal()" style="margin-top:18px;width:100%;padding:14px;border-radius:16px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-family:'Outfit',sans-serif;font-weight:800;font-size:1.1rem;cursor:pointer;box-shadow:0 4px 15px rgba(0,0,0,.3);">🎲 Next!</button>
@@ -433,7 +426,7 @@
         <span style="font-size:0.65rem;font-weight:800;color:var(--text2);font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:0.3px;background:rgba(30,41,59,0.6);border:1px solid var(--border);padding:2px 8px;border-radius:8px;transition:all 0.2s;white-space:nowrap;">🏠 Home avavav! 🐾</span>
       </a>
       <div class="logo-text">
-        <h1>Rainbow's Fraction Fun 🍕</h1>
+        <h1>Fraction Friends 🍕 — Rainbow Learning Academy</h1>
         <p>Learn fractions with Rainbow Doggy 🐶</p>
       </div>
     </div>
@@ -448,20 +441,20 @@
   <!-- ── MODE TABS ── -->
   <div class="mode-selector">
     <button class="mode-btn active" id="mBtn0" onclick="selectMode(0)"><span>📐</span>Explore<small>Tutorial</small></button>
-    <button class="mode-btn" id="mBtn1" onclick="selectMode(1)"><span>⚖️</span>Compare<small>Which bigger?</small></button>
-    <button class="mode-btn" id="mBtn2" onclick="selectMode(2)"><span>📊</span>Sort<small>Smallest→Largest</small></button>
-    <button class="mode-btn" id="mBtn3" onclick="selectMode(3)"><span>🔗</span>Common Den.<small>Find LCD</small></button>
-    <button class="mode-btn" id="mBtn4" onclick="selectMode(4)"><span>🎯</span>Number Line<small>Place it!</small></button>
-    <button class="mode-btn" id="mBtn5" onclick="selectMode(5)"><span>⚖️½</span>Seesaw<small>Vs a half!</small></button>
-    <button class="mode-btn" id="mBtn6" onclick="selectMode(6)"><span>✂️</span>Shrink It!<small>Simplify!</small></button>
+    <button class="mode-btn nav-pulse" id="mBtn1" onclick="selectMode(1)"><span>⚖️</span>Compare<small>Which bigger?</small></button>
+    <button class="mode-btn nav-pulse" id="mBtn2" onclick="selectMode(2)"><span>📊</span>Sort<small>Smallest→Largest</small></button>
+    <button class="mode-btn nav-pulse" id="mBtn3" onclick="selectMode(3)"><span>🔗</span>Common Den.<small>Find LCD</small></button>
+    <button class="mode-btn nav-pulse" id="mBtn4" onclick="selectMode(4)"><span>🎯</span>Number Line<small>Place it!</small></button>
+    <button class="mode-btn nav-pulse" id="mBtn5" onclick="selectMode(5)"><span>⚖️½</span>Seesaw<small>Vs a half!</small></button>
+    <button class="mode-btn nav-pulse" id="mBtn6" onclick="selectMode(6)"><span>✂️</span>Shrink It!<small>Simplify!</small></button>
   </div>
 
   <!-- ── DIFFICULTY ── -->
   <div class="diff-selector">
     <button class="diff-btn active" id="dBtn0" onclick="selectDiff(0)">🌱 Beginner<small>halves, thirds, quarters</small></button>
-    <button class="diff-btn" id="dBtn1" onclick="selectDiff(1)">🗺️ Explorer<small>up to eighths &amp; fifths</small></button>
-    <button class="diff-btn" id="dBtn2" onclick="selectDiff(2)">🏆 Champion<small>up to twelfths</small></button>
-    <button class="diff-btn" id="dBtn3" onclick="selectDiff(3)">🌈 Rainbow Quest<small>up to 1/16 + sevenths</small></button>
+    <button class="diff-btn nav-pulse" id="dBtn1" onclick="selectDiff(1)">🗺️ Explorer<small>up to eighths &amp; fifths</small></button>
+    <button class="diff-btn nav-pulse" id="dBtn2" onclick="selectDiff(2)">🏆 Champion<small>up to twelfths</small></button>
+    <button class="diff-btn nav-pulse" id="dBtn3" onclick="selectDiff(3)">🌈 Rainbow Quest<small>up to 1/16 + sevenths</small></button>
   </div>
 
   <!-- ── PJ INTRO ── -->
@@ -811,7 +804,13 @@
     dismissPjIntro();
     tickInteraction();
     st.mode = m;
-    for (let i=0;i<7;i++) { const b=document.getElementById(`mBtn${i}`); if(b) b.classList.toggle('active',i===m); }
+    for (let i=0;i<7;i++) {
+      const b=document.getElementById(`mBtn${i}`);
+      if(b) {
+        b.classList.toggle('active',i===m);
+        b.classList.toggle('nav-pulse',i!==m);
+      }
+    }
     const labels = ['📐 Visual Fraction Strips','⚖️ Compare Sandbox','📊 Sort Race','🔗 Bottom-Number Detective','🎯 Number Line','⚖️ Stack & Seesaw','✂️ Shrink It!'];
     document.getElementById('sandboxTitle').textContent = labels[m];
     const msgs = [
@@ -835,7 +834,13 @@
   function selectDiff(d) {
     dismissPjIntro();
     st.diff = d;
-    for (let i=0;i<4;i++) document.getElementById(`dBtn${i}`).classList.toggle('active',i===d);
+    for (let i=0;i<4;i++) {
+      const b=document.getElementById(`dBtn${i}`);
+      if(b) {
+        b.classList.toggle('active',i===d);
+        b.classList.toggle('nav-pulse',i!==d);
+      }
+    }
     const names = ['beginner','explorer','champion','rainbow-quest'];
     const labels = ['🌱 BEGINNER','🗺️ EXPLORER','🏆 CHAMPION','🌈 RAINBOW QUEST'];
     const badge = document.getElementById('diffBadge');
@@ -859,7 +864,7 @@
       const hlCount = [...st.hlSegs].filter(k=>k.startsWith(`${den}-`)).length;
       if (hlCount > 0) {
         const pct = Math.round(hlCount/den*100);
-        lbl.innerHTML = `<span style="color:var(--text1);font-size:.82rem;">${hlCount}/${den}</span><br><span style="color:var(--text2);font-size:.65rem;">${pct}%</span>`;
+        lbl.innerHTML = `<span style="color:var(--text1);font-size:.82rem;font-weight:800;">${hlCount}/${den}</span><br><span style="color:var(--text2);font-size:.65rem;font-weight:700;">${pct}%</span>`;
       } else {
         lbl.textContent = den===1?'1':`1/${den}`;
       }
@@ -871,7 +876,7 @@
         seg.style.background = col;
         seg.style.setProperty('--seg-color', col);
         if (den===1||den===4) seg.style.color='#1e293b';
-        if (showLbl && den<=12) seg.textContent = den===1?'1':`1/${den}`;
+        if (showLbl && den<=16) seg.textContent = den===1?'1':`1/${den}`;
         const key = `${den}-${i}`;
         if (st.hlSegs.has(key)) {
           seg.classList.add('hl');
@@ -1029,8 +1034,7 @@
       { name: 'Bitzer Maloney', img: 'bitzer_maloney.png' },
       { name: 'Hairy Maclary', img: 'hairy_maclary.png' },
       { name: 'Muffin McLay', img: 'muffin_mclay.png' },
-      { name: 'Schnitzel', img: 'schnitzel_von_krumm.png' },
-      { name: 'Rainbow Doggy', img: 'head.png' }
+      { name: 'Schnitzel', img: 'schnitzel_von_krumm.png' }
     ];
     const hidePortraits = st.diff >= 2;
     let result = text;
@@ -1060,7 +1064,6 @@
   }
 
   const CHAR_EMOJIS = {
-    'Rainbow Doggy': '🐶',
     'Rainbow Doggy': '🐶',
     'Hairy Maclary': '🐕',
     'Hercules Morse': '🐕',
@@ -1162,21 +1165,7 @@
     }
   }
 
-  const CHAR_IMAGES = {
-    'Rainbow Doggy': 'head.png',
-    'Rainbow Doggy': 'head.png',
-    'Hairy Maclary': 'hairy_maclary.png',
-    'Hercules Morse': 'hercules_morse.png',
-    'Bottomley Potts': 'bottomley_potts.png',
-    'Muffin McLay': 'muffin_mclay.png',
-    'Bitzer Maloney': 'bitzer_maloney.png',
-    'Schnitzel von Krumm': 'schnitzel_von_krumm.png',
-    'Scarface Claw': 'scarface.png',
-    'Slinky Malinki': 'slinky.png'
-  };
-  function getCharImage(name) {
-    return CHAR_IMAGES[name] || 'hairy_maclary.png';
-  }
+
 
   function showRainbowDoggyQ() {
     const q = generateRainbowDoggyQ();
@@ -1199,7 +1188,6 @@
       'Schnitzel von Krumm': "Woof! I'm Schnitzel von Krumm, with a very low tum! Can you help me? 🐾",
       'Slinky Malinki': "Meow! I'm Slinky Malinki! Can you work out how many pieces I snatched? 🐾",
       'Scarface Claw': "Hiss! I'm Scarface Claw, the toughest tom in town! What fraction did I scare away? 🐾",
-      'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's solve this fraction story! 🐾",
       'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's solve this fraction story! 🐾"
     };
     const activeImg = getCharImage(narrator);
@@ -1849,7 +1837,7 @@
   }
 
   // ─── MODE 4: NUMBER LINE ───
-  let nlDrag=false;
+  let isDraggingNL=false;
   function genNL() {
     const f=randFrac();
     st.nlFrac=f; st.nlTarget=fv(f)*100; st.nlPct=50;
@@ -1888,7 +1876,6 @@
         </div>
       </div>`;
 
-    initNLDrag();
     st.hlSegs.clear();
     for(let i=0;i<f[0];i++) st.hlSegs.add(`${f[1]}-${i}`);
     renderStrips();
@@ -1911,6 +1898,8 @@
     segHtml += `</div></div>`;
     document.getElementById('modeContent').innerHTML += segHtml;
 
+    initNLDrag();
+
     document.getElementById('hintBtn').style.display='inline-flex';
     document.getElementById('loadBtn').innerHTML='🎲 New Number Line';
   }
@@ -1923,20 +1912,56 @@
   }
 
   function initNLDrag() {
-    const track=document.getElementById('nlTrack'), drag=document.getElementById('nlDrag');
-    if(!track||!drag) return;
+    const track = document.getElementById('nlTrack'), drag = document.getElementById('nlDrag');
+    if (!track || !drag) return;
     function pct(cx) {
-      const r=track.getBoundingClientRect(), pad=20, usable=r.width-pad*2;
-      return Math.max(0,Math.min(100,((cx-r.left-pad)/usable)*100));
+      const r = track.getBoundingClientRect(), pad = 20, usable = r.width - pad * 2;
+      return Math.max(0, Math.min(100, ((cx - r.left - pad) / usable) * 100));
     }
-    function move(p) { st.nlPct=p; drag.style.left=`calc(20px + ${p/100}*(100% - 40px))`; }
-    drag.addEventListener('mousedown',e=>{ nlDrag=true; e.preventDefault(); drag.style.cursor='grabbing'; });
-    drag.addEventListener('touchstart',e=>{ nlDrag=true; e.preventDefault(); },{passive:false});
-    document.addEventListener('mousemove',e=>{ if(nlDrag) move(pct(e.clientX)); });
-    document.addEventListener('touchmove',e=>{ if(nlDrag&&e.touches[0]){move(pct(e.touches[0].clientX));e.preventDefault();} },{passive:false});
-    document.addEventListener('mouseup',()=>{ nlDrag=false; if(drag) drag.style.cursor='ew-resize'; });
-    document.addEventListener('touchend',()=>{ nlDrag=false; });
-    track.addEventListener('click',e=>{ if(e.target===drag) return; move(pct(e.clientX)); });
+    function move(p) {
+      st.nlPct = p;
+      drag.style.left = `calc(20px + (${p} * (100% - 40px) / 100))`;
+    }
+    
+    const onPointerMove = e => {
+      if (isDraggingNL) {
+        move(pct(e.clientX));
+      }
+    };
+    
+    const onPointerUp = () => {
+      isDraggingNL = false;
+      if (drag) drag.style.cursor = 'ew-resize';
+      document.removeEventListener('pointermove', onPointerMove);
+      document.removeEventListener('pointerup', onPointerUp);
+      document.removeEventListener('pointercancel', onPointerUp);
+    };
+    
+    drag.addEventListener('pointerdown', e => {
+      isDraggingNL = true;
+      e.preventDefault();
+      drag.style.cursor = 'grabbing';
+      try {
+        drag.setPointerCapture(e.pointerId);
+      } catch(err) {}
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+      document.addEventListener('pointercancel', onPointerUp);
+    });
+    
+    track.addEventListener('pointerdown', e => {
+      if (e.target === drag) return;
+      move(pct(e.clientX));
+      // Immediately allow dragging from the click point
+      isDraggingNL = true;
+      drag.style.cursor = 'grabbing';
+      try {
+        drag.setPointerCapture(e.pointerId);
+      } catch(err) {}
+      document.addEventListener('pointermove', onPointerMove);
+      document.addEventListener('pointerup', onPointerUp);
+      document.addEventListener('pointercancel', onPointerUp);
+    });
   }
 
   function checkNL() {
@@ -2226,66 +2251,7 @@
     document.getElementById('muteBtn').textContent=st.muted?'🔇 Muted':'🔊 Sound On';
   }
 
-  // ─── MASCOT CENTER HOVER POPUP ───
-  function initMascotCenterHover() {
-    let card = document.getElementById('mascotCenterCard');
-    if (!card) {
-      card = document.createElement('div');
-      card.id = 'mascotCenterCard';
-      card.className = 'mascot-center-card';
-      document.body.appendChild(card);
-    }
-    
-    const charImages = {
-      'Hairy Maclary': 'hairy_maclary.png',
-      'Hercules Morse': 'hercules_morse.png',
-      'Bottomley Potts': 'bottomley_potts.png',
-      'Muffin McLay': 'muffin_mclay.png',
-      'Bitzer Maloney': 'bitzer_maloney.png',
-      'Schnitzel von Krumm': 'schnitzel_von_krumm.png',
-      'Schnitzel': 'schnitzel_von_krumm.png',
-      'Slinky Malinki': 'slinky.png',
-      'Scarface Claw': 'scarface.png',
-      'Rainbow Doggy': 'head.png',
-      'Rainbow Doggy': 'head.png'
-    };
-    
-    const mascotQuotes = {
-      'Hairy Maclary': "Woof! I'm Hairy Maclary from Donaldson's Dairy! Let's slice up some answers! 🍕🐶",
-      'Hercules Morse': "Woof! I'm Hercules Morse, as big as a horse! Fractions of tasty treats are my favorite! 🍖🐶",
-      'Bottomley Potts': "Woof! I'm Bottomley Potts, covered in spots! Ready to spot the shared bottom number? 🕵️‍♂️🐶",
-      'Muffin McLay': "Woof! I'm Muffin McLay, like a bundle of hay! Can you divide this visual strip? 📊🐶",
-      'Bitzer Maloney': "Woof! I'm Bitzer Maloney, skinny and bony! Let's compare some yummy fractions! ⚖️🐶",
-      'Schnitzel von Krumm': "Woof! I'm Schnitzel von Krumm, with a very low tum! Help me share these treats! 🦴🐶",
-      'Slinky Malinki': "Meow! I'm Slinky Malinki! A cheeky cat who loves swiping the biggest fraction slices! 🐈‍⬛✨",
-      'Scarface Claw': "Hiss! I'm Scarface Claw, the toughest tomcat in town! Hand over that pizza slice! 🍕😼",
-      'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Let's explore visual fraction strips together! 🌈🐶",
-      'Rainbow Doggy': "Avvavavava! I'm Rainbow Doggy! Sharing is caring — let's solve this fraction quest! 💖🐶"
-    };
 
-    document.body.addEventListener('mouseenter', e => {
-      const target = e.target.closest('.char-inline-span');
-      if (!target) return;
-      const strongEl = target.querySelector('strong');
-      if (!strongEl) return;
-      const name = strongEl.textContent.trim();
-      const img = charImages[name] || 'head.png';
-      const quote = mascotQuotes[name] || "Avvavava! Let's solve this! 🍕🐶";
-      
-      card.innerHTML = `
-        <img class="mcc-avatar" src="${img}" alt="${name}">
-        <div class="mcc-name">${name}</div>
-        <div class="mcc-quote">"${quote}"</div>
-      `;
-      card.classList.add('show');
-    }, true);
-
-    document.body.addEventListener('mouseleave', e => {
-      const target = e.target.closest('.char-inline-span');
-      if (!target) return;
-      card.classList.remove('show');
-    }, true);
-  }
 
   // ─── GUIDE DRAWER TOGGLE ───
   function toggleGuide() {
@@ -2303,7 +2269,6 @@
     st.muted=localStorage.getItem('rla_muted')==='true';
     if(st.muted) document.getElementById('muteBtn').textContent='🔇 Muted';
     updateScores();
-    initMascotCenterHover();
     if (typeof initRpj === 'function') initRpj();
     selectMode(0); selectDiff(0);
     showIntroModal('fractions',
@@ -2350,10 +2315,10 @@
         <h4 style="color:#a855f7;">🧠 The Sneaky Trap!</h4>
         <p><strong style="color:var(--text1);">Bigger bottom number = SMALLER pieces!</strong> A treat cut into 8 pieces gives smaller pieces than one cut into 4. So <strong style="color:#ef4444;">1/8 &lt; 1/4</strong>!</p>
         <div style="display:flex;flex-direction:column;gap:5px;margin-top:10px;">
-          <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.75rem;font-weight:700;width:28px;text-align:right;color:var(--text2);">1/2</span><div style="flex:1;height:16px;border-radius:4px;background:#ef4444;"></div></div>
-          <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.75rem;font-weight:700;width:28px;text-align:right;color:var(--text2);">1/4</span><div style="flex:1;height:16px;border-radius:4px;background:rgba(15,23,42,.4);border:1px solid var(--border);"><div style="width:50%;height:100%;background:#eab308;border-radius:4px;"></div></div></div>
-          <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.75rem;font-weight:700;width:28px;text-align:right;color:var(--text2);">1/8</span><div style="flex:1;height:16px;border-radius:4px;background:rgba(15,23,42,.4);border:1px solid var(--border);"><div style="width:25%;height:100%;background:#6366f1;border-radius:4px;"></div></div></div>
-          <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.75rem;font-weight:700;width:28px;text-align:right;color:var(--text2);">1/16</span><div style="flex:1;height:16px;border-radius:4px;background:rgba(15,23,42,.4);border:1px solid var(--border);"><div style="width:12.5%;height:100%;background:#c084fc;border-radius:4px;"></div></div></div>
+          <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.75rem;font-weight:700;width:28px;text-align:right;color:var(--text2);">1/2</span><div style="flex:1;height:16px;border-radius:4px;background:rgba(15,23,42,.4);border:1px solid var(--border);"><div style="width:50%;height:100%;background:#ef4444;border-radius:4px;"></div></div></div>
+          <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.75rem;font-weight:700;width:28px;text-align:right;color:var(--text2);">1/4</span><div style="flex:1;height:16px;border-radius:4px;background:rgba(15,23,42,.4);border:1px solid var(--border);"><div style="width:25%;height:100%;background:#eab308;border-radius:4px;"></div></div></div>
+          <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.75rem;font-weight:700;width:28px;text-align:right;color:var(--text2);">1/8</span><div style="flex:1;height:16px;border-radius:4px;background:rgba(15,23,42,.4);border:1px solid var(--border);"><div style="width:12.5%;height:100%;background:#6366f1;border-radius:4px;"></div></div></div>
+          <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:.75rem;font-weight:700;width:28px;text-align:right;color:var(--text2);">1/16</span><div style="flex:1;height:16px;border-radius:4px;background:rgba(15,23,42,.4);border:1px solid var(--border);"><div style="width:6.25%;height:100%;background:#c084fc;border-radius:4px;"></div></div></div>
         </div>
       </div>
 

@@ -44,6 +44,7 @@
       font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.15rem;
       background: linear-gradient(to right in oklch, var(--candy-lemon), var(--candy-apple), var(--candy-lagoon), var(--candy-blueberry), var(--candy-grape), var(--candy-strawberry));
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      filter: var(--logo-glow);
     }
     .nav-logo img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 8px var(--area-num)); }
     .nav-controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
@@ -65,7 +66,7 @@
         var(--candy-grape) 80%,
         var(--candy-strawberry) 100%);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 0 30px oklch(70% 0.15 200 / .3));
+      filter: var(--title-glow);
     }
     .hero p { font-size: clamp(.95rem, 2.2vw, 1.15rem); color: var(--text2); max-width: 580px; line-height: 1.65; }
 
@@ -115,6 +116,7 @@
     }
     .portal-title {
       font-family: 'Outfit', sans-serif; font-weight: 900; font-size: 1.45rem; text-align: center;
+      filter: var(--logo-glow);
     }
     .portal-card.num  .portal-title { background: var(--grad-num,  linear-gradient(to right, var(--area-num-a),  var(--area-num-b)));  -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .portal-card.calc .portal-title { background: var(--grad-calc, linear-gradient(to right, var(--area-calc-a), var(--area-calc-b))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
@@ -211,7 +213,7 @@
       <img id="doggyHead" src="head.png" alt="Rainbow Doggy"
         style="width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 0 40px rgba(56,189,248,.6));animation:splashBob 2s ease-in-out infinite;">
     </div>
-    <h1 style="font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(1.8rem,5vw,3rem);background:linear-gradient(100deg in oklch,var(--candy-lemon),var(--candy-apple),var(--candy-lagoon),var(--candy-blueberry),var(--candy-grape),var(--candy-strawberry));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;padding:0 20px;">
+    <h1 style="font-family:'Outfit',sans-serif;font-weight:900;font-size:clamp(1.8rem,5vw,3rem);background:linear-gradient(100deg in oklch,var(--candy-lemon),var(--candy-apple),var(--candy-lagoon),var(--candy-blueberry),var(--candy-grape),var(--candy-strawberry));-webkit-background-clip:text;-webkit-text-fill-color:transparent;filter:var(--title-glow);text-align:center;padding:0 20px;">
       Rainbow Learning Academy! 🌈
     </h1>
     <p id="splashHint" style="color:var(--text2);font-size:.95rem;font-family:'Inter',sans-serif;">🐶 Click Doggy to enter!</p>
@@ -259,35 +261,35 @@
         <div class="portal-icon">🔢</div>
         <div class="portal-title">Number Explorers</div>
         <p class="portal-desc">Discover the secrets of every number from 1 to 120 — primes, squares, triangles, and real chemical elements! With <strong>Scarface</strong>, <strong>Hercules</strong>, and the whole crew! 🐾</p>
-        <button class="portal-btn">🔭 Explore Numbers</button>
+        <button class="portal-btn nav-pulse">🔭 Explore Numbers</button>
       </a>
 
       <a href="calculation.html" class="portal-card calc">
         <div class="portal-icon">✖️</div>
         <div class="portal-title">Calculation Crew</div>
         <p class="portal-desc">Master times tables 1–20 with <strong>Hairy Maclary</strong>! Learn arrays, race the clock in Time Trial, and challenge the mixed board for Champion trophies! 🏆</p>
-        <button class="portal-btn">✖️ Join the Crew</button>
+        <button class="portal-btn nav-pulse">✖️ Join the Crew</button>
       </a>
 
       <a href="fractions.html" class="portal-card frac">
         <div class="portal-icon">🍕</div>
         <div class="portal-title">Fraction Friends</div>
         <p class="portal-desc">Help cheerful <strong>Kind Dog</strong> share pizza slices and sweet treats fairly! Match shapes, compare fractions, and outsmart <strong>Scarface Claw</strong>! 🍕</p>
-        <button class="portal-btn">🍕 Share the Fun</button>
+        <button class="portal-btn nav-pulse">🍕 Share the Fun</button>
       </a>
 
       <a href="time.html" class="portal-card time">
         <div class="portal-icon">⏰</div>
         <div class="portal-title">Time Travellers</div>
         <p class="portal-desc">Race against time with <strong>Hairy Maclary</strong> and <strong>Rainbow Doggy</strong>! Drag clock hands to solve tricky challenges before <strong>Slinky Malinki</strong> swipes the keys! ⏰</p>
-        <button class="portal-btn">⏰ Travel in Time</button>
+        <button class="portal-btn nav-pulse">⏰ Travel in Time</button>
       </a>
     </div>
 
   </div>
 
   <footer>
-    <div>🐾 Created by <span style="background:linear-gradient(to right in oklch,var(--candy-lemon),var(--candy-apple),var(--candy-lagoon),var(--candy-blueberry),var(--candy-grape),var(--candy-strawberry));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;">Rainbow Doggy</span> with help from an old mate 🤝✨</div>
+    <div>🐾 Created by <span style="background:linear-gradient(to right in oklch,var(--candy-lemon),var(--candy-apple),var(--candy-lagoon),var(--candy-blueberry),var(--candy-grape),var(--candy-strawberry));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:800;filter:var(--logo-glow);">Rainbow Doggy</span> with help from an old mate 🤝✨</div>
   </footer>
 
   <script src="shared.js"></script>
