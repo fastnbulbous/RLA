@@ -23,7 +23,7 @@ The academy is divided into four highly focused, interactive learning modules:
 
 | Learning Zone | File | Purpose | Key Pedagogy |
 | :--- | :--- | :--- | :--- |
-| **Number Explorers** 🔢 | [`numbers.html`](file:///g:/code/RLA/numbers.html) | Master numbers 1–120, properties, binary, and sequence logic. | Mathematical properties color-coding, 8-bit binary "paw-lights", and sequence difference ladders. |
+| **Number Explorers** 🔢 | [`numbers.html`](file:///g:/code/RLA/numbers.html) | Master numbers 1–120, properties, binary, and sequence logic across 5 tabs (Gallery, Quiz, Build-a-Number, Sequences, Guide). | 8 tracked number properties (Prime, Perfect, Square, Cube, Triangular, Power of 2, Fibonacci, Highly Composite) with color-coding, step-by-step pedagogical explanations, 8-bit binary "paw-lights", sequence difference ladders, and a comprehensive reference guide. |
 | **Calculation Crew** ✖️ | [`calculation.html`](file:///g:/code/RLA/calculation.html) | Discover and memorize times tables from 1 to 20. | Multi-sensory skip-counting, visual array tapping, Time Trials, and mixed challenge modes. |
 | **Fraction Friends** 🍕 | [`fractions.html`](file:///g:/code/RLA/fractions.html) | Deepen fractional intuition (halves up to sixteenths). | Visual part-whole comparisons (strips, seesaws, number lines) with no abstract arithmetic. |
 | **Time Travellers** ⏰ | [`time.html`](file:///g:/code/RLA/time.html) | Master reading the clock face, elapsed time, and scheduling. | Digital-to-Descriptive flow, grab-handle tactile hands, and "hour neighborhood" boundary rules. |
@@ -67,4 +67,4 @@ Open **[`tests.html`](file:///g:/code/RLA/tests.html)** locally in a browser to 
 
 ## 🐾 Reference Documentation
 
-For technical implementation specifications, code line mappings, and deep pedagogical rationales for all 21 learning activities, please read the **[Specification Document (SPEC.md)](file:///g:/code/RLA/SPEC.md)**.
+For technical implementation specifications, code line mappings, and deep pedagogical rationales for all 18 learning activities, please read the **[Specification Document (SPEC.md)](file:///g:/code/RLA/SPEC.md)**.

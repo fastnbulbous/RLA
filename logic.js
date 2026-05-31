@@ -434,35 +434,43 @@ const PROP_INFO = {
     title: 'The Unit 👑',
     definition: 'The number 1 is unique! It is neither prime nor composite, so we call it the Unit.',
     explain(n, rec) {
-      return `1 has exactly 1 divisor (itself), whereas primes have 2, and composites have 3 or more.`;
+      return `1 has exactly 1 divisor (just itself).<br>Primes need exactly 2 divisors, composites need 3+, so 1 is special — we call it <strong>the Unit</strong>.`;
     }
   },
   isPrime: {
     title: '🔴 Prime Number',
     definition: 'A prime number is a building block of math! It only has exactly 2 divisors: 1 and itself.',
     explain(n, rec) {
-      return `${n} is prime because its only divisors are 1 and ${n}. It cannot be made by multiplying other numbers!`;
+      const tested = [];
+      for (let i = 2; i <= Math.floor(Math.sqrt(n)); i++) tested.push(i);
+      const testStr = tested.length
+        ? `We test: ${tested.map(t => `${n} ÷ ${t} = ${(n/t).toFixed(1)}${n%t===0?' ✓':' ✗ (remainder '+n%t+')'}`).join(', ')}.<br>`
+        : '';
+      return `${testStr}${n} has only 2 divisors: <strong>1</strong> and <strong>${n}</strong>. No other number divides it evenly, so it is prime!`;
     }
   },
   isComposite: {
     title: 'Composite Number 🧱',
     definition: 'A composite number is made by multiplying other numbers together! It has 3 or more divisors.',
     explain(n, rec) {
-      return `${n} is composite because it has ${rec.numDivisors} divisors: ${rec.divisors.join(', ')}. Prime breakdown: ${rec.factorString}.`;
+      const pairs = rec.factorPairs;
+      const pairStr = pairs.map(p => `${p[0]} × ${p[1]}`).join(', ');
+      return `${n} has <strong>${rec.numDivisors} divisors</strong>: ${rec.divisors.join(', ')}.<br>Factor pairs: ${pairStr}.<br>Prime breakdown: ${rec.factorString} = ${n}.`;
     }
   },
   isEven: {
     title: 'Even Number 👥',
     definition: 'Even numbers can be split into two perfectly equal groups with no leftovers!',
     explain(n, rec) {
-      return `${n} can be divided into two equal groups of ${n/2}.`;
+      return `${n} ÷ 2 = <strong>${n/2}</strong> (no remainder!).<br>We can make 2 equal groups of ${n/2}: [${n/2}] + [${n/2}] = ${n}. ✓`;
     }
   },
   isOdd: {
     title: 'Odd Number 🧍',
     definition: 'Odd numbers always have one leftover when you try to split them into pairs!',
     explain(n, rec) {
-      return `${n} divided by 2 leaves a remainder of 1 (pairs with 1 left over).`;
+      const half = Math.floor(n/2);
+      return `${n} ÷ 2 = ${half} remainder <strong>1</strong>.<br>If we try pairs: [${half}] + [${half}] = ${half*2}, but we still have 1 left over!`;
     }
   },
   perfect: {
@@ -470,21 +478,30 @@ const PROP_INFO = {
     definition: 'A perfect number is super rare! Its proper divisors (divisors smaller than the number) add up to exactly the number itself!',
     explain(n, rec) {
       const proper = rec.divisors.filter(d => d < n);
-      return `The divisors of ${n} smaller than itself are ${proper.join(' + ')} = ${n}!`;
+      const chain = proper.join(' + ');
+      const running = [];
+      let sum = 0;
+      proper.forEach(d => { sum += d; running.push(sum); });
+      const steps = proper.map((d,i) => `${i===0?'':'+ '}${d} = ${running[i]}`).join(', ');
+      return `Proper divisors of ${n}: <strong>${proper.join(', ')}</strong>.<br>Adding up: ${steps}.<br>${chain} = <strong>${rec.aliquotSum}</strong> which equals ${n} exactly! ✨ Perfect!`;
     }
   },
   abundant: {
     title: 'Abundant Number 🍊',
     definition: 'An abundant number\'s proper divisors add up to MORE than the number itself. It has plenty of division friends!',
     explain(n, rec) {
-      return `The proper divisors of ${n} smaller than itself add up to ${rec.aliquotSum}, which is greater than ${n}!`;
+      const proper = rec.divisors.filter(d => d < n);
+      const chain = proper.join(' + ');
+      return `Proper divisors of ${n}: <strong>${proper.join(', ')}</strong>.<br>Adding up: ${chain} = <strong>${rec.aliquotSum}</strong>.<br>${rec.aliquotSum} > ${n}, so ${n} is abundant (overflowing with divisors)! 🍊`;
     }
   },
   deficient: {
     title: 'Deficient Number 💧',
     definition: 'A deficient number\'s proper divisors add up to LESS than the number itself.',
     explain(n, rec) {
-      return `The proper divisors of ${n} smaller than itself add up to ${rec.aliquotSum}, which is less than ${n}.`;
+      const proper = rec.divisors.filter(d => d < n);
+      const chain = proper.join(' + ');
+      return `Proper divisors of ${n}: <strong>${proper.join(', ')}</strong>.<br>Adding up: ${chain} = <strong>${rec.aliquotSum}</strong>.<br>${rec.aliquotSum} < ${n}, so ${n} is deficient (not quite enough). 💧`;
     }
   },
   isSquare: {
@@ -492,7 +509,8 @@ const PROP_INFO = {
     definition: 'Square numbers can make a perfect grid square! They are created by multiplying a number by itself.',
     explain(n, rec) {
       const root = Math.round(Math.sqrt(n));
-      return `We can write ${n} as a square: ${root} × ${root} = ${n}.`;
+      const prev = root - 1;
+      return `${root} × ${root} = <strong>${n}</strong> — a perfect square!<br>The square before this: ${prev} × ${prev} = ${prev*prev}.<br>The next square: ${root+1} × ${root+1} = ${(root+1)*(root+1)}.`;
     }
   },
   isCube: {
@@ -500,7 +518,7 @@ const PROP_INFO = {
     definition: 'Cube numbers can build a perfect 3D block! They are made by multiplying a number by itself three times.',
     explain(n, rec) {
       const root = Math.round(Math.cbrt(n));
-      return `We can write ${n} as a 3D cube: ${root} × ${root} × ${root} = ${n}.`;
+      return `${root} × ${root} × ${root} = <strong>${n}</strong> — a perfect cube!<br>Step by step: ${root} × ${root} = ${root*root}, then ${root*root} × ${root} = ${n}.`;
     }
   },
   isTriangular: {
@@ -508,28 +526,51 @@ const PROP_INFO = {
     definition: 'Triangular numbers can be stacked to form a perfect triangle, like bowling pins!',
     explain(n, rec) {
       const k = Math.round((-1 + Math.sqrt(1 + 8*n)) / 2);
-      return `We can stack 1 + 2 + ... + ${k} = ${n} to make a triangle with ${k} rows!`;
+      const terms = Array.from({length: k}, (_, i) => i + 1);
+      const chain = terms.join(' + ');
+      // Show running total
+      const running = [];
+      let sum = 0;
+      terms.forEach(t => { sum += t; running.push(sum); });
+      const steps = terms.map((t, i) => i === 0 ? `${t}` : `${running[i-1]} + ${t} = ${running[i]}`).join(', ');
+      return `Stack ${k} rows: ${chain} = <strong>${n}</strong>.<br>Working out: ${steps}.<br>Formula check: ${k} × ${k+1} ÷ 2 = ${k*(k+1)} ÷ 2 = ${n}. ✓`;
     }
   },
   isFibonacci: {
     title: '🌀 Fibonacci Pattern',
     definition: 'Fibonacci numbers are nature\'s pattern! Each term is the sum of the two numbers before it in the series.',
     explain(n, rec) {
-      return `${n} is a Fibonacci number, which fits in the spiral of sunflower seeds, pinecones, and seashells!`;
+      // Build the Fibonacci chain up to n
+      const chain = [1, 1];
+      while (chain[chain.length - 1] < n) {
+        chain.push(chain[chain.length - 1] + chain[chain.length - 2]);
+      }
+      const steps = chain.slice(2).map((v, i) => `${chain[i]} + ${chain[i+1]} = ${v}`);
+      return `Fibonacci sequence: <strong>${chain.join(', ')}</strong>.<br>How it builds: ${steps.join(', ')}.<br>${n} fits in nature's spiral — sunflower seeds, pinecones, and seashells! 🌻`;
     }
   },
   isHighlyComposite: {
     title: '🏆 Highly Composite',
     definition: 'Highly composite numbers are the ultimate champions of division! They have more divisors than any number smaller than them.',
     explain(n, rec) {
-      return `${n} has ${rec.numDivisors} divisors (${rec.divisors.join(', ')}), which is a new record for all numbers up to ${n}!`;
+      // Find the previous HC number for comparison
+      const hcList = [1,2,4,6,12,24,36,48,60,120];
+      const idx = hcList.indexOf(n);
+      const prev = idx > 0 ? hcList[idx - 1] : null;
+      const prevRec = prev ? NUM_CACHE[prev] : null;
+      const comparison = prevRec
+        ? `The previous record was ${prev} with ${prevRec.numDivisors} divisors.`
+        : '';
+      return `${n} has <strong>${rec.numDivisors} divisors</strong>: ${rec.divisors.join(', ')}.<br>${comparison}<br>${n} beats every smaller number's divisor count — a new record! 🏆`;
     }
   },
   isTwinPrime: {
     title: 'Twin Prime 🤝',
     definition: 'Twin primes are prime numbers that are very close neighbours—just 2 apart from another prime!',
     explain(n, rec) {
-      return `${n} is a twin prime because its partner ${rec.twinPartner} is also prime!`;
+      const a = Math.min(n, rec.twinPartner);
+      const b = Math.max(n, rec.twinPartner);
+      return `Both <strong>${a}</strong> and <strong>${b}</strong> are prime, and they are only ${b} − ${a} = 2 apart!<br>Twin prime pair: (${a}, ${b}). They're practically neighbours! 🤝`;
     }
   },
   isPow2: {
@@ -537,7 +578,11 @@ const PROP_INFO = {
     definition: 'Powers of 2 grow by doubling! They represent computer storage steps (2, 4, 8, 16...).',
     explain(n, rec) {
       const exp = Math.round(Math.log2(n));
-      return `We can double from 1: ${n} is 2 multiplied by itself ${exp} times (2^${exp}).`;
+      // Build the doubling chain
+      const chain = [];
+      for (let i = 0; i <= exp; i++) chain.push(Math.pow(2, i));
+      const doubles = chain.slice(0, -1).map((v, i) => `${v} × 2 = ${chain[i+1]}`).join(', ');
+      return `2 to the power of ${exp} = <strong>${n}</strong>.<br>Doubling chain: ${doubles}.<br>In binary: ${rec.binary} (just one "1" followed by zeroes!). 💾`;
     }
   },
   isMersenne: {
@@ -545,35 +590,42 @@ const PROP_INFO = {
     definition: 'A Mersenne number is exactly 1 less than a power of 2! e.g. 3, 7, 31.',
     explain(n, rec) {
       const exp = Math.round(Math.log2(n + 1));
-      return `${n} is a Mersenne number because it is 1 less than ${n + 1} (which is 2 to the power of ${exp}).`;
+      return `2 to the power of ${exp} = ${n + 1}.<br>${n + 1} − 1 = <strong>${n}</strong>.<br>In binary: ${rec.binary} (all 1s — every bit is switched on!). 🪁`;
     }
   },
   isPalin10: {
     title: 'Mirror Palindrome 🪞',
     definition: 'A palindrome reads the same forwards and backwards, like a mirror!',
     explain(n, rec) {
-      return `${n} reads exactly the same forwards and backwards in our normal base-10!`;
+      const s = String(n);
+      const rev = s.split('').reverse().join('');
+      return `Forward: <strong>${s}</strong> → Backward: <strong>${rev}</strong>.<br>They match! ${n} is a perfect mirror number. 🪞`;
     }
   },
   isPalinBin: {
     title: 'Binary Palindrome 💾',
     definition: 'A binary palindrome reads the same forwards and backwards when written in computer binary code (0s and 1s)!',
     explain(n, rec) {
-      return `${n} is ${rec.binary} in binary, which is a perfect mirror!`;
+      const rev = rec.binary.split('').reverse().join('');
+      return `${n} in binary: <strong>${rec.binary}</strong>.<br>Reversed: <strong>${rev}</strong>.<br>They match — a perfect binary mirror! 💾`;
     }
   },
   isEvil: {
     title: 'Evil Number 😈',
     definition: 'Evil numbers have an EVEN number of \'1\'s in their binary code! There is nothing bad about them; it is just a fun math name!',
     explain(n, rec) {
-      return `${n} is ${rec.binary} in binary, which has ${rec.popcount} ones (an even number!).`;
+      const bits = rec.binary.split('');
+      const highlighted = bits.map(b => b === '1' ? `<strong style="color:#fb7185;">${b}</strong>` : b).join('');
+      return `${n} in binary: ${highlighted}.<br>Count the 1s: <strong>${rec.popcount}</strong> ones. ${rec.popcount} is even, so ${n} is "evil"! 😈`;
     }
   },
   isOdious: {
     title: 'Odious Number 😇',
     definition: 'Odious numbers have an ODD number of \'1\'s in their binary code! It is just a fun wordplay in mathematics.',
     explain(n, rec) {
-      return `${n} is ${rec.binary} in binary, which has ${rec.popcount} ones (an odd number!).`;
+      const bits = rec.binary.split('');
+      const highlighted = bits.map(b => b === '1' ? `<strong style="color:#34d399;">${b}</strong>` : b).join('');
+      return `${n} in binary: ${highlighted}.<br>Count the 1s: <strong>${rec.popcount}</strong> ones. ${rec.popcount} is odd, so ${n} is "odious"! 😇`;
     }
   }
 };

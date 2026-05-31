@@ -28,11 +28,11 @@ This module introduces primary learners to the characteristics of integers from 
 ---
 
 ### Mode 1: The Number Gallery
-*   🎯 **Teaches**: Number definitions, classification, and math-property categorization (Primes, Composites, Squares, Cubes, Triangulars, Highly Composites).
-*   🕹️ **How you play**: Scroll through a gorgeous grid of numbers 1–120. Click any number to expand a sidebar detailing its divisors, prime factors, Roman numeral translation, tally mark representation, and Collatz conjecture cycle. Toggle "Math Tints" or "Periodic Table" overlay views.
-*   ⚙️ **Generation & checking**: Pre-computed statically on load inside `NUM_CACHE` in [`logic.js`](file:///g:/code/RLA/logic.js). Checking is exploratory—selecting a tile pulls its pre-computed factor record and updates the detail sidebar dynamically.
-*   📈 **Difficulty / progression**: Sandbox/exploratory mode. Accessible to all ages.
-*   🧠 **Why it works**: By visualising numbers with custom "tints" (e.g. coloring primes in rose, perfect squares in sky-blue), numbers cease to be arbitrary characters. Tying integers to the periodic table of elements (e.g. matching `11` to `Na` / Sodium) creates rich interdisciplinary links that appeal to kids who love encyclopedias and science.
+*   🎯 **Teaches**: Number definitions, classification, and math-property categorization across 8 tracked properties: **Prime**, **Perfect**, **Square**, **Cube**, **Triangular**, **Power of 2**, **Fibonacci**, and **Highly Composite**.
+*   🕹️ **How you play**: Scroll through a gorgeous grid of numbers 1–120, color-coded by mathematical property. Click any number to expand a rich profile modal detailing its divisors, prime factors, factor trees, Roman numeral translation, tally marks, Collatz journey, and binary secret codes. Toggle "Math Tints" or "Periodic Table" overlay views.
+*   ⚙️ **Generation & checking**: Pre-computed statically on load inside `NUM_CACHE` in [`logic.js`](file:///g:/code/RLA/logic.js). Each profile includes pedagogical explanation cards with **step-by-step working** (e.g., triangular numbers show `1, 1+2=3, 3+3=6, 6+4=10...`, deficient numbers show the full divisor sum chain, primes show which divisors were tested).
+*   📈 **Difficulty / progression**: Properties are progressively revealed: 🌱 Beginner shows core properties (Prime, Perfect, Square, Cube, Triangular), 🗺️ Explorer adds Fibonacci/Power of 2/Highly Composite/Twin Prime, 🏆 Champion adds Palindromes and Evil/Odious, and 🌈 Rainbow reveals Secret Codes.
+*   🧠 **Why it works**: By visualising numbers with custom "tints" (e.g. coloring primes in rose, perfect squares in sky-blue), numbers cease to be arbitrary characters. The step-by-step explanation cards make abstract definitions concrete by showing the actual arithmetic working. Tying integers to the periodic table of elements creates rich interdisciplinary links.
 
 ---
 
@@ -66,6 +66,19 @@ This module introduces primary learners to the characteristics of integers from 
     - 🗺️ **Explorer**: Subtraction crossing zero, skip offsets, linear `an+b` functions.
     - 🏆 **Champion**: Perfect squares, prime arrays, Fibonacci cycles, and powers of two.
 *   🧠 **Why it works**: Sequences are often frustrating because kids try to guess the answer. The **Difference Ladder** visualises the "gap" between terms as a tactile step-ladder. Revealing first- and second-level differences allows children to see the constant rates of change (like the constant second difference of perfect squares), transforming formulaic algebra into geometric visual climbing.
+
+---
+
+### Mode 5: Number Properties Guide
+*   🎯 **Teaches**: Definitions, visual demonstrations, formulas, and examples for all 8 core number properties.
+*   🕹️ **How you play**: Browse beautifully illustrated reference cards for each property: Prime, Perfect, Square, Cube, Triangular, Power of 2, Fibonacci, and Highly Composite. Each card includes:
+    - A kid-friendly definition with bold key terms.
+    - A **visual demonstration** (dot grids for squares, bowling-pin triangles, doubling chains for powers of 2, divisor record tables for highly composite).
+    - A formula/test section explaining how to check if a number has the property.
+    - **Clickable example chips** listing every number from 1–120 with that property — clicking any chip opens its full number profile.
+*   ⚙️ **Generation & checking**: `GUIDE_CARDS` array in [`numbers.html`](file:///g:/code/RLA/numbers.html) defines each card’s metadata. Example lists are dynamically computed by filtering `NUM_CACHE`. Cards for difficulty-gated properties (Power of 2, Fibonacci, Highly Composite) display a frosted lock overlay at lower difficulty levels.
+*   📈 **Difficulty / progression**: Properties gated behind 🗺️ Explorer difficulty show a 🔒 lock overlay at 🌱 Beginner — changing difficulty instantly unlocks/locks cards.
+*   🧠 **Why it works**: Provides an always-accessible encyclopedia that children can consult when they encounter unfamiliar terminology in quizzes or profiles. The visual demonstrations make abstract definitions tangible (e.g., seeing that 10 dots stack into a perfect triangle), while clickable examples encourage self-directed exploration.
 
 ---
 
@@ -293,6 +306,7 @@ For quick navigation and testing, the core architectures and calculations map to
 | [`logic.js`](file:///g:/code/RLA/logic.js) | `isPrime`, `divisors` | [logic.js:13-19](file:///g:/code/RLA/logic.js#L13-L19) | Basic prime number checks and factor divisors calculation. |
 | [`logic.js`](file:///g:/code/RLA/logic.js) | `happy` number check | [logic.js:82-91](file:///g:/code/RLA/logic.js#L82-L91) | Evaluates if an integer is a happy or unhappy number. |
 | [`logic.js`](file:///g:/code/RLA/logic.js) | `buildNumberRecord` | [logic.js:104-138](file:///g:/code/RLA/logic.js#L104-L138) | Heavy analytical data map generation for a single integer. |
+| [`logic.js`](file:///g:/code/RLA/logic.js) | `PROP_INFO` (pedagogical) | [logic.js:432-631](file:///g:/code/RLA/logic.js#L432-L631) | Step-by-step explain functions for all 18 number properties. |
 | [`logic.js`](file:///g:/code/RLA/logic.js) | `SEQ_GENERATORS` | [logic.js:176-285](file:///g:/code/RLA/logic.js#L176-L285) | Algebraic sequence algorithms with varying step formulas. |
 | [`logic.js`](file:///g:/code/RLA/logic.js) | `diffLadder` | [logic.js:291-299](file:///g:/code/RLA/logic.js#L291-L299) | Computes sequence step differences at multiple levels. |
 | [`shared.js`](file:///g:/code/RLA/shared.js) | `applyTheme` | [shared.js:18-23](file:///g:/code/RLA/shared.js#L18-L23) | Switches visual layout between light and dark themes. |
@@ -307,4 +321,5 @@ For quick navigation and testing, the core architectures and calculations map to
 | [`shared.js`](file:///g:/code/RLA/shared.js) | `initMascotHover` | [shared.js:371-417](file:///g:/code/RLA/shared.js#L371-L417) | Pop-up quote cards displaying canine dialogue on text hover. |
 | [`shared.js`](file:///g:/code/RLA/shared.js) | `makeKeypad` | [shared.js:422-478](file:///g:/code/RLA/shared.js#L422-L478) | Renders virtual keypad and listens for keyboard key presses. |
 | [`shared.js`](file:///g:/code/RLA/shared.js) | `showIntroModal` | [shared.js:481-500](file:///g:/code/RLA/shared.js#L481-L500) | Welcome prompt introducing each canine narrator's quest. |
+| [`numbers.html`](file:///g:/code/RLA/numbers.html) | `GUIDE_CARDS` / `renderGuide` | [numbers.html:851-1058](file:///g:/code/RLA/numbers.html#L851-L1058) | Guide tab reference cards for all 8 number properties. |
 | [`tests.html`](file:///g:/code/RLA/tests.html) | `Test Suite` | [tests.html:25-214](file:///g:/code/RLA/tests.html#L25-L214) | Evaluates safe integers, shuffling, and rule calculations. |
