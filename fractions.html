@@ -452,9 +452,9 @@
   <!-- ── DIFFICULTY ── -->
   <div class="diff-selector">
     <button class="diff-btn active" id="dBtn0" onclick="selectDiff(0)">🌱 Beginner<small>halves, thirds, quarters</small></button>
-    <button class="diff-btn nav-pulse" id="dBtn1" onclick="selectDiff(1)">🗺️ Explorer<small>up to eighths &amp; fifths</small></button>
-    <button class="diff-btn nav-pulse" id="dBtn2" onclick="selectDiff(2)">🏆 Champion<small>up to twelfths</small></button>
-    <button class="diff-btn nav-pulse" id="dBtn3" onclick="selectDiff(3)">🌈 Rainbow Quest<small>up to 1/16 + sevenths</small></button>
+    <button class="diff-btn nav-pulse" id="dBtn1" onclick="selectDiff(1)">🗺️ Explorer<small>all /2 through /8</small></button>
+    <button class="diff-btn nav-pulse" id="dBtn2" onclick="selectDiff(2)">🏆 Champion<small>all /2 through /12</small></button>
+    <button class="diff-btn nav-pulse" id="dBtn3" onclick="selectDiff(3)">🌈 Rainbow Quest<small>all /2 through /16</small></button>
   </div>
 
   <!-- ── PJ INTRO ── -->
@@ -658,11 +658,19 @@
   };
 
   // ─── FRACTION POOLS ───
+  // All proper fractions for each denominator tier — every n/d that appears on the strips.
+  function _allFracs(maxDen) {
+    const out = [];
+    for (let d = 2; d <= maxDen; d++) {
+      for (let n = 1; n < d; n++) out.push([n, d]);
+    }
+    return out;
+  }
   const POOLS = [
-    [[1,2],[1,4],[3,4],[1,3],[2,3]],
-    [[1,2],[1,4],[3,4],[1,3],[2,3],[1,5],[2,5],[3,5],[4,5],[1,6],[5,6],[1,8],[3,8],[5,8],[7,8]],
-    [[1,2],[1,4],[3,4],[1,3],[2,3],[1,5],[2,5],[3,5],[4,5],[1,6],[5,6],[1,8],[3,8],[5,8],[7,8],[1,10],[3,10],[7,10],[9,10],[1,12],[5,12],[7,12],[11,12]],
-    [[1,2],[1,4],[3,4],[1,3],[2,3],[1,5],[2,5],[3,5],[4,5],[1,6],[5,6],[1,8],[3,8],[5,8],[7,8],[1,10],[3,10],[7,10],[9,10],[1,12],[5,12],[7,12],[11,12],[1,16],[3,16],[5,16],[7,16],[9,16],[11,16],[13,16],[2,7],[3,7],[5,7],[2,9],[4,9],[5,9],[7,9]]
+    _allFracs(4),   // Beginner: /2, /3, /4
+    _allFracs(8),   // Explorer: /2–/8
+    _allFracs(12),  // Champion: /2–/12
+    _allFracs(16),  // Master:   /2–/16
   ];
   const DEN_COLORS = {1:'#e2e8f0',2:'#ef4444',3:'#f97316',4:'#eab308',5:'#22c55e',6:'#14b8a6',7:'#3b82f6',8:'#6366f1',9:'#a855f7',10:'#ec4899',11:'#f43f5e',12:'#84cc16',13:'#06b6d4',14:'#0ea5e9',15:'#8b5cf6',16:'#c084fc'};
   const STRIP_DENS = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16];
