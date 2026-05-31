@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- L1 AUDIT (2026-05-30): Champion/Master modes verified — no abstract fraction addition
-     questions exist. All 6 modes (Explore, Compare, Sort, LCD, Number Line, Seesaw) are
+     questions exist. All 7 modes (Explore, Compare, Sort, LCD, Number Line, Seesaw, Shrink It!) are
      visual part-whole comparisons. Difficulty only affects active denominator pool. -->
 <html lang="en">
 <head>
@@ -572,7 +572,7 @@
   // ╚═══════════════════════════════════════════╝
 
   // ── BARK SOUNDS ──
-  const BARK_FILES = ['bark.mp3','bark2.mp3','bark3.mp3','bark4.mp3','bark5.mp3','bark6.mp3'];
+  // BARK_FILES is already declared globally in shared.js
   function playBark() {
     if (st.muted) return;
     const src = BARK_FILES[Math.floor(Math.random() * BARK_FILES.length)];
