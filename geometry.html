@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Angle & Shape Detective — Rainbow Learning Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body { background: var(--bg); color: var(--text1); min-height: 100vh; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; padding: 12px 10px 60px; }
+    h1,h2,h3,h4 { font-family: 'Outfit', sans-serif; font-weight: 800; }
+
+    /* Override accent for geometry mode - Emerald Green */
+    :root {
+      --accent: #10b981;
+      --accent2: #34d399;
+    }
+
+    header {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1100px;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 18px; margin-bottom: 12px;
+      background: var(--card); backdrop-filter: blur(5px);
+      border-radius: 20px; border: 1px solid var(--border);
+      flex-wrap: wrap; gap: 8px;
+    }
+    .logo-row { display: flex; align-items: center; gap: 10px; }
+    .logo-img { width: 36px; height: 36px; object-fit: contain; filter: drop-shadow(0 0 8px var(--accent)); animation: pulse-glow 2.2s ease-in-out infinite; }
+    .logo-text h1 { font-size: 1.25rem; background: linear-gradient(to right, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: var(--logo-glow); }
+    .logo-text p { font-size: .7rem; color: var(--text2); text-transform: uppercase; letter-spacing: 2px; }
+    .stats-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    
+    /* Tabs */
+    .tab-bar {
+      position: relative; z-index: 2; width: 100%; max-width: 1100px;
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 7px; margin-bottom: 12px;
+      background: var(--surface-inset); backdrop-filter: blur(5px);
+      border-radius: 28px; border: 1px solid var(--border); padding: 6px;
+    }
+    .tab-btn {
+      background: transparent; border: 1px solid transparent;
+      color: var(--text2); padding: 10px 8px; border-radius: 22px;
+      cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700;
+      font-size: .82rem; text-align: center;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+      transition: all .22s ease;
+    }
+    .tab-btn:hover:not(.active) { background: var(--card); color: var(--text1); }
+    .tab-btn.active { background: linear-gradient(135deg, #047857, var(--accent)); color: var(--on-accent); border-color: transparent; box-shadow: 0 4px 14px rgba(16,185,129,.38); }
+
+    /* Difficulty */
+    .diff-selector {
+      position: relative; z-index: 2;
+      width: 100%; max-width: 1100px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 7px; margin-bottom: 16px;
+    }
+    .diff-btn { background: var(--card); border: 1px solid var(--border); color: var(--text2); padding: 8px 10px; border-radius: 22px; cursor: pointer; font-family: 'Outfit', sans-serif; font-weight: 700; font-size: .78rem; transition: all .2s; text-align: center; }
+    .diff-btn small { display: block; font-size: .62rem; font-weight: 600; opacity: .7; margin-top: 2px; }
+    .diff-btn:hover:not(.active) { background: var(--surface-inset); color: var(--text1); }
+    .diff-btn.active { background: linear-gradient(135deg, #047857, var(--accent)); color: white; border-color: transparent; box-shadow: 0 4px 12px rgba(16,185,129,.32); }
+
+    /* Main Area */
+    .main-grid {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 1100px;
+      display: grid; grid-template-columns: 1.2fr 1fr;
+      gap: 18px; margin-bottom: 20px;
+    }
+    @media (max-width: 768px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .diff-selector { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    .challenge-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 28px; padding: 22px; display: flex; flex-direction: column;
+      box-shadow: var(--shadow-sm); min-height: 400px;
+      justify-content: space-between;
+    }
+
+    /* SVG container */
+    .svg-container {
+      background: var(--surface-inset);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      max-width: 300px;
+      width: 100%;
+      aspect-ratio: 1;
+      margin: 0 auto 16px;
+      box-shadow: inset 0 2px 8px rgba(0,0,0,.08);
+      position: relative;
+    }
+    .geom-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Keypad wrap */
+    .keypad-side {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 28px; padding: 22px; display: flex; flex-direction: column;
+      box-shadow: var(--shadow-sm); justify-content: center;
+    }
+
+    /* Choice Buttons */
+    .choices-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      max-width: 400px;
+      margin: 0 auto 16px;
+      width: 100%;
+    }
+    .choice-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text1);
+      padding: 14px 10px;
+      border-radius: 18px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      transition: all .2s;
+      text-align: center;
+    }
+    .choice-btn:hover:not(:disabled) {
+      background: var(--surface-inset);
+      transform: translateY(-2px);
+    }
+    .choice-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+    .choice-btn.correct {
+      background: #10b981 !important;
+      color: white !important;
+      border-color: transparent !important;
+    }
+    .choice-btn.incorrect {
+      background: #ef4444 !important;
+      color: white !important;
+      border-color: transparent !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-row" style="gap:16px;">
+      <a href="index.html" class="home-avatar-btn" style="text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;">
+        <img id="logoMascotImg" src="rainbow-pj.png" class="logo-img" style="width: 44px; height: 44px; object-fit: contain; filter: drop-shadow(0 0 6px var(--accent)); opacity:0.95; transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); margin: 0;" alt="Mascot Mascot">
+        <span style="font-size:0.65rem;font-weight:800;color:var(--text2);font-family:'Outfit',sans-serif;text-transform:uppercase;letter-spacing:0.3px;background:rgba(30,41,59,0.6);border:1px solid var(--border);padding:2px 8px;border-radius:8px;transition:all 0.2s;white-space:nowrap;">🏠 Home</span>
+      </a>
+      <div class="logo-text">
+        <h1>Angle & Shape Detective</h1>
+        <p>Geometry Academy</p>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stats-bar">
+        <span class="stat-badge streak">🔥 <span id="streakCount">0</span> Streak</span>
+        <span class="stat-badge star">⭐ <span id="starCount">0</span> Stars</span>
+      </div>
+      <button class="tool-btn" id="muteBtn" onclick="toggleMute()">🔊 Sound On</button>
+      <button class="tool-btn" onclick="toggleTheme()">🌓 Theme</button>
+    </div>
+  </header>
+
+  <!-- MODES -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabAngle" onclick="switchTab('angle')">📐 Angle Ranger</button>
+    <button class="tab-btn" id="tabShape" onclick="switchTab('shape')">🧊 Shape Detective</button>
+    <button class="tab-btn" id="tabSymmetry" onclick="switchTab('symmetry')">🦋 Symmetry Watch</button>
+  </div>
+
+  <!-- DIFFICULTY -->
+  <div class="diff-selector" id="geomDiffBar">
+    <button class="diff-btn active" id="geomDiff0" onclick="setGeomDiff(0)">🌱 Year 3<small>Core concepts</small></button>
+    <button class="diff-btn" id="geomDiff1" onclick="setGeomDiff(1)">🗺️ Year 4<small>Developing skills</small></button>
+    <button class="diff-btn" id="geomDiff2" onclick="setGeomDiff(2)">🏆 Year 5<small>Harder challenges</small></button>
+    <button class="diff-btn" id="geomDiff3" onclick="setGeomDiff(3)">🌈 Year 6<small>Ultimate mastery</small></button>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main-grid">
+    <!-- Left Challenge Panel -->
+    <div class="challenge-card">
+      <div>
+        <!-- Narrator strip -->
+        <div class="narrator-strip" style="margin-bottom:14px;">
+          <img src="slinky.png" id="geomNarrImg" alt="Slinky Malinki">
+          <div class="narrator-bubble" id="geomNarrSpeech">Loading mystery... 🐾</div>
+        </div>
+
+        <div class="question-text" id="geomQuestion" style="font-size:1.15rem;line-height:1.5;text-align:center;margin:10px 0;font-weight:700;"></div>
+      </div>
+
+      <!-- SVG Drawing -->
+      <div class="svg-container" id="geomSvgWrap"></div>
+
+      <!-- Answers area for multiple choice -->
+      <div id="geomChoices" class="choices-grid" style="display:none;"></div>
+
+      <div id="geomFeedback" style="text-align:center;font-weight:800;font-size:1.05rem;min-height:24px;margin-top:10px;"></div>
+
+      <div style="display:flex;gap:10px;justify-content:center;margin-top:10px;">
+        <button class="tool-btn" id="geomHintBtn" onclick="showGeomHint()" style="border-color:var(--accent);color:var(--accent);background:rgba(16,185,129,.1);">💡 Hint</button>
+        <button class="primary-btn" onclick="nextQuestion()" id="geomNextBtn">🎲 Next Challenge</button>
+      </div>
+    </div>
+
+    <!-- Right Keypad Panel -->
+    <div class="keypad-side" id="geomKeypadSide">
+      <div class="keypad-wrap" style="width:100%;max-width:280px;margin:0 auto;">
+        <div class="keypad-answer-display" id="geomAnswer">_</div>
+        <div class="keypad-grid" id="geomKeypadGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Rainbow Doggy mascot — zooms in to celebrate correct answers -->
+  <img id="rpj" src="rainbow-pj.png" alt="Rainbow Doggy" onclick="rpjClick()">
+
+  <script src="shared.js"></script>
+  <script>
+    // Local State
+    let geomDiff = 0;
+    let currentTab = 'angle';
+    let geomQ = null;
+    let geomUsedHelp = false;
+    let keypadCtrl = null;
+
+    // Mascots & Images
+    const NARRATOR = 'Slinky Malinki';
+
+    // 3D Shapes Database
+    const SHAPES_3D = [
+      {
+        name: 'Cube',
+        faces: 6, edges: 12, vertices: 8,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <path d="M 50 50 L 80 35 L 80 70 L 50 85 Z" fill="#047857" stroke="#065f46" stroke-width="2"/>
+          <path d="M 20 35 L 50 50 L 50 85 L 20 70 Z" fill="#059669" stroke="#065f46" stroke-width="2"/>
+          <path d="M 50 15 L 80 35 L 50 50 L 20 35 Z" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A cube has 6 square faces that are all exactly the same size!',
+        years: [0, 1, 2, 3]
+      },
+      {
+        name: 'Cuboid',
+        faces: 6, edges: 12, vertices: 8,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <path d="M 45 45 L 85 30 L 85 60 L 45 75 Z" fill="#047857" stroke="#065f46" stroke-width="2"/>
+          <path d="M 15 35 L 45 45 L 45 75 L 15 65 Z" fill="#059669" stroke="#065f46" stroke-width="2"/>
+          <path d="M 45 15 L 85 30 L 45 45 L 15 35 Z" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A cuboid is like a stretched cube. Its faces are rectangles!',
+        years: [0, 1, 2, 3]
+      },
+      {
+        name: 'Triangular Prism',
+        faces: 5, edges: 9, vertices: 6,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <path d="M 50 25 L 85 40 L 85 75 L 50 60 Z" fill="#047857" stroke="#065f46" stroke-width="2"/>
+          <path d="M 15 60 L 50 25 L 50 60 Z" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+          <path d="M 15 60 L 50 60 L 85 75 L 50 75 Z" fill="#059669" stroke="#065f46" stroke-width="2" opacity="0.8"/>
+          <path d="M 50 25 L 85 40" stroke="#065f46" stroke-width="2" fill="none"/>
+        </svg>`,
+        facts: 'A triangular prism has 2 triangular faces and 3 rectangular faces. Think of a Toblerone box! 🍫',
+        years: [1, 2, 3]
+      },
+      {
+        name: 'Square-based Pyramid',
+        faces: 5, edges: 8, vertices: 5,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <path d="M 50 15 L 50 75 L 80 60 Z" fill="#047857" stroke="#065f46" stroke-width="2"/>
+          <path d="M 50 15 L 20 60 L 50 75 Z" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'Like the pyramids in Egypt! It has 1 square base and 4 triangular sides.',
+        years: [1, 2, 3]
+      },
+      {
+        name: 'Cylinder',
+        faces: 3, edges: 2, vertices: 0,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <path d="M 30 30 L 70 30 L 70 70 A 20 8 0 0 1 30 70 Z" fill="#059669" stroke="#065f46" stroke-width="2"/>
+          <ellipse cx="50" cy="30" rx="20" ry="8" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+          <path d="M 30 70 A 20 8 0 0 0 70 70" fill="none" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A cylinder has 2 flat circular faces and 1 curved face. It is like a soup can! 🥫',
+        years: [1, 2, 3]
+      },
+      {
+        name: 'Cone',
+        faces: 2, edges: 1, vertices: 1,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <path d="M 50 15 L 75 70 A 25 8 0 0 1 25 70 Z" fill="#059669" stroke="#065f46" stroke-width="2"/>
+          <ellipse cx="50" cy="70" rx="25" ry="8" fill="none" stroke="#065f46" stroke-width="2" stroke-dasharray="3 3"/>
+          <circle cx="50" cy="15" r="2" fill="#065f46"/>
+        </svg>`,
+        facts: 'A cone has 1 flat circular face, 1 curved face, and 1 vertex at the top. Like an ice cream cone! 🍦',
+        years: [1, 2, 3]
+      },
+      {
+        name: 'Sphere',
+        faces: 1, edges: 0, vertices: 0,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <circle cx="50" cy="50" r="30" fill="url(#sphereGrad)" stroke="#065f46" stroke-width="2"/>
+          <defs>
+            <radialGradient id="sphereGrad" cx="35%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#a7f3d0" />
+              <stop offset="60%" stop-color="#059669" />
+              <stop offset="100%" stop-color="#047857" />
+            </radialGradient>
+          </defs>
+        </svg>`,
+        facts: 'A sphere is perfectly round. It has 1 curved face and no edges or vertices. Like a ball! ⚽',
+        years: [0, 1, 2, 3]
+      }
+    ];
+
+    // Symmetry Shapes Database
+    const SHAPES_SYMMETRY = [
+      {
+        name: 'Square',
+        symmetry: 4,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <rect x="25" y="25" width="50" height="50" rx="4" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A square has 4 lines of symmetry: 2 straight through the middle, and 2 diagonals from the corners!',
+        years: [0, 1, 2, 3]
+      },
+      {
+        name: 'Rectangle',
+        symmetry: 2,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <rect x="15" y="30" width="70" height="40" rx="4" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A rectangle has only 2 lines of symmetry: straight down and straight across. Folding it diagonally doesn\'t match up!',
+        years: [0, 1, 2, 3]
+      },
+      {
+        name: 'Equilateral Triangle',
+        symmetry: 3,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <polygon points="50,20 15,80 85,80" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'Since all 3 sides are equal, you can draw a line of symmetry from any corner straight to the opposite side!',
+        years: [0, 1, 2, 3]
+      },
+      {
+        name: 'Isosceles Triangle',
+        symmetry: 1,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <polygon points="50,15 30,80 70,80" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'An isosceles triangle has 2 equal sides, so it has exactly 1 line of symmetry right down the middle.',
+        years: [0, 1, 2, 3]
+      },
+      {
+        name: 'Scalene Triangle',
+        symmetry: 0,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <polygon points="40,20 20,80 85,70" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A scalene triangle has no equal sides or angles, so it has 0 lines of symmetry!',
+        years: [0, 1, 2, 3]
+      },
+      {
+        name: 'Regular Pentagon',
+        symmetry: 5,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <polygon points="50,15 85,40 72,80 28,80 15,40" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A regular pentagon has 5 equal sides, so it has exactly 5 lines of symmetry!',
+        years: [1, 2, 3]
+      },
+      {
+        name: 'Regular Hexagon',
+        symmetry: 6,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <polygon points="50,15 80,32 80,68 50,85 20,68 20,32" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A regular hexagon has 6 equal sides, giving it 6 lines of symmetry (3 from corners, 3 through side midpoints)!',
+        years: [1, 2, 3]
+      },
+      {
+        name: 'Star',
+        symmetry: 5,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <polygon points="50,15 63,38 88,43 70,61 74,86 50,75 26,86 30,61 12,43 37,38" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A standard 5-pointed star has 5 lines of symmetry, running from each point straight through to the opposite dip.',
+        years: [2, 3]
+      },
+      {
+        name: 'Heart',
+        symmetry: 1,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <path d="M 50 35 C 50 20, 20 20, 20 45 C 20 70, 50 85, 50 85 C 50 85, 80 70, 80 45 C 80 20, 50 20, 50 35 Z" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A heart shape is symmetric from left to right, meaning it has exactly 1 line of symmetry down the middle.',
+        years: [0, 1, 2, 3]
+      },
+      {
+        name: 'Kite',
+        symmetry: 1,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <polygon points="50,15 80,45 50,85 20,45" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'A kite has 1 line of symmetry going straight down through the top and bottom corners.',
+        years: [1, 2, 3]
+      },
+      {
+        name: 'Parallelogram',
+        symmetry: 0,
+        svg: `<svg viewBox="0 0 100 100" class="geom-svg">
+          <polygon points="30,25 80,25 70,75 20,75" fill="#34d399" stroke="#065f46" stroke-width="2"/>
+        </svg>`,
+        facts: 'TRICK ALERT! ⚠️ Even though a parallelogram looks balanced, it has 0 lines of symmetry because folding it does not match up sides perfectly!',
+        years: [2, 3]
+      }
+    ];
+
+    // Helpers
+    function getAngleArcPath(deg) {
+      const rad = deg * Math.PI / 180;
+      const r = 15;
+      const cx = 50, cy = 50;
+      const x1 = cx + r;
+      const y1 = cy;
+      const x2 = cx + r * Math.cos(rad);
+      const y2 = cy - r * Math.sin(rad);
+      const largeArc = deg > 180 ? 1 : 0;
+      const sweep = 0;
+      return `M ${x1} ${y1} A ${r} ${r} 0 ${largeArc} ${sweep} ${x2} ${y2}`;
+    }
+
+    // ── GENERAL TAB & DIFF SWITCHERS ──
+    function switchTab(t) {
+      currentTab = t;
+      ['tabAngle', 'tabShape', 'tabSymmetry'].forEach(id => {
+        const btn = document.getElementById(id);
+        btn.classList.toggle('active', btn.id.slice(3).toLowerCase() === t);
+      });
+
+      // Show/Hide keypad container based on mode and year
+      updateUIContainers();
+
+      nextQuestion();
+    }
+
+    function setGeomDiff(d) {
+      geomDiff = d;
+      for (let i = 0; i <= 3; i++) {
+        const btn = document.getElementById('geomDiff' + i);
+        if (btn) btn.classList.toggle('active', i === d);
+      }
+      updateUIContainers();
+      nextQuestion();
+    }
+
+    function updateUIContainers() {
+      const isAngleMC = currentTab === 'angle' && geomDiff < 2;
+      document.getElementById('geomChoices').style.display = isAngleMC ? 'grid' : 'none';
+      document.getElementById('geomKeypadSide').style.display = isAngleMC ? 'none' : 'flex';
+      if (keypadCtrl) {
+        keypadCtrl.destroy();
+        keypadCtrl = null;
+      }
+      if (!isAngleMC) {
+        keypadCtrl = makeKeypad('geomKeypadGrid', 'geomAnswer', checkKeypadAnswer);
+      }
+    }
+
+    // ── GAME QUESTION GENERATION ──
+    function nextQuestion() {
+      geomUsedHelp = false;
+      document.getElementById('geomFeedback').textContent = '';
+      document.getElementById('geomAnswer').textContent = '_';
+      if (keypadCtrl) keypadCtrl.reset();
+
+      if (currentTab === 'angle') {
+        genAngleQ();
+      } else if (currentTab === 'shape') {
+        genShapeQ();
+      } else {
+        genSymmetryQ();
+      }
+    }
+
+    // 1. Angle Ranger Generator
+    function genAngleQ() {
+      let angle = 0;
+      let classification = '';
+      const typeRoll = Math.floor(Math.random() * 4); // 0: acute, 1: right, 2: obtuse, 3: reflex
+
+      if (typeRoll === 0) {
+        angle = [30, 40, 45, 50, 60, 70, 75][Math.floor(Math.random() * 7)];
+        classification = 'Acute';
+      } else if (typeRoll === 1) {
+        angle = 90;
+        classification = 'Right Angle';
+      } else if (typeRoll === 2) {
+        angle = [100, 110, 120, 130, 135, 140, 150, 160][Math.floor(Math.random() * 8)];
+        classification = 'Obtuse';
+      } else {
+        angle = [200, 215, 225, 240, 260, 270, 300, 315, 330][Math.floor(Math.random() * 9)];
+        classification = 'Reflex';
+      }
+
+      // If Year 5/6, generate any random integer degree for estimation
+      if (geomDiff >= 2) {
+        angle = Math.floor(Math.random() * 320) + 15; // 15 to 335
+        // Avoid boundary zones to keep it clean
+        if (Math.abs(angle - 90) < 5 || Math.abs(angle - 180) < 5 || Math.abs(angle - 270) < 5) {
+          angle += 10;
+        }
+        if (angle < 90) classification = 'Acute';
+        else if (angle < 180) classification = 'Obtuse';
+        else classification = 'Reflex';
+      }
+
+      // Draw angle in SVG
+      const rad = angle * Math.PI / 180;
+      const baseLen = 38;
+      const cx = 50, cy = 50;
+      const bx = cx + baseLen;
+      const tx = cx + baseLen * Math.cos(rad);
+      const ty = cy - baseLen * Math.sin(rad);
+
+      // Custom 90 deg corner or normal arc
+      const arcPath = angle === 90 
+        ? 'M 60 50 L 60 40 L 50 40' 
+        : getAngleArcPath(angle);
+
+      const fillArc = angle === 90 ? 'none' : 'rgba(16,185,129,.24)';
+
+      const svgHtml = `<svg viewBox="0 0 100 100" class="geom-svg">
+        <!-- Angle fill arc -->
+        <path d="${arcPath}" fill="${fillArc}" stroke="#10b981" stroke-width="2"/>
+        <!-- Base line -->
+        <line x1="${cx}" y1="${cy}" x2="${bx}" y2="${cy}" stroke="#065f46" stroke-width="3" stroke-linecap="round"/>
+        <!-- Terminal line -->
+        <line x1="${cx}" y1="${cy}" x2="${tx}" y2="${ty}" stroke="#065f46" stroke-width="3" stroke-linecap="round"/>
+        <!-- Vertex hinge dot -->
+        <circle cx="${cx}" cy="${cy}" r="3" fill="#047857"/>
+      </svg>`;
+
+      document.getElementById('geomSvgWrap').innerHTML = svgHtml;
+
+      // Question phrasing
+      if (geomDiff < 2) {
+        document.getElementById('geomQuestion').innerHTML = `Slinky Malinki asks: "What type of angle is shown in green?" 🐾`;
+        const choices = ['Acute', 'Right Angle', 'Obtuse', 'Reflex'];
+        document.getElementById('geomChoices').innerHTML = choices.map(c => `
+          <button class="choice-btn" onclick="checkChoiceAnswer('${c}', this)">${c}</button>
+        `).join('');
+        geomQ = { type: 'angleMC', correct: classification, angle, hint: `An <strong>Acute</strong> angle is < 90° (sharp corner). A <strong>Right Angle</strong> is exactly 90° (L-shape). An <strong>Obtuse</strong> angle is between 90° and 180° (wide open). A <strong>Reflex</strong> angle is > 180° (goes past a straight line).` };
+      } else {
+        document.getElementById('geomQuestion').innerHTML = `Slinky Malinki asks: "Estimate the size of the green angle in degrees!" 📐`;
+        geomQ = { type: 'angleEst', correct: angle, hint: `Look at the angle compared to a 90° right corner (L-shape) and a 180° straight line. Is it slightly more or slightly less? Give your closest estimate!` };
+      }
+
+      document.getElementById('geomNarrSpeech').textContent = "Can you decode this angle? Meow! 🐾";
+    }
+
+    // 2. Shape Detective Generator
+    function genShapeQ() {
+      // Filter shapes based on difficulty
+      const pool = SHAPES_3D.filter(s => s.years.includes(geomDiff));
+      const shape = pool[Math.floor(Math.random() * pool.length)];
+
+      const props = ['faces', 'vertices', 'edges'];
+      // Year 3 only asks faces or vertices
+      const prop = geomDiff === 0 ? props[Math.floor(Math.random() * 2)] : props[Math.floor(Math.random() * 3)];
+
+      document.getElementById('geomSvgWrap').innerHTML = shape.svg;
+
+      let qText = '';
+      if (prop === 'faces') {
+        qText = `Slinky Malinki wants to know: how many <strong>faces</strong> (flat or curved surfaces) does a <strong>${shape.name}</strong> have? 🧊`;
+      } else if (prop === 'vertices') {
+        qText = `Slinky Malinki asks: how many <strong>vertices</strong> (corners) does a <strong>${shape.name}</strong> have? 🧊`;
+      } else {
+        qText = `How many <strong>edges</strong> (where two faces meet) does a <strong>${shape.name}</strong> have? 🧊`;
+      }
+
+      document.getElementById('geomQuestion').innerHTML = qText;
+      geomQ = {
+        type: 'shapeCount',
+        shape: shape,
+        prop: prop,
+        correct: shape[prop],
+        hint: `${shape.name} Guide: <br><strong>Faces:</strong> ${shape.faces} · <strong>Vertices:</strong> ${shape.vertices} · <strong>Edges:</strong> ${shape.edges}.<br>${shape.facts}`
+      };
+
+      document.getElementById('geomNarrSpeech').textContent = `Look closely at the 3D shape, meow! 🐾`;
+    }
+
+    // 3. Symmetry Watch Generator
+    function genSymmetryQ() {
+      const pool = SHAPES_SYMMETRY.filter(s => s.years.includes(geomDiff));
+      const shape = pool[Math.floor(Math.random() * pool.length)];
+
+      document.getElementById('geomSvgWrap').innerHTML = shape.svg;
+      document.getElementById('geomQuestion').innerHTML = `Slinky Malinki asks: "How many <strong>lines of symmetry</strong> does a <strong>${shape.name}</strong> have?" 🦋`;
+
+      geomQ = {
+        type: 'symmetry',
+        shape: shape,
+        correct: shape.symmetry,
+        hint: `A line of symmetry is where you can fold the shape exactly in half so both sides match. For a regular shape, it usually has the same number of lines as its sides. ${shape.facts}`
+      };
+
+      document.getElementById('geomNarrSpeech').textContent = "Folding shapes in half makes them match, meow! 🐾";
+    }
+
+    // ── ANSWER VERIFICATIONS ──
+    function checkChoiceAnswer(ans, btn) {
+      if (!geomQ || geomQ.type !== 'angleMC') return;
+      document.querySelectorAll('#geomChoices .choice-btn').forEach(b => b.disabled = true);
+
+      const ok = ans === geomQ.correct;
+      btn.classList.add(ok ? 'correct' : 'incorrect');
+      document.querySelectorAll('#geomChoices .choice-btn').forEach(b => {
+        if (b.textContent.trim() === geomQ.correct) b.classList.add('correct');
+      });
+
+      const fb = document.getElementById('geomFeedback');
+      if (ok) {
+        fb.innerHTML = `✅ Purrfect! That is indeed a <strong style="color:#10b981;">${geomQ.correct}</strong> angle! (${geomQ.angle}°)`;
+        fb.style.color = '#10b981';
+        bumpCorrect(geomUsedHelp, updateLocalStats);
+      } else {
+        fb.innerHTML = `Not quite! It is a <strong style="color:#10b981;">${geomQ.correct}</strong> angle.`;
+        fb.style.color = '#ef4444';
+        bumpWrong(updateLocalStats);
+      }
+    }
+
+    function checkKeypadAnswer(ans) {
+      if (!geomQ) return;
+      const numAns = parseInt(ans, 10);
+      const fb = document.getElementById('geomFeedback');
+
+      if (geomQ.type === 'angleEst') {
+        const diff = Math.abs(numAns - geomQ.correct);
+        const ok = diff <= 8; // 8 degrees tolerance
+
+        if (ok) {
+          fb.innerHTML = `✅ Excellent estimate! The angle is <strong style="color:#10b981;">${geomQ.correct}°</strong>. Your guess of <strong style="color:#10b981;">${numAns}°</strong> was super close!`;
+          fb.style.color = '#10b981';
+          bumpCorrect(geomUsedHelp, updateLocalStats);
+        } else {
+          fb.innerHTML = `Oops! That angle is <strong style="color:#10b981;">${geomQ.correct}°</strong>. Keep practicing your visual estimates!`;
+          fb.style.color = '#ef4444';
+          bumpWrong(updateLocalStats);
+        }
+      } else {
+        const ok = numAns === geomQ.correct;
+
+        if (ok) {
+          fb.innerHTML = `✅ Spot on! The answer is indeed <strong style="color:#10b981;">${geomQ.correct}</strong>!`;
+          fb.style.color = '#10b981';
+          bumpCorrect(geomUsedHelp, updateLocalStats);
+        } else {
+          fb.innerHTML = `Not quite! The correct answer is <strong style="color:#10b981;">${geomQ.correct}</strong>.`;
+          fb.style.color = '#ef4444';
+          bumpWrong(updateLocalStats);
+        }
+      }
+    }
+
+    function showGeomHint() {
+      if (!geomQ) return;
+      geomUsedHelp = true;
+      document.getElementById('geomFeedback').innerHTML = `<div style="font-size:.82rem;line-height:1.5;color:var(--text2);background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.3);border-radius:12px;padding:10px;text-align:left;">💡 <strong>Hint:</strong><br>${geomQ.hint}</div>`;
+      playSound('click');
+    }
+
+    function updateLocalStats() {
+      // Sync stats with local display
+      document.getElementById('starCount').textContent = getStars();
+      document.getElementById('streakCount').textContent = getStreak();
+    }
+
+    // ── INITIALIZATION ──
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof initTheme === 'function') initTheme();
+      initRpj();
+      updateLocalStats();
+      updateUIContainers();
+
+      // Show introduction modal
+      showIntroModal('geometry', 
+        `<strong>Welcome to Angle & Shape Detective! 📐</strong><br><br>Join the master detective <strong>Slinky Malinki</strong> in examining geometric shapes, lines, angles, and symmetry!<br><br>Help Slinky sort through the clues and solve each math mystery! 🐾`, 
+        'Slinky Malinki'
+      );
+
+      nextQuestion();
+    });
+  </script>
+</body>
+</html>

@@ -209,7 +209,7 @@
 
     @media (max-width: 600px) {
       .tab-bar {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         border-radius: 20px;
         padding: 5px;
       }
@@ -248,10 +248,11 @@
   </header>
 
   <!-- TABS -->
-  <div class="tab-bar">
+  <div class="tab-bar" style="grid-template-columns: repeat(4, 1fr);">
     <button class="tab-btn active" onclick="switchTab('learn')" id="tabLearn">📚 Learn</button>
     <button class="tab-btn nav-pulse" onclick="switchTab('trial')" id="tabTrial">⏱️ Time Trial</button>
     <button class="tab-btn nav-pulse" onclick="switchTab('mixed')" id="tabMixed">🏆 Mixed Trial</button>
+    <button class="tab-btn nav-pulse" onclick="switchTab('shop')" id="tabShop">🛒 Puppy Shop</button>
   </div>
 
   <!-- ═══════════ LEARN SCREEN ═══════════ -->
@@ -450,6 +451,43 @@
     </div>
   </div>
 
+  <!-- ═══════════ PUPPY SHOP SCREEN ═══════════ -->
+  <div id="shopScreen" class="screen" style="display:none;">
+    <div class="question-card">
+      <div class="narrator-strip" style="margin-bottom:12px;">
+        <img src="kind dog.png" id="shopNarrImg" alt="Kind Dog" style="border-color:var(--area-calc);">
+        <div class="narrator-bubble" id="shopNarrSpeech">Welcome to the Puppy Treat Shop! Help my friends count their coins and calculate their change! 🦴🛒</div>
+      </div>
+      
+      <!-- Difficulty bar -->
+      <div style="display:flex;gap:6px;margin-bottom:14px;justify-content:center;" id="shopDiffBar">
+        <button class="tool-btn active" id="shopDiff0" onclick="setShopDiff(0)">🌱 Year 3</button>
+        <button class="tool-btn" id="shopDiff1" onclick="setShopDiff(1)">🗺️ Year 4</button>
+        <button class="tool-btn" id="shopDiff2" onclick="setShopDiff(2)">🏆 Year 5</button>
+        <button class="tool-btn" id="shopDiff3" onclick="setShopDiff(3)">🌈 Year 6</button>
+      </div>
+      
+      <!-- Visual shop shelf -->
+      <div style="background: rgba(15,23,42,0.3); border: 1px solid var(--border); border-radius: 18px; padding: 12px; margin-bottom: 16px;">
+        <div style="font-family:'Outfit',sans-serif;font-weight:800;font-size:.9rem;color:var(--text1);margin-bottom:8px;text-align:center;">🍬 TODAY'S SHOP SHELF 🍬</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(110px, 1fr));gap:8px;" id="shopShelfGrid">
+          <!-- Items populated dynamically -->
+        </div>
+      </div>
+
+      <div class="question-text" id="shopQuestion" style="font-size:1.15rem;line-height:1.5;text-align:left;margin-bottom:12px;"></div>
+      <div class="keypad-wrap">
+        <div class="keypad-answer-display" id="shopAnswer">_</div>
+        <div class="keypad-grid" id="shopKeypad"></div>
+      </div>
+      <div id="shopFeedback" style="text-align:center;font-weight:800;font-size:1rem;margin-top:12px;min-height:24px;"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap;">
+        <button class="tool-btn" id="shopHintBtn" onclick="shopShowHint()" style="border-color:var(--area-calc);color:var(--area-calc);background:rgba(251,113,133,.1);">💡 Hint</button>
+        <button class="primary-btn" onclick="nextShopQ()" id="shopNextBtn">🎲 Next Customer</button>
+      </div>
+    </div>
+  </div>
+
   <script src="shared.js"></script>
   <script>
   // ═══════════════════════════════════════════════════════════════════
@@ -527,7 +565,7 @@
 
   function switchTab(t) {
     currentTab = t;
-    ['learn', 'trial', 'mixed'].forEach(id => {
+    ['learn', 'trial', 'mixed', 'shop'].forEach(id => {
       const s = document.getElementById(id + 'Screen');
       const b = document.getElementById('tab' + id.charAt(0).toUpperCase() + id.slice(1));
       if (s) s.style.display = t === id ? '' : 'none';
@@ -539,6 +577,7 @@
     if (t === 'trial') renderTrialPicker();
     if (t === 'mixed') renderMixedPicker();
     if (t === 'learn') renderLearnPicker();
+    if (t === 'shop') startShopMode();
   }
 
   // makeKeypad is in shared.js
@@ -992,6 +1031,154 @@
 
     if (stats.correct > 0) bumpCorrect(false, updateStatsDisplay);
     updateMixedBestDisplay();
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // PUPPY TREAT SHOP MODE
+  // ═══════════════════════════════════════════════════════════════════
+  const SHOP_ITEMS = [
+    { name: 'Gourmet Bone', price: 1.50, emoji: '🦴' },
+    { name: 'Chew Toy', price: 0.80, emoji: '🎾' },
+    { name: 'Doggy Bowl', price: 2.20, emoji: '🥣' },
+    { name: 'Paw Polish', price: 2.50, emoji: '💅' },
+    { name: 'Treat Box', price: 4.00, emoji: '📦' },
+    { name: 'Comfy Collar', price: 5.50, emoji: '🧣' }
+  ];
+
+  let shopDiff = 0;
+  let shopKeypadCtrl = null;
+  let shopQ = null;
+  let shopUsedHelp = false;
+
+  function startShopMode() {
+    renderShopShelf();
+    setShopDiff(shopDiff);
+  }
+
+  function setShopDiff(d) {
+    shopDiff = d;
+    for (let i = 0; i <= 3; i++) {
+      const btn = document.getElementById('shopDiff' + i);
+      if (btn) {
+        btn.classList.toggle('active', i === d);
+        btn.classList.toggle('nav-pulse', i !== d);
+      }
+    }
+    nextShopQ();
+  }
+
+  function renderShopShelf() {
+    const grid = document.getElementById('shopShelfGrid');
+    if (!grid) return;
+    grid.innerHTML = SHOP_ITEMS.map(item => `
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:3px;box-shadow:var(--shadow);">
+        <span style="font-size:1.6rem;">${item.emoji}</span>
+        <span style="font-weight:700;font-size:.78rem;color:var(--text1);">${item.name}</span>
+        <span style="font-family:'Outfit',sans-serif;font-weight:800;font-size:.82rem;color:var(--area-calc);">$${item.price.toFixed(2)}</span>
+      </div>
+    `).join('');
+  }
+
+  function nextShopQ() {
+    shopUsedHelp = false;
+    document.getElementById('shopFeedback').textContent = '';
+    document.getElementById('shopHintBtn').style.display = 'inline-flex';
+    document.getElementById('shopAnswer').textContent = '_';
+    
+    if (shopKeypadCtrl) shopKeypadCtrl.destroy();
+    shopKeypadCtrl = makeKeypad('shopKeypad', 'shopAnswer', submitShopAnswer, { allowDecimal: true });
+
+    const dogNames = ['Hairy Maclary','Bottomley Potts','Hercules Morse','Muffin McLay','Bitzer Maloney','Schnitzel von Krumm','Slinky Malinki','Scarface Claw'];
+    const dogName = dogNames[Math.floor(Math.random() * dogNames.length)];
+    document.getElementById('shopNarrImg').src = getCharImage(dogName);
+    document.getElementById('shopNarrSpeech').textContent = `Hi there! I'd like to buy some items, please! 🐾`;
+
+    // Pick two random items
+    const i1Idx = Math.floor(Math.random() * SHOP_ITEMS.length);
+    let i2Idx = Math.floor(Math.random() * SHOP_ITEMS.length);
+    if (i2Idx === i1Idx) i2Idx = (i1Idx + 1) % SHOP_ITEMS.length;
+    const item1 = SHOP_ITEMS[i1Idx];
+    const item2 = SHOP_ITEMS[i2Idx];
+
+    let qText = '';
+    let correctAnswer = 0;
+    let hintText = '';
+
+    if (shopDiff === 0) {
+      // Year 3: simple single items
+      const qty = Math.floor(Math.random() * 3) + 1; // 1 to 3
+      const totalCost = qty * item1.price;
+      const payment = totalCost <= 2 ? 2.00 : totalCost <= 5 ? 5.00 : 10.00;
+      correctAnswer = payment - totalCost;
+      qText = `<strong>${dogName}</strong> wants to buy <strong>${qty} ${item1.name}(s)</strong> ${item1.emoji} costing <strong>£${item1.price.toFixed(2)}</strong> each.<br>They pay with a <strong>£${payment.toFixed(2)}</strong> coin/note. How much change do they get?`;
+      hintText = `1. Total cost of the ${item1.name}(s): ${qty} × £${item1.price.toFixed(2)} = £${totalCost.toFixed(2)}.<br>2. Subtract that from £${payment.toFixed(2)} to find the change:<br>£${payment.toFixed(2)} - £${totalCost.toFixed(2)} = £${correctAnswer.toFixed(2)}.`;
+    } else if (shopDiff === 1) {
+      // Year 4: multi-item shopping
+      const qty1 = Math.floor(Math.random() * 2) + 1;
+      const qty2 = Math.floor(Math.random() * 2) + 1;
+      const c1 = qty1 * item1.price;
+      const c2 = qty2 * item2.price;
+      const totalCost = c1 + c2;
+      const payment = totalCost <= 5 ? 5.00 : 10.00;
+      correctAnswer = payment - totalCost;
+      qText = `<strong>${dogName}</strong> wants to buy <strong>${qty1} ${item1.name}(s)</strong> ${item1.emoji} (£${item1.price.toFixed(2)} each) and <strong>${qty2} ${item2.name}(s)</strong> ${item2.emoji} (£${item2.price.toFixed(2)} each).<br>They pay with a <strong>£${payment.toFixed(2)}</strong> note. How much change do they get?`;
+      hintText = `1. Total for ${item1.name}: ${qty1} × £${item1.price.toFixed(2)} = £${c1.toFixed(2)}.<br>2. Total for ${item2.name}: ${qty2} × £${item2.price.toFixed(2)} = £${c2.toFixed(2)}.<br>3. Combined cost: £${c1.toFixed(2)} + £${c2.toFixed(2)} = £${totalCost.toFixed(2)}.<br>4. Change: £${payment.toFixed(2)} - £${totalCost.toFixed(2)} = £${correctAnswer.toFixed(2)}.`;
+    } else if (shopDiff === 2) {
+      // Year 5: multi-item with a coupon
+      const qty1 = Math.floor(Math.random() * 2) + 1;
+      const qty2 = Math.floor(Math.random() * 2) + 1;
+      const c1 = qty1 * item1.price;
+      const c2 = qty2 * item2.price;
+      const rawCost = c1 + c2;
+      const coupon = Math.random() < 0.5 ? 1.00 : 1.50;
+      const totalCost = Math.max(0.10, rawCost - coupon);
+      const payment = totalCost <= 5 ? 5.00 : totalCost <= 10 ? 10.00 : 20.00;
+      correctAnswer = payment - totalCost;
+      qText = `<strong>${dogName}</strong> wants to buy <strong>${qty1} ${item1.name}(s)</strong> ${item1.emoji} (£${item1.price.toFixed(2)} each) and <strong>${qty2} ${item2.name}(s)</strong> ${item2.emoji} (£${item2.price.toFixed(2)} each).<br>They have a discount coupon for <strong>£${coupon.toFixed(2)} off</strong> the total!<br>They pay with a <strong>£${payment.toFixed(2)}</strong> note. How much change do they get?`;
+      hintText = `1. Raw total cost: ${qty1}×£${item1.price.toFixed(2)} + ${qty2}×£${item2.price.toFixed(2)} = £${rawCost.toFixed(2)}.<br>2. Apply coupon: £${rawCost.toFixed(2)} - £${coupon.toFixed(2)} = £${totalCost.toFixed(2)}.<br>3. Change: £${payment.toFixed(2)} - £${totalCost.toFixed(2)} = £${correctAnswer.toFixed(2)}.`;
+    } else {
+      // Year 6: percentage discounts
+      const pct = [10, 20, 50][Math.floor(Math.random() * 3)];
+      const discount = (pct / 100) * item1.price;
+      const discountedPrice = item1.price - discount;
+      const qty2 = Math.floor(Math.random() * 2) + 1;
+      const c2 = qty2 * item2.price;
+      const totalCost = discountedPrice + c2;
+      const payment = totalCost <= 5 ? 5.00 : totalCost <= 10 ? 10.00 : 20.00;
+      correctAnswer = payment - totalCost;
+      qText = `<strong>${dogName}</strong> wants to buy a <strong>${item1.name}</strong> ${item1.emoji} (£${item1.price.toFixed(2)} regular price) which has a <strong>${pct}% discount</strong> today!<br>They also buy <strong>${qty2} ${item2.name}(s)</strong> ${item2.emoji} (£${item2.price.toFixed(2)} each) at regular price.<br>They pay with a <strong>£${payment.toFixed(2)}</strong> note. How much change do they get?`;
+      hintText = `1. Discounted ${item1.name}: £${item1.price.toFixed(2)} - ${pct}% (£${discount.toFixed(2)}) = £${discountedPrice.toFixed(2)}.<br>2. Total for ${item2.name}: ${qty2} × £${item2.price.toFixed(2)} = £${c2.toFixed(2)}.<br>3. Combined cost: £${discountedPrice.toFixed(2)} + £${c2.toFixed(2)} = £${totalCost.toFixed(2)}.<br>4. Change: £${payment.toFixed(2)} - £${totalCost.toFixed(2)} = £${correctAnswer.toFixed(2)}.`;
+    }
+
+    shopQ = { correctAnswer, hintText, dogName };
+    document.getElementById('shopQuestion').innerHTML = qText;
+    document.getElementById('shopNextBtn').innerHTML = "🎲 Skip Customer";
+  }
+
+  function submitShopAnswer(ans) {
+    if (!shopQ) return;
+    const ok = Math.abs(ans - shopQ.correctAnswer) < 0.011;
+    const fb = document.getElementById('shopFeedback');
+    if (ok) {
+      fb.textContent = `✅ Perfect! The change is £${shopQ.correctAnswer.toFixed(2)}. ${shopQ.dogName} barks happily! 🐾`;
+      fb.style.color = 'var(--green)';
+      document.getElementById('shopNarrSpeech').textContent = "Thank you! Have a great day! 🐶";
+      playSound('correct');
+      bumpCorrect(shopUsedHelp, updateStatsDisplay);
+      document.getElementById('shopNextBtn').innerHTML = "🎲 Next Customer";
+    } else {
+      fb.textContent = `Ooh! Not quite £${ans.toFixed(2)}. Double check your math! 🐾`;
+      fb.style.color = 'var(--area-calc)';
+      playSound('wrong');
+      if (shopKeypadCtrl) shopKeypadCtrl.reset();
+    }
+  }
+
+  function shopShowHint() {
+    if (!shopQ) return;
+    shopUsedHelp = true;
+    document.getElementById('shopFeedback').innerHTML = `<div style="font-size:.82rem;line-height:1.5;color:#fda4af;background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.3);border-radius:12px;padding:10px;text-align:left;">💡 <strong>Hint:</strong><br>${shopQ.hintText}</div>`;
+    playSound('click');
   }
 
   // ═══════════════════════════════════════════════════════════════════

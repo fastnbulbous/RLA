@@ -244,6 +244,129 @@
       assert(html7.includes('casting out nines'), true, 'explainProps(7): contains casting out nines secret');
       assert(html7.includes('candidate, though it\'s not a perfect square'), true, 'explainProps(7): contains square candidacy');
     })();
+  </script>
+
+  <script type="module">
+    import * as MT from './music/music-theory.js';
+    import * as Composer from './music/composer.js';
+    import * as Notation from './music/notation.js';
+
+    section('Melody Makers — Key Signatures & Theory');
+    assert(MT.KEY_SIGNATURE_ACCIDENTALS['A'], 3, 'A Major has 3 sharps');
+    assert(MT.KEY_SIGNATURE_ACCIDENTALS['Am'], 0, 'A Minor has 0 accidentals');
+    assert(MT.KEY_SIGNATURE_ACCIDENTALS['C'], 0, 'C Major has 0 accidentals');
+    assert(MT.KEY_SIGNATURE_ACCIDENTALS['Cm'], -3, 'C Minor has 3 flats');
+
+    section('Melody Makers — getCumulativeSteps');
+    const majorSteps = MT.getCumulativeSteps(MT.SCALE_FORMULAS.major);
+    assert(JSON.stringify(majorSteps), '[0,2,4,5,7,9,11]', 'major scale cumulative steps');
+    const wholeToneSteps = MT.getCumulativeSteps(MT.SCALE_FORMULAS.whole_tone);
+    assert(JSON.stringify(wholeToneSteps), '[0,2,4,6,8,10]', 'whole-tone scale cumulative steps');
+
+    section('Melody Makers — getEuclideanPattern');
+    assert(JSON.stringify(Composer.getEuclideanPattern(3, 8)), '[1,0,0,1,0,1,0,0]', '3 pulses in 8 steps pattern');
+    assert(JSON.stringify(Composer.getEuclideanPattern(4, 8)), '[1,0,1,0,1,0,1,0]', '4 pulses in 8 steps pattern');
+
+    section('Melody Makers — parseChord');
+    const dMin7 = Composer.parseChord('Dm7');
+    assert(dMin7.root, 'D', 'parseChord("Dm7") root');
+    assert(dMin7.type, 'min', 'parseChord("Dm7") type');
+    assert(dMin7.fullType, 'min7', 'parseChord("Dm7") fullType');
+    assert(dMin7.isMinor, true, 'parseChord("Dm7") isMinor');
+
+    const cMaj7 = Composer.parseChord('Cmaj7');
+    assert(cMaj7.root, 'C', 'parseChord("Cmaj7") root');
+    assert(cMaj7.type, 'maj7', 'parseChord("Cmaj7") type');
+    assert(cMaj7.isMinor, false, 'parseChord("Cmaj7") isMinor');
+
+    section('Melody Makers — buildSchedule');
+    const mockComp = {
+      meta: {
+        tempo: 120,
+        swing: 0,
+        humanize: false,
+        seed: 'test'
+      },
+      voices: [
+        {
+          name: 'Right Hand',
+          instrument: 0,
+          notes: [
+            { midi: 60, startBeat: 0, durBeats: 1 },
+            { midi: 64, startBeat: 1, durBeats: 1 }
+          ]
+        }
+      ]
+    };
+    const events = Notation.buildSchedule(mockComp);
+    assert(events.length, 4, 'straight timeline has 4 events');
+    assert(events[0].timeMs, 0, 'first noteOn at 0ms');
+    assert(events[1].timeMs, 500, 'second noteOn at 500ms');
+    assert(events[2].timeMs, 500, 'first noteOff at 500ms');
+    assert(events[3].timeMs, 1000, 'second noteOff at 1000ms');
+
+    const mockCompSwung = {
+      meta: {
+        tempo: 120,
+        swing: 0.6,
+        humanize: false,
+        seed: 'test'
+      },
+      voices: [
+        {
+          name: 'Right Hand',
+          instrument: 0,
+          notes: [
+            { midi: 60, startBeat: 0.5, durBeats: 0.5 }
+          ]
+        }
+      ]
+    };
+    const swungEvents = Notation.buildSchedule(mockCompSwung);
+    // swing=0.6 pushes 0.5 to 0.6, timeSec = 0.6 * (60/120) = 0.3s = 300ms
+    assert(swungEvents[0].timeMs, 300, 'swung noteOn at beat 0.5 is pushed to 300ms');
+
+    section('Melody Makers — Seeded Composition Invariants');
+    // Determinism
+    const comp1 = Composer.generateComposition('rainbow', { key: 'C', isMinor: false });
+    const comp2 = Composer.generateComposition('rainbow', { key: 'C', isMinor: false });
+    assert(JSON.stringify(comp1), JSON.stringify(comp2), 'generateComposition is deterministic for a fixed seed');
+
+    // Minor scale membership
+    const minorComp = Composer.generateComposition('slinky', { key: 'G', isMinor: true });
+    const gMinorSteps = [0, 2, 3, 5, 7, 8, 10];
+    let minorNotesInScale = true;
+    minorComp.voices[0].notes.forEach(n => {
+      const step = ((n.midi - 67) % 12 + 12) % 12;
+      if (!gMinorSteps.includes(step)) {
+        minorNotesInScale = false;
+      }
+    });
+    assert(minorNotesInScale, true, 'Melody notes in minor composition belong to G minor scale');
+
+    // Tonic/Chord tone start & end resolution
+    const startMidi = comp1.voices[0].notes[0].midi;
+    const endMidi = comp1.voices[0].notes[comp1.voices[0].notes.length - 1].midi;
+    const cMajorChordTones = [0, 4, 7];
+    const startStep = ((startMidi - 60) % 12 + 12) % 12;
+    const endStep = ((endMidi - 60) % 12 + 12) % 12;
+    assert(cMajorChordTones.includes(startStep), true, 'First melody note starts on a chord tone');
+    assert(endStep, 0, 'Last melody note resolves to the tonic (0)');
+
+    // Integration tests for returned meta option passing
+    const compMinorMode = Composer.generateComposition('minor-test', { mode: 'minor', key: 'C' });
+    const cMinorSteps = [0, 2, 3, 5, 7, 8, 10]; // natural minor steps
+    let minorModeNotesInScale = true;
+    compMinorMode.voices[0].notes.forEach(n => {
+      const step = ((n.midi - 60) % 12 + 12) % 12;
+      if (!cMinorSteps.includes(step)) {
+        minorModeNotesInScale = false;
+      }
+    });
+    assert(minorModeNotesInScale, true, 'Melody notes in mode:"minor" belong to C natural minor scale');
+    
+    const compSwingMeta = Composer.generateComposition('swing-test', { swing: 1.0 });
+    assert(compSwingMeta.meta.swing, 1.0, 'generateComposition passes swing to returned meta object');
 
     summarize();
   </script>

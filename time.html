@@ -237,6 +237,18 @@
             .tab-btn strong {
                 font-size: 0.6rem;
             }
+            .diff-selector {
+                gap: 4px;
+                margin-bottom: 8px;
+            }
+            .diff-btn {
+                padding: 6px 3px;
+                font-size: 0.65rem;
+                border-radius: 20px;
+            }
+            .diff-btn small {
+                font-size: 0.52rem;
+            }
             .challenge-card {
                 padding: 12px;
                 gap: 10px;
@@ -634,6 +646,47 @@
         .tab-btn:hover:not(.active) {
             background: var(--surface-inset);
             color: var(--text-primary);
+        }
+
+        /* ── DIFFICULTY TABS ── */
+        .diff-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .diff-btn {
+            background: var(--card);
+            border: 1px solid var(--card-border);
+            color: var(--text-secondary);
+            padding: 8px 10px;
+            border-radius: 22px;
+            cursor: pointer;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            font-size: 0.78rem;
+            transition: all 0.2s;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .diff-btn small {
+            display: block;
+            font-size: 0.62rem;
+            font-weight: 600;
+            opacity: 0.7;
+        }
+        .diff-btn:hover:not(.active) {
+            background: var(--surface-inset);
+            color: var(--text-primary);
+        }
+        .diff-btn.active {
+            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
         }
 
         .challenge-card {
@@ -1245,6 +1298,14 @@
                     <strong>Rainbow Quest</strong>
                     <small id="progStars3" style="font-size: 0.7rem; color: var(--text-secondary);">⚪ ⚪ ⚪ ⚪ ⚪</small>
                 </button>
+            </div>
+
+            <!-- Year 3/4/5/6 Difficulty Selector -->
+            <div class="diff-selector" id="timeDiffBar">
+                <button class="diff-btn active" id="timeDiff0" onclick="setTimeDiff(0)">🌱 Year 3<small>to 30m / Tier 1</small></button>
+                <button class="diff-btn" id="timeDiff1" onclick="setTimeDiff(1)">🗺️ Year 4<small>5m ticks / Tier 1-2</small></button>
+                <button class="diff-btn" id="timeDiff2" onclick="setTimeDiff(2)">🏆 Year 5<small>all min / Tier 2-3</small></button>
+                <button class="diff-btn" id="timeDiff3" onclick="setTimeDiff(3)">🌈 Year 6<small>full / Tier 3</small></button>
             </div>
 
             <!-- Mascot Speaking HUD -->
@@ -1962,7 +2023,8 @@
 
             currentDifficulty: -1,
             activeQuestion: null,
-            usedHelp: false
+            usedHelp: false,
+            timeDiff: 0
         };
 
         function toggleMute() {
@@ -2460,6 +2522,17 @@
             }
         })();
 
+        function setTimeDiff(d) {
+            state.timeDiff = d;
+            for (let i = 0; i <= 3; i++) {
+                const btn = document.getElementById('timeDiff' + i);
+                if (btn) {
+                    btn.classList.toggle('active', i === d);
+                }
+            }
+            generateChallenge();
+        }
+
         function selectQuestPhase(phase) {
             dismissPjIntro();
             tickInteraction();
@@ -2679,15 +2752,21 @@
 
                 // Phase 1: Reinforce Quiz Mode — pick question type
                 const typeRoll = Math.random();
-                const type = isTutorialMode
-                    ? (typeRoll < 0.35 ? 'neighborhood' : typeRoll < 0.65 ? 'linguistic' : 'minuteHand')
-                    : (typeRoll < 0.25 ? 'neighborhood' : typeRoll < 0.5 ? 'linguistic' : typeRoll < 0.75 ? 'minuteHand' : 'minuteBetween');
+                let type;
+                if (isTutorialMode || state.timeDiff < 2) {
+                    type = typeRoll < 0.35 ? 'neighborhood' : typeRoll < 0.70 ? 'linguistic' : 'minuteHand';
+                } else {
+                    type = typeRoll < 0.25 ? 'neighborhood' : typeRoll < 0.5 ? 'linguistic' : typeRoll < 0.75 ? 'minuteHand' : 'minuteBetween';
+                }
 
                 if (type === 'neighborhood') {
                     // Hour position & Rainbow Float Trick questions
-                    const mins = isTutorialMode 
+                    const neighborhoodMinsPool = state.timeDiff === 0
+                        ? [0, 15, 30, 45]
+                        : [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
+                    const mins = isTutorialMode
                         ? [0, 15, 30, 45][Math.floor(Math.random() * 4)]
-                        : [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55][Math.floor(Math.random() * 12)];
+                        : neighborhoodMinsPool[Math.floor(Math.random() * neighborhoodMinsPool.length)];
                     setupH = hour;
                     setupM = mins;
 
@@ -2727,9 +2806,14 @@
                     // Linguistic translation time translation questions
                     // If in Tutorial Mode (first 2 questions), keep it simple with quarters (15, 30, 45).
                     // Otherwise, provide 5-minute multiples and a few trickier single minutes (12, 23, 37, 48)!
+                    const linguisticMinsPool = state.timeDiff === 0
+                        ? [15, 30, 45]
+                        : state.timeDiff === 1
+                        ? [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]
+                        : [5, 10, 12, 15, 20, 23, 25, 30, 35, 37, 40, 45, 48, 50, 55];
                     const mins = isTutorialMode
                         ? [15, 30, 45][Math.floor(Math.random() * 3)]
-                        : [5, 10, 12, 15, 20, 23, 25, 30, 35, 37, 40, 45, 48, 50, 55][Math.floor(Math.random() * 15)];
+                        : linguisticMinsPool[Math.floor(Math.random() * linguisticMinsPool.length)];
                     setupH = hour;
                     setupM = mins;
 
@@ -2817,7 +2901,7 @@
                     hint = "Remember: the green side is the PAST zone (minutes 1 to 30), and the blue side is the TO zone (minutes 31 to 59). In the 'to' zone, we countdown to the next upcoming hour!";
                 } else if (type === 'minuteHand') {
                     // Minute hand position — which number does it point at? (multiples of 5 only)
-                    const minsPool = isTutorialMode
+                    const minsPool = isTutorialMode || state.timeDiff === 0
                         ? [15, 30, 45]
                         : [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
                     const mins = minsPool[Math.floor(Math.random() * minsPool.length)];
@@ -2900,7 +2984,14 @@
             }
             else if (phase === 2) {
                 // Phase 2: Tactile Drag Match - Describe target time correctly first
-                const mins = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55][Math.floor(Math.random() * 11)];
+                let mins;
+                if (state.timeDiff === 0) {
+                    mins = [15, 30, 45][Math.floor(Math.random() * 3)];
+                } else if (state.timeDiff === 1) {
+                    mins = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55][Math.floor(Math.random() * 11)];
+                } else {
+                    mins = Math.floor(Math.random() * 60);
+                }
                 setupH = hour;
                 setupM = mins;
 
@@ -2916,7 +3007,16 @@
                 // Tier 1: within the hour (minutes only, no crossover)
                 // Tier 2: crossing the hour boundary
                 // Tier 3: full hours + minutes
-                const p3tier = state.phaseProgress < 3 ? 1 : state.phaseProgress < 6 ? 2 : 3;
+                let p3tier;
+                if (state.timeDiff === 0) {
+                    p3tier = 1;
+                } else if (state.timeDiff === 1) {
+                    p3tier = state.phaseProgress < 4 ? 1 : 2;
+                } else if (state.timeDiff === 2) {
+                    p3tier = state.phaseProgress < 4 ? 2 : 3;
+                } else {
+                    p3tier = 3;
+                }
                 const pad = n => n < 10 ? '0' + n : n;
 
                 // ── STORY BANK ──

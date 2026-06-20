@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="shared.css">
+  <!-- Warm the Music SoundFont in the background (idle priority) so playback is instant when the Music page opens -->
+  <link rel="prefetch" href="GeneralUser-GS.sf2">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -109,6 +111,7 @@
     .portal-card.calc .portal-icon { animation-delay: .5s; }
     .portal-card.frac .portal-icon { animation-delay: 1s; }
     .portal-card.time .portal-icon { animation-delay: 1.5s; }
+    .portal-card.geom .portal-icon { animation-delay: 2s; }
     @keyframes pop {
       0%,100% { transform: scale(1); }
       50% { transform: scale(1.12); }
@@ -121,6 +124,8 @@
     .portal-card.calc .portal-title { background: var(--grad-calc, linear-gradient(to right, var(--area-calc-a), var(--area-calc-b))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .portal-card.frac .portal-title { background: var(--grad-frac, linear-gradient(to right, var(--area-frac-a), var(--area-frac-b))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .portal-card.time .portal-title { background: var(--grad-time, linear-gradient(to right, var(--area-time-a), var(--area-time-b))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .portal-card.geom .portal-title { background: linear-gradient(to right, var(--candy-green), var(--candy-mint)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .portal-card.music .portal-title { background: var(--grad-music, linear-gradient(to right, var(--area-music-a), var(--area-music-b))); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     .portal-desc { font-size: .88rem; color: var(--text2); text-align: center; line-height: 1.6; }
     .portal-btn {
       width: 100%; padding: 13px; border-radius: 30px; border: none;
@@ -131,6 +136,12 @@
     .portal-card.calc .portal-btn { background: var(--grad-calc, linear-gradient(135deg in oklch, var(--area-calc-a), var(--area-calc-b))); box-shadow: 0 4px 18px oklch(70% .15 260 / .3); }
     .portal-card.frac .portal-btn { background: var(--grad-frac, linear-gradient(135deg in oklch, var(--area-frac-a), var(--area-frac-b))); box-shadow: 0 4px 18px oklch(70% .15 95  / .3); }
     .portal-card.time .portal-btn { background: var(--grad-time, linear-gradient(135deg in oklch, var(--area-time-a), var(--area-time-b))); box-shadow: 0 4px 18px oklch(70% .15 150 / .3); }
+    .portal-card.geom .portal-btn { background: linear-gradient(135deg in oklch, var(--candy-green), var(--candy-mint)); box-shadow: 0 4px 18px oklch(70% .15 150 / .3); }
+    .portal-card.music .portal-btn { background: var(--grad-music, linear-gradient(135deg in oklch, var(--area-music-a), var(--area-music-b))); box-shadow: 0 4px 18px oklch(70% .15 308 / .3); }
+    .portal-card.geom::before { background: linear-gradient(to right in oklch, var(--candy-green), var(--candy-mint)); }
+    .portal-card.geom:hover { box-shadow: 0 28px 60px oklch(70% 0.15 162 / .28); border-color: var(--candy-green); }
+    .portal-card.music::before { background: var(--grad-music); }
+    .portal-card.music:hover { box-shadow: 0 28px 60px oklch(70% 0.15 308 / .28); border-color: var(--area-music-a); }
     .portal-btn:hover { transform: scale(1.04); filter: brightness(1.1); }
     .portal-btn:active { transform: scale(.96); }
 
@@ -282,6 +293,20 @@
         <div class="portal-title">Time Travellers</div>
         <p class="portal-desc">Race against time with <strong>Hairy Maclary</strong> and <strong>Rainbow Doggy</strong>! Drag clock hands to solve tricky challenges before <strong>Slinky Malinki</strong> swipes the keys! ⏰</p>
         <button class="portal-btn nav-pulse">⏰ Travel in Time</button>
+      </a>
+
+      <a href="geometry.html" class="portal-card geom">
+        <div class="portal-icon">📐</div>
+        <div class="portal-title">Angle & Shape Detective</div>
+        <p class="portal-desc">Solve geometric mysteries with <strong>Slinky Malinki</strong>! Estimate angles, count edges/vertices on 3D shapes, and find lines of symmetry! 📐</p>
+        <button class="portal-btn nav-pulse">📐 Investigate Geometry</button>
+      </a>
+
+      <a href="music.html" class="portal-card music">
+        <div class="portal-icon">🎵</div>
+        <div class="portal-title">Melody Makers</div>
+        <p class="portal-desc">Create magical music with <strong>Hairy Maclary</strong>! Learn notes, rhythms, and chords. Play the virtual piano, and auto-compose your own masterpieces! 🎹</p>
+        <button class="portal-btn nav-pulse">🎵 Play & Compose</button>
       </a>
     </div>
 

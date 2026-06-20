@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Number Explorers — Rainbow Learning Academy</title>
+  <meta name="description" content="Discover the mathematical secrets of numbers 1 to 120 with interactive geometry fractals, prime factor trees, binary tools, and quizzes at Rainbow Learning Academy!">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -37,7 +38,7 @@
     .tab-bar {
       position: relative; z-index: 2;
       width: 100%; max-width: 1200px;
-      display: grid; grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+      display: grid; grid-template-columns: repeat(6, 1fr);
       gap: 7px; margin-bottom: 10px;
       background: var(--surface-inset); backdrop-filter: blur(5px);
       border-radius: 28px; border: 1px solid var(--border); padding: 6px;
@@ -330,8 +331,9 @@
       #tabGallery { grid-column: span 2; }
       #tabQuiz { grid-column: span 2; }
       #tabBuild { grid-column: span 2; }
-      #tabSequences { grid-column: span 3; }
-      #tabGuide { grid-column: span 3; }
+      #tabSequences { grid-column: span 2; }
+      #tabGuide { grid-column: span 2; }
+      #tabRoman { grid-column: span 2; }
 
       .diff-bar { grid-template-columns: 1fr 1fr; }
       .diff-btn { padding: 6px 4px; border-radius: 14px; }
@@ -412,6 +414,37 @@
     #seqKeypad .kp-btn:active { transform: scale(.92); }
     #seqKeypad .kp-btn.submit { grid-column: span 3; background: var(--grad-num, linear-gradient(135deg, var(--area-num-a), var(--area-num-b))); color: white; border-color: transparent; font-size: 1rem; }
     #seqKeypad .kp-btn.del { color: var(--area-num); }
+
+    /* Roman Numeral Keypad */
+    #romanKeypadGrid .kp-btn {
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text1);
+      border-radius: 18px;
+      padding: 14px 8px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all .15s cubic-bezier(.175,.885,.32,1.275);
+    }
+    #romanKeypadGrid .kp-btn:hover {
+      border-color: var(--area-num);
+      transform: scale(1.04);
+    }
+    #romanKeypadGrid .kp-btn:active {
+      transform: scale(.92);
+    }
+    #romanKeypadGrid .kp-btn.submit {
+      grid-column: span 3;
+      background: var(--grad-num, linear-gradient(135deg, var(--area-num-a), var(--area-num-b)));
+      color: white;
+      border-color: transparent;
+      font-size: 1rem;
+    }
+    #romanKeypadGrid .kp-btn.del {
+      color: var(--area-num);
+    }
 
     /* Hint ladder */
     .diff-ladder { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0; }
@@ -496,6 +529,324 @@
       font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1rem;
       color: var(--text2); gap: 8px;
     }
+
+    /* ── FRACTAL OVERLAY MODAL ── */
+    #fractalModal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: var(--modal-overlay);
+      backdrop-filter: blur(10px);
+      align-items: center;
+      justify-content: center;
+      padding: 12px;
+    }
+    #fractalModal.show {
+      display: flex;
+    }
+    .fractal-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      max-width: 1100px;
+      width: 100%;
+      max-height: 95vh;
+      overflow-y: auto;
+      padding: 24px;
+      box-shadow: 0 32px 80px rgba(0,0,0,.6);
+      animation: popIn .3s cubic-bezier(.175,.885,.32,1.5);
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 850px) {
+      .fractal-box {
+        grid-template-columns: 1fr;
+        max-height: 92vh;
+        padding: 16px;
+      }
+    }
+    .fractal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text2);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      z-index: 10;
+    }
+
+    .fractal-canvas-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+    .fractal-canvas-wrap {
+      position: relative;
+      width: 100%;
+      height: 460px;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      background: rgba(15, 23, 42, 0.45);
+      overflow: hidden;
+    }
+    @media (max-width: 850px) {
+      .fractal-canvas-wrap {
+        height: 280px;
+      }
+    }
+    #fractal-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+
+    /* Absolute positioning within the relative canvas wrap */
+    #debug-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-family: monospace;
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.65);
+      pointer-events: none;
+      z-index: 5;
+      line-height: 1.4;
+      background: rgba(0,0,0,0.4);
+      padding: 6px;
+      border-radius: 6px;
+    }
+    #hud-panel {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      backdrop-filter: blur(8px);
+      padding: 6px 10px;
+      font-family: monospace;
+      font-size: 10px;
+      color: var(--text1);
+      opacity: 0.85;
+      z-index: 5;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 140px;
+    }
+    #hud-panel.hidden {
+      display: none;
+    }
+
+    /* Toolbar under canvas */
+    .fractal-toolbar {
+      background: rgba(15,23,42,0.3);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .fractal-toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .fractal-toolbar-group label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--text2);
+      white-space: nowrap;
+    }
+    .fractal-toolbar input[type="number"] {
+      width: 65px;
+      background: rgba(15,23,42,0.6);
+      border: 1px solid var(--border);
+      color: var(--text1);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      text-align: center;
+    }
+    .fractal-toolbar input[type="range"] {
+      flex: 1;
+      min-width: 100px;
+      accent-color: var(--area-num);
+      cursor: pointer;
+    }
+
+    /* Settings list right column */
+    .fractal-settings-column {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+      max-height: 540px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+    @media (max-width: 850px) {
+      .fractal-settings-column {
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+      }
+    }
+    .settings-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+    }
+    .settings-tab-btn {
+      flex: 1;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 6px 4px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 0.76rem;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .settings-tab-btn:hover {
+      background: rgba(255,255,255,0.08);
+      color: var(--text1);
+    }
+    .settings-tab-btn.active {
+      background: var(--area-num);
+      color: var(--on-accent);
+      border-color: transparent;
+      box-shadow: 0 4px 12px rgba(56,189,248,.25);
+    }
+    .settings-tab-pane {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .settings-tab-pane.active {
+      display: flex;
+    }
+    .settings-section {
+      background: rgba(15,23,42,0.3);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .settings-section h4 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--text1);
+      margin-bottom: 2px;
+      border-bottom: 1px dashed var(--border);
+      padding-bottom: 4px;
+    }
+    .settings-row-control {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+    .settings-row-control label {
+      font-weight: 600;
+    }
+    .settings-row-control input[type="range"] {
+      flex: 1;
+      max-width: 130px;
+      accent-color: var(--area-num);
+    }
+    .settings-row-control select {
+      background: rgba(15,23,42,0.6);
+      border: 1px solid var(--border);
+      color: var(--text1);
+      padding: 4px 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+    }
+    .settings-row-control input[type="checkbox"] {
+      accent-color: var(--area-num);
+      width: 14px; height: 14px;
+    }
+    .settings-row-control button {
+      background: rgba(56,189,248,.12);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      color: var(--text1);
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .settings-row-control button:hover {
+      background: rgba(56,189,248,.25);
+    }
+
+    /* Layer row customization */
+    #layer-order-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .layer-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 8px 10px;
+      background: rgba(15,23,42,0.45);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+    .layer-row-label {
+      font-family: 'Outfit', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 800;
+      color: var(--text1);
+    }
+    .layer-rot-slider {
+      flex: 1;
+      accent-color: var(--area-num);
+    }
+    #shape-mapping-grid {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 6px 10px;
+      align-items: center;
+      font-size: 0.78rem;
+    }
+    #shape-mapping-grid label {
+      font-weight: 700;
+      color: var(--text1);
+      text-align: right;
+    }
+    #shape-mapping-grid select {
+      background: rgba(15,23,42,0.6);
+      border: 1px solid var(--border);
+      color: var(--text1);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+    }
   </style>
 </head>
 <body>
@@ -530,14 +881,15 @@
     <button class="tab-btn nav-pulse" onclick="switchTab('build')" id="tabBuild">🔧 Build-a-Number</button>
     <button class="tab-btn nav-pulse" onclick="switchTab('sequences')" id="tabSequences">🔢 Sequences</button>
     <button class="tab-btn nav-pulse" onclick="switchTab('guide')" id="tabGuide">📚 Guide</button>
+    <button class="tab-btn nav-pulse" onclick="switchTab('roman')" id="tabRoman">🏛️ Roman Decoder</button>
   </div>
 
   <!-- DIFFICULTY -->
-  <div class="diff-bar">
-    <button class="diff-btn active" onclick="selectDiff(0)" id="diff0">🌱 Beginner<small>Core facts</small></button>
-    <button class="diff-btn nav-pulse" onclick="selectDiff(1)" id="diff1">🗺️ Explorer<small>More detail</small></button>
-    <button class="diff-btn nav-pulse" onclick="selectDiff(2)" id="diff2">🏆 Champion<small>Full profile</small></button>
-    <button class="diff-btn nav-pulse" onclick="selectDiff(3)" id="diff3">🌈 Rainbow<small>Everything</small></button>
+  <div class="diff-bar" style="display:none;">
+    <button class="diff-btn active" onclick="selectDiff(0)" id="diff0">🌱 Year 3<small>Core facts</small></button>
+    <button class="diff-btn nav-pulse" onclick="selectDiff(1)" id="diff1">🗺️ Year 4<small>More detail</small></button>
+    <button class="diff-btn nav-pulse" onclick="selectDiff(2)" id="diff2">🏆 Year 5<small>Full profile</small></button>
+    <button class="diff-btn nav-pulse" onclick="selectDiff(3)" id="diff3">🌈 Year 6<small>Everything</small></button>
   </div>
 
   <!-- GALLERY SCREEN -->
@@ -627,6 +979,42 @@
     </div>
   </div>
 
+  <!-- ROMAN DECODER SCREEN -->
+  <div id="romanScreen" style="display:none;">
+    <div class="seq-panel" style="max-width: 600px; margin: 0 auto;">
+      <div class="narrator-strip" style="margin-bottom:12px;">
+        <img src="hercules_morse.png" id="romanNarrImg" alt="Hercules Morse">
+        <div class="narrator-bubble" id="romanNarrSpeech">Welcome to the Roman Numeral Decoder! Hercules Morse needs your help translating numbers from ancient Rome! 🏛️🐾</div>
+      </div>
+      
+      <!-- Roman Tier Select -->
+      <div style="display:flex;gap:6px;margin-bottom:14px;justify-content:center;" id="romanDiffBar">
+        <button class="tool-btn active" id="romanDiff0" onclick="setRomanDiff(0)">🌱 Year 3/4<small>I to L (1-50)</small></button>
+        <button class="tool-btn" id="romanDiff1" onclick="setRomanDiff(1)">🏆 Year 5<small>up to C (100)</small></button>
+        <button class="tool-btn" id="romanDiff2" onclick="setRomanDiff(2)">🌈 Year 6<small>up to M (1000)</small></button>
+      </div>
+
+      <div class="question-text" id="romanQuestion" style="font-size:1.35rem;line-height:1.5;text-align:center;margin:20px 0;"></div>
+      
+      <!-- Choices for Arabic -> Roman -->
+      <div id="romanChoices" class="choices-grid" style="display:none;margin-bottom:16px;"></div>
+      
+      <!-- Keypad for Roman -> Arabic -->
+      <div id="romanKeypadArea" style="display:none;margin-bottom:16px;">
+        <div class="keypad-wrap" id="romanKeypadWrap">
+          <div class="keypad-answer-display" id="romanAnswer">_</div>
+          <div class="keypad-grid" id="romanKeypadGrid"></div>
+        </div>
+      </div>
+
+      <div id="romanFeedback" style="text-align:center;font-weight:800;font-size:1rem;margin-top:12px;min-height:24px;"></div>
+      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:14px;flex-wrap:wrap;">
+        <button class="tool-btn" id="romanHintBtn" onclick="romanShowHint()" style="border-color:var(--area-num);color:var(--area-num);background:rgba(56,189,248,.1);">💡 Hint</button>
+        <button class="primary-btn" onclick="nextRomanQ()" id="romanNextBtn">🎲 Next Number</button>
+      </div>
+    </div>
+  </div>
+
   <!-- GUIDE SCREEN -->
   <div id="guideScreen" style="display:none;"></div>
 
@@ -646,6 +1034,336 @@
     </div>
   </div>
 
+  <!-- FRACTAL OVERLAY MODAL -->
+  <div id="fractalModal">
+    <div class="fractal-box">
+      <button class="fractal-close" onclick="closeFractalModal()">✕</button>
+      
+      <!-- Left Column: Canvas and Toolbar -->
+      <div class="fractal-canvas-column">
+        <!-- Mascot bubble -->
+        <div class="narrator-strip" style="margin-bottom: 0;">
+          <img src="head.png" alt="Rainbow Doggy" style="width: 44px; height: 44px; margin: 0;">
+          <div class="narrator-bubble" style="font-size: 0.8rem; padding: 6px 12px;">
+            <strong>Rainbow Doggy</strong>: "Each layer of the fractal shows a prime factor! Let's explore how they nest together! 🌀"
+          </div>
+        </div>
+
+        <div class="fractal-canvas-wrap">
+          <!-- Debug overlay -->
+          <div id="debug-overlay"></div>
+          <!-- Canvas -->
+          <canvas id="fractal-canvas"></canvas>
+          <!-- HUD Panel -->
+          <div id="hud-panel" class="hidden">
+            <div id="hud-fps"></div>
+            <div id="hud-instances"></div>
+            <div id="hud-factors"></div>
+            <div id="hud-effects"></div>
+            <div id="hud-camera"></div>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="fractal-toolbar">
+          <div class="fractal-toolbar-group">
+            <label for="number-input">Number:</label>
+            <input id="number-input" type="number" min="1" max="100000000" value="210" />
+          </div>
+          <div class="fractal-toolbar-group" style="flex: 1; min-width: 140px;">
+            <button id="number-dec" class="tool-btn" style="padding: 4px 10px;">−</button>
+            <input id="number-slider" type="range" min="0" max="1000" value="108" />
+            <button id="number-inc" class="tool-btn" style="padding: 4px 10px;">+</button>
+          </div>
+          <div class="fractal-toolbar-group">
+            <button id="randomise-btn" class="primary-btn" style="padding: 6px 14px; font-size: 0.8rem; border-radius: 20px;">🎲 Randomise</button>
+            <button id="hud-toggle-btn" class="tool-btn" style="padding: 6px 12px; font-size: 0.8rem;" title="Toggle HUD info">HUD ▾</button>
+            <button id="panel-toggle-btn" class="tool-btn" style="padding: 6px 12px; font-size: 0.8rem; display: none;">Settings ▾</button> <!-- Hidden but wired -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Settings Panel -->
+      <div id="settings-panel" class="fractal-settings-column">
+        <div class="settings-tabs">
+          <button class="settings-tab-btn active" data-tab="style">Style</button>
+          <button class="settings-tab-btn" data-tab="effects">Effects</button>
+          <button class="settings-tab-btn" data-tab="animate">Animate</button>
+          <button class="settings-tab-btn" data-tab="structure">Structure</button>
+        </div>
+
+        <!-- Style tab -->
+        <div class="settings-tab-pane active" data-tab="style">
+          <div class="settings-section">
+            <h4>Style Preset</h4>
+            <div class="settings-row-control">
+              <label>Preset</label>
+              <select id="preset-select">
+                <option value="" disabled>Select a preset...</option>
+                <option value="soft-gradient">Soft Gradient</option>
+                <option value="crystalline" selected>Crystalline</option>
+                <option value="neon-bloom">Neon Bloom</option>
+                <option value="flat">Flat</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Fill & Outline</h4>
+            <div class="settings-row-control">
+              <label>Fill Mode</label>
+              <select id="fill-mode-select">
+                <option value="fill">Fill</option>
+                <option value="outline">Outline</option>
+                <option value="both">Both</option>
+                <option value="neon">Neon / Emissive</option>
+                <option value="gradient" selected>Gradient / Soft Fill</option>
+                <option value="outline-fill">Outline ≠ Fill</option>
+                <option value="depth-fade">Depth Fade</option>
+              </select>
+            </div>
+            <div class="settings-row-control">
+              <label>Stroke: <span id="stroke-val">2</span>px</label>
+              <input id="stroke-slider" type="range" min="0.5" max="10" step="0.5" value="2" />
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Colour Options</h4>
+            <div class="settings-row-control">
+              <label><input id="colour-by-layer-toggle" type="checkbox" checked /> Colour by layer</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Scheme</label>
+              <select id="layer-colour-scheme">
+                <option value="neon">Neon palette</option>
+                <option value="accessible">Accessible palette</option>
+              </select>
+            </div>
+            <div class="settings-row-control">
+              <label>Palette</label>
+              <select id="palette-select">
+                <option value="neon">Neon</option>
+                <option value="pastel">Pastel</option>
+                <option value="sunset">Sunset</option>
+                <option value="mono">Mono</option>
+                <option value="ocean">Ocean</option>
+                <option value="random">Random</option>
+              </select>
+            </div>
+            <div class="settings-row-control">
+              <button id="random-palette-btn">🎲 New Random Palette</button>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Blend & Theme</h4>
+            <div class="settings-row-control">
+              <label>Blend Mode</label>
+              <select id="blend-select">
+                <option value="normal">Normal</option>
+                <option value="additive" selected>Additive</option>
+                <option value="multiply">Multiply</option>
+                <option value="screen">Screen</option>
+                <option value="random">Random</option>
+              </select>
+            </div>
+            <div class="settings-row-control" style="display:none;"> <!-- Hidden, RLA controls theme -->
+              <label>Theme</label>
+              <select id="theme-select">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Effects tab -->
+        <div class="settings-tab-pane" data-tab="effects">
+          <div class="settings-section">
+            <h4>Neon Glow / Bloom</h4>
+            <div class="settings-row-control">
+              <label><input id="bloom-toggle" type="checkbox" /> Enable Bloom</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Threshold: <span id="bloom-threshold-val">1.0</span></label>
+              <input id="bloom-threshold" type="range" min="0" max="2" step="0.05" value="1.0" />
+            </div>
+            <div class="settings-row-control">
+              <label>Intensity: <span id="bloom-intensity-val">1.2</span></label>
+              <input id="bloom-intensity" type="range" min="0" max="4" step="0.1" value="1.2" />
+            </div>
+            <div class="settings-row-control">
+              <label>Radius: <span id="bloom-radius-val">1.0</span></label>
+              <input id="bloom-radius" type="range" min="0.1" max="4" step="0.1" value="1.0" />
+            </div>
+            <div class="settings-row-control">
+              <label>Exposure: <span id="bloom-exposure-val">1.0</span></label>
+              <input id="bloom-exposure" type="range" min="0.1" max="4" step="0.1" value="1.0" />
+            </div>
+            <div class="settings-row-control">
+              <label>Emissive: <span id="emissive-val">1.0</span></label>
+              <input id="emissive-slider" type="range" min="0" max="4" step="0.1" value="1.0" />
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Emboss / Bevel</h4>
+            <div class="settings-row-control">
+              <label><input id="emboss-toggle" type="checkbox" /> Enable Emboss</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Strength: <span id="emboss-strength-val">0.6</span></label>
+              <input id="emboss-strength" type="range" min="0" max="1" step="0.05" value="0.6" />
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Spotlight</h4>
+            <div class="settings-row-control">
+              <label><input id="spotlight-toggle" type="checkbox" /> Orbiting Spotlight</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Speed: <span id="spotlight-speed-val">0.4</span></label>
+              <input id="spotlight-speed" type="range" min="0.05" max="2" step="0.05" value="0.4" />
+            </div>
+            <div class="settings-row-control">
+              <label>Falloff: <span id="spotlight-falloff-val">0.3</span></label>
+              <input id="spotlight-falloff" type="range" min="0.05" max="2" step="0.05" value="0.3" />
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Procedural Texture</h4>
+            <div class="settings-row-control">
+              <label><input id="texture-toggle" type="checkbox" checked /> Enable Texture</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Style</label>
+              <select id="texture-style">
+                <option value="0">Noise</option>
+                <option value="1" selected>Voronoi</option>
+                <option value="2">Stripes</option>
+              </select>
+            </div>
+            <div class="settings-row-control">
+              <label>Motion</label>
+              <select id="texture-swim-select">
+                <option value="prime-only">Prime Only (locked)</option>
+                <option value="static">Static + World Offset</option>
+                <option value="uniform-static">Static (Uniform)</option>
+                <option value="uniform">Uniform Scroll</option>
+                <option value="seeded" selected>Seeded Drift</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Animate tab -->
+        <div class="settings-tab-pane" data-tab="animate">
+          <div class="settings-section">
+            <h4>Global Rotation</h4>
+            <div class="settings-row-control">
+              <label><input id="auto-rotate-toggle" type="checkbox" /> Auto Rotate</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Angle: <span id="global-rot-val">0</span>°</label>
+              <input id="global-rot-slider" type="range" min="0" max="360" value="0" />
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Layer Spin</h4>
+            <div class="settings-row-control">
+              <label><input id="layer-spin-toggle" type="checkbox" checked /> Enable Spin</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Speed: <span id="layer-spin-speed-val">3</span>°/s</label>
+              <input id="layer-spin-speed" type="range" min="-90" max="90" step="0.5" value="3" />
+            </div>
+            <div class="settings-row-control">
+              <label>Spin Mode</label>
+              <select id="layer-spin-mode">
+                <option value="alternating">Alternating (gears)</option>
+                <option value="uniform">Uniform</option>
+                <option value="per-layer">Per layer flip</option>
+                <option value="seeded">Seeded</option>
+                <option value="chaos">Chaos (per node)</option>
+              </select>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Layer Pulse</h4>
+            <div class="settings-row-control">
+              <label><input id="layer-pulse-toggle" type="checkbox" checked /> Enable Pulse</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Speed: <span id="layer-pulse-speed-val">0.3</span>×</label>
+              <input id="layer-pulse-speed" type="range" min="0.1" max="4" step="0.1" value="0.3" />
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Auto-Play (Counting)</h4>
+            <div class="settings-row-control">
+              <label><input id="autoplay-toggle" type="checkbox" /> Range Ping-Pong</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Speed: <span id="autoplay-speed-val">500</span>ms</label>
+              <input id="autoplay-speed" type="range" min="100" max="2000" step="50" value="500" />
+            </div>
+            <div class="settings-row-control" style="gap:4px;">
+              <label>Min:</label>
+              <input id="autoplay-min" type="number" value="2" min="1" max="1000000" style="width:60px;" />
+              <label>Max:</label>
+              <input id="autoplay-max" type="number" value="500" min="2" max="1000000" style="width:60px;" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Structure tab -->
+        <div class="settings-tab-pane" data-tab="structure">
+          <div class="settings-section">
+            <h4>Layer Spacing</h4>
+            <div class="settings-row-control">
+              <label>Gap: <span id="gap-val">15</span>%</label>
+              <input id="gap-slider" type="range" min="0" max="40" value="15" />
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Composite Grouping</h4>
+            <div class="settings-row-control">
+              <label><input id="composite-toggle" type="checkbox" checked /> Group composites</label>
+            </div>
+            <div id="composite-checkboxes" style="display:flex; flex-wrap:wrap; gap:6px; font-size:0.75rem;">
+              <label><input class="composite-cb" type="checkbox" data-val="4" checked /> 4 (2²)</label>
+              <label><input class="composite-cb" type="checkbox" data-val="8" checked /> 8 (2³)</label>
+              <label><input class="composite-cb" type="checkbox" data-val="9" checked /> 9 (3²)</label>
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Overlap Auto Layout</h4>
+            <div class="settings-row-control">
+              <label><input id="auto-layout-toggle" type="checkbox" checked /> Auto-solve overlaps</label>
+            </div>
+            <div class="settings-row-control">
+              <label>Strength: <span id="auto-layout-strength-val">1.0</span></label>
+              <input id="auto-layout-strength" type="range" min="0" max="1" step="0.05" value="1.0" />
+            </div>
+          </div>
+          <div class="settings-section">
+            <h4>Per-Layer Properties</h4>
+            <div class="settings-row-control" style="gap:6px; margin-bottom:6px;">
+              <button id="layer-shuffle-btn">🔀 Shuffle</button>
+              <button id="layer-reset-btn">🔄 Reset</button>
+            </div>
+            <div id="layer-order-list"></div>
+          </div>
+          <div class="settings-section">
+            <h4>Shape Mapping</h4>
+            <div id="shape-mapping-grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { mountFractal } from './fractals/main.js';
+    window.mountFractal = mountFractal;
+  </script>
   <script src="shared.js"></script>
   <script src="logic.js"></script>
   <script>
@@ -854,8 +1572,11 @@
     if (currentTab === 'sequences' && _seqKeypadCtrl) {
       _seqKeypadCtrl.destroy(); _seqKeypadCtrl = null;
     }
+    if (currentTab === 'roman' && _romanKeypadCtrl) {
+      _romanKeypadCtrl.destroy(); _romanKeypadCtrl = null;
+    }
     currentTab = t;
-    ['gallery','quiz','build','sequences','guide'].forEach(id => {
+    ['gallery','quiz','build','sequences','guide','roman'].forEach(id => {
       const screen = document.getElementById(id + 'Screen');
       const btn    = document.getElementById('tab' + id.charAt(0).toUpperCase() + id.slice(1));
       if (screen) screen.style.display = t === id ? '' : 'none';
@@ -864,10 +1585,13 @@
         btn.classList.toggle('nav-pulse', t !== id);
       }
     });
+    const db = document.querySelector('.diff-bar');
+    if (db) db.style.display = (t === 'quiz' || t === 'sequences') ? '' : 'none';
     if (t === 'quiz') genQuiz();
     if (t === 'build') initBuild();
     if (t === 'sequences') genSequence();
     if (t === 'guide') renderGuide();
+    if (t === 'roman') startRomanMode();
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -1041,7 +1765,7 @@
 
   function renderGuide() {
     const el = document.getElementById('guideScreen');
-    const diff = currentDiff;
+    const diff = 3; // Always show full guide to encourage sandbox exploration
 
     const cardsHtml = GUIDE_CARDS.map(card => {
       const locked = diff < card.minDiff;
@@ -1052,7 +1776,7 @@
       ).join('');
 
       const lockHtml = locked
-        ? `<div class="lock-overlay">🔒 Unlock at ${card.minDiff === 1 ? '🗺️ Explorer' : '🏆 Champion'} difficulty</div>`
+        ? `<div class="lock-overlay">🔒 Unlock at ${card.minDiff === 1 ? '🗺️ Year 4' : '🏆 Year 5'} difficulty</div>`
         : '';
 
       return `
@@ -1166,6 +1890,84 @@
     document.getElementById('profileModal').classList.remove('show');
   }
 
+  let activeFractal = null;
+  let fractalState = {
+    number: 210,
+    gap: 0.15,
+    paletteName: 'neon',
+    fillMode: 'gradient',
+    strokePx: 2,
+    blendMode: 'additive',
+    theme: 'dark',
+    bloomEnabled: false,
+    bloomThreshold: 1.0,
+    bloomIntensity: 1.2,
+    bloomRadius: 1.0,
+    bloomExposure: 1.0,
+    emissiveStrength: 1.0,
+    embossEnabled: false,
+    embossStrength: 0.6,
+    spotlightEnabled: false,
+    spotlightSpeed: 0.4,
+    spotlightFalloff: 0.3,
+    textureEnabled: true,
+    textureStyle: 1,
+    textureSwim: 'seeded',
+    colourByLayer: true,
+    autoRotate: false,
+    autoRotateSpeed: 15.0,
+    layerSpinEnabled: true,
+    layerSpinSpeed: 3.0,
+    layerSpinMode: 'alternating',
+    layerPulseEnabled: true,
+    layerPulseSpeed: 0.3,
+    autoPlayEnabled: false,
+    autoPlaySpeed: 500,
+    autoPlayMin: 2,
+    autoPlayMax: 500,
+    compositeGrouping: true,
+    allowedComposites: { 4: true, 8: true, 9: true },
+    autoLayout: true,
+    autoLayoutStrength: 1.0,
+  };
+
+  function openFractalModal(n) {
+    if (activeFractal) {
+      activeFractal.destroy();
+      activeFractal = null;
+    }
+    const canvas = document.getElementById('fractal-canvas');
+    if (!canvas || !window.mountFractal) {
+      console.error('[NFF] mountFractal not loaded yet!');
+      return;
+    }
+
+    fractalState.number = n;
+    const isLight = document.body.classList.contains('theme-light');
+    fractalState.theme = isLight ? 'light' : 'dark';
+
+    document.getElementById('fractalModal').classList.add('show');
+    activeFractal = window.mountFractal(canvas, fractalState);
+    fractalState = activeFractal.state;
+
+    // Hook tab switches inside settings panel
+    document.querySelectorAll('.settings-tab-btn').forEach(btn => {
+      btn.onclick = () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.settings-tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+        document.querySelectorAll('.settings-tab-pane').forEach(p => p.classList.toggle('active', p.dataset.tab === tab));
+      };
+    });
+  }
+
+  function closeFractalModal() {
+    if (activeFractal) {
+      activeFractal.destroy();
+      activeFractal = null;
+    }
+    document.getElementById('fractalModal').classList.remove('show');
+  }
+
   function walkProfile(dir) {
     const next = Math.max(1, Math.min(MAX_NUMBER, profileNum + dir));
     profileNum = next;
@@ -1179,6 +1981,8 @@
       if (e.key === 'ArrowLeft')  walkProfile(-1);
       if (e.key === 'ArrowRight') walkProfile(1);
       if (e.key === 'Escape')     closeProfile();
+    } else if (document.getElementById('fractalModal').classList.contains('show')) {
+      if (e.key === 'Escape')     closeFractalModal();
     }
   });
 
@@ -1234,7 +2038,7 @@
     const over = STORY_OVERRIDES[n];
     const narrName = pickNarrator(rec);
     const narrImg  = getCharImage(narrName);
-    const diff = currentDiff;
+    const diff = 3; // Always show full profile details to encourage sandbox exploration
 
     document.getElementById('profileNavLabel').textContent = `${n} of 120`;
 
@@ -1427,6 +2231,9 @@
         <img src="${narrImg}" alt="${narrName}">
         <div class="narrator-bubble">${injectInlineIcons(story)}</div>
       </div>
+      <button class="primary-btn" onclick="openFractalModal(${n})" style="margin: 0 auto 14px; width: 100%; justify-content: center; font-size: 0.95rem; border-radius: 20px; box-shadow: 0 4px 18px oklch(70% 0.15 200 / 0.3);">
+        🌀 Show Number Factor Fractal
+      </button>
       <div class="sub-card">
         <h3 style="font-size:.8rem;">Properties</h3>
         <div class="badge-row">${badgeHtml}</div>
@@ -2000,6 +2807,166 @@
       drawSeqGraph(seqState.terms, seqState.answered ? seqState.next : null);
     }
   });
+
+  // ═══════════════════════════════════════════════════════════════════
+  // ROMAN NUMERAL DECODER MODE
+  // ═══════════════════════════════════════════════════════════════════
+  let romanDiff = 0;
+  let _romanKeypadCtrl = null;
+  let romanQ = null;
+  let romanUsedHelp = false;
+
+  function arabicToRoman(num) {
+    const val = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1];
+    const syb = ["M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"];
+    let roman = "";
+    for (let i = 0; i < val.length; i++) {
+      while (num >= val[i]) {
+        roman += syb[i];
+        num -= val[i];
+      }
+    }
+    return roman;
+  }
+
+  function romanToArabic(roman) {
+    const map = { M: 1000, D: 500, C: 100, L: 50, X: 10, V: 5, I: 1 };
+    let arabic = 0;
+    for (let i = 0; i < roman.length; i++) {
+      const current = map[roman[i]];
+      const next = map[roman[i + 1]];
+      if (next && current < next) {
+        arabic += next - current;
+        i++;
+      } else {
+        arabic += current;
+      }
+    }
+    return arabic;
+  }
+
+  function startRomanMode() {
+    setRomanDiff(romanDiff);
+  }
+
+  function setRomanDiff(d) {
+    romanDiff = d;
+    for (let i = 0; i <= 2; i++) {
+      const btn = document.getElementById('romanDiff' + i);
+      if (btn) {
+        btn.classList.toggle('active', i === d);
+        btn.classList.toggle('nav-pulse', i !== d);
+      }
+    }
+    nextRomanQ();
+  }
+
+  function nextRomanQ() {
+    romanUsedHelp = false;
+    document.getElementById('romanFeedback').textContent = '';
+    document.getElementById('romanHintBtn').style.display = 'inline-flex';
+    document.getElementById('romanAnswer').textContent = '_';
+
+    if (_romanKeypadCtrl) _romanKeypadCtrl.destroy();
+
+    const max = romanDiff === 0 ? 50 : romanDiff === 1 ? 100 : 1000;
+    const n = Math.floor(Math.random() * (max - 1)) + 2; // from 2 to max
+
+    const romanStr = arabicToRoman(n);
+    const dir = Math.random() < 0.5 ? 'toRoman' : 'toArabic';
+
+    const dogNames = ['Hairy Maclary','Bottomley Potts','Hercules Morse','Muffin McLay','Bitzer Maloney','Schnitzel von Krumm','Slinky Malinki','Scarface Claw'];
+    const dogName = dogNames[Math.floor(Math.random() * dogNames.length)];
+    document.getElementById('romanNarrImg').src = getCharImage(dogName);
+    document.getElementById('romanNarrSpeech').textContent = "Can you decode this Roman numeral? 🏛️";
+
+    let qText = '';
+    let correctAnswer = '';
+    let hintText = '';
+
+    if (dir === 'toRoman') {
+      // Arabic to Roman (Choice buttons)
+      document.getElementById('romanChoices').style.display = 'grid';
+      document.getElementById('romanKeypadArea').style.display = 'none';
+
+      correctAnswer = romanStr;
+      qText = `How do you write the number <strong style="font-size:1.4em;color:var(--area-num);">${n}</strong> in Roman Numerals?`;
+
+      // Generate distractors
+      const choicesSet = new Set([romanStr]);
+      const choices = [romanStr];
+      while (choices.length < 4) {
+        const offset = Math.floor(Math.random() * 9) - 4; // -4 to +4
+        const dn = Math.max(1, n + offset);
+        const dr = arabicToRoman(dn);
+        if (!choicesSet.has(dr)) {
+          choicesSet.add(dr);
+          choices.push(dr);
+        }
+      }
+      const shuffledChoices = shuffle(choices);
+      document.getElementById('romanChoices').innerHTML = shuffledChoices.map(c => `
+        <button class="choice-btn" onclick="checkRomanAnswer('${c}', this)">${c}</button>
+      `).join('');
+    } else {
+      // Roman to Arabic (Keypad)
+      document.getElementById('romanChoices').style.display = 'none';
+      document.getElementById('romanKeypadArea').style.display = 'block';
+
+      _romanKeypadCtrl = makeKeypad('romanKeypadGrid', 'romanAnswer', checkRomanKeypadAnswer);
+      correctAnswer = String(n);
+      qText = `What number does the Roman numeral <strong style="font-size:1.4em;color:var(--purple);">${romanStr}</strong> represent?`;
+    }
+
+    hintText = `Here is a guide to Roman Numeral values:<br><strong>I = 1, V = 5, X = 10, L = 50, C = 100, D = 500, M = 1000</strong>.<br>If a smaller symbol comes before a larger one (like IV), you subtract it (5 - 1 = 4). Otherwise, add them (VI = 5 + 1 = 6).`;
+
+    romanQ = { n, romanStr, dir, correctAnswer, hintText };
+    document.getElementById('romanQuestion').innerHTML = qText;
+  }
+
+  function checkRomanAnswer(ans, btn) {
+    if (!romanQ) return;
+    document.querySelectorAll('#romanChoices .choice-btn').forEach(b => b.disabled = true);
+    const ok = ans === romanQ.correctAnswer;
+    btn.classList.add(ok ? 'correct' : 'incorrect');
+    document.querySelectorAll('#romanChoices .choice-btn').forEach(b => {
+      if (b.textContent.trim() === romanQ.correctAnswer) b.classList.add('correct');
+    });
+
+    const fb = document.getElementById('romanFeedback');
+    if (ok) {
+      fb.innerHTML = `✅ Excellent! <strong style="color:#22c55e;">${romanQ.n}</strong> is indeed written as <strong style="color:#22c55e;">${romanQ.correctAnswer}</strong>!`;
+      fb.style.color = 'var(--green)';
+      bumpCorrect(romanUsedHelp, updateStatsDisplay);
+    } else {
+      fb.innerHTML = `Ooh! Not quite. The correct Roman numeral for ${romanQ.n} is <strong style="color:#22c55e;">${romanQ.correctAnswer}</strong>.`;
+      fb.style.color = 'var(--red)';
+      bumpWrong(updateStatsDisplay);
+    }
+  }
+
+  function checkRomanKeypadAnswer(ans) {
+    if (!romanQ) return;
+    const ok = String(ans) === romanQ.correctAnswer;
+    const fb = document.getElementById('romanFeedback');
+    if (ok) {
+      fb.innerHTML = `✅ Spot on! <strong style="color:#22c55e;">${romanQ.romanStr}</strong> represents the number <strong style="color:#22c55e;">${romanQ.n}</strong>!`;
+      fb.style.color = 'var(--green)';
+      bumpCorrect(romanUsedHelp, updateStatsDisplay);
+    } else {
+      fb.innerHTML = `Ooh! Not quite. ${romanQ.romanStr} is <strong style="color:#22c55e;">${romanQ.n}</strong>.`;
+      fb.style.color = 'var(--red)';
+      bumpWrong(updateStatsDisplay);
+      if (_romanKeypadCtrl) _romanKeypadCtrl.reset();
+    }
+  }
+
+  function romanShowHint() {
+    if (!romanQ) return;
+    romanUsedHelp = true;
+    document.getElementById('romanFeedback').innerHTML = `<div style="font-size:.82rem;line-height:1.5;color:var(--text2);background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.3);border-radius:12px;padding:10px;text-align:left;">💡 <strong>Hint:</strong><br>${romanQ.hintText}</div>`;
+    playSound('click');
+  }
 
   // ═══════════════════════════════════════════════════════════════════
   // INIT

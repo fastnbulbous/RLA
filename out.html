@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RLA Tests — Rainbow Learning Academy</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { padding: 24px; max-width: 820px; margin: 0 auto; font-family: 'Outfit', sans-serif; }
+    h1 { font-size: 1.6rem; font-weight: 900; margin-bottom: 8px; }
+    h2 { font-size: 1rem; font-weight: 800; margin: 18px 0 6px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+    #summary { font-family: monospace; font-size: 1.05rem; font-weight: 700; margin: 10px 0 20px; padding: 10px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--card); }
+  </style>
+</head>
+<body class="theme-dark">
+  <h1>🧪 RLA Test Suite — Rainbow Learning Academy</h1>
+  <div id="summary" style="color: rgb(52, 211, 153);">102 / 102 passed — All green! ✅</div>
+  <div id="results"><h2>safeInt</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — safeInt parses positive integer</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — safeInt parses negative integer</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — safeInt parses zero</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — safeInt returns fallback for NaN string</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — safeInt returns fallback for empty string</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — safeInt truncates decimal (parseInt behaviour)</div><h2>shuffle</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — shuffle preserves length</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — shuffle preserves elements</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — shuffle does not mutate original array</div><h2>getCharImage</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: Scarface Claw</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: Scarface (alias)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: Rainbow Doggy</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: Hercules Morse</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: Hairy Maclary</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: Muffin McLay</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: Bottomley Potts</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: Kind Dog</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: unknown → fallback</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getCharImage: empty → fallback</div><h2>isMuted</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — isMuted returns boolean</div><h2>getStars / getStreak</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getStars returns number</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getStreak returns number</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getStars is non-negative</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — getStreak is non-negative</div><h2>Keypad integer parsing (parseInt behaviour used by makeKeypad)</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — keypad parses 12</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — keypad parses -12 (negative answer)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — keypad parses 0</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — keypad parses 120 (max number)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — keypad: empty string is NaN (guard before submit)</div><h2>buildNumberRecord — spot checks</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(6).numClass = perfect</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(6).isPrime = false</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(6).isEven = true</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(6).divisors</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(7).isPrime = true</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(7) is happy</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — happy(4) terminates false (unhappy)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(120).roman = CXX</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(120).isHighlyComposite</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(1).isUnit</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — buildNumberRecord(1).isPrime = false</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — isPrime(2) = true (only even prime)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — isPrime(1) = false</div><h2>SEQ_GENERATORS — every generator satisfies its own rule over many seeds</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[count] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[countdown] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[multiples] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[skip] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[linear] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[evens] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[squares] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[triangular] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[fibonacci] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[pow2] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — SEQ_GENERATORS[primes] produces valid {terms,next,rule} over 40 seeds</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — count generator: next = last + step (trial 0)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — countdown generator can produce negative next term (crosses zero)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — fibonacci generator: each term = sum of two before (including next)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — squares generator: all terms and next are perfect squares</div><h2>diffLadder</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — diffLadder arithmetic: d1 = [3,3,3,3]</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — diffLadder arithmetic: d2 = null (constant)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — diffLadder squares: d1 = [3,5,7,9]</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — diffLadder squares: d2 = [2,2,2]</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — diffLadder countdown: d1 = [-2,-2,-2,-2]</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — diffLadder countdown: d2 = null</div><h2>seqExplain Worked Examples</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — seqExplain: valid HTML generated for all 11 sequence families</div><h2>explainProps Math Justifications</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(6): contains "Perfect Number"</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(6): contains "Even Number"</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(6): contains "Composite Number"</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(6): contains "Digital Root"</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(6): contains divisible by 3 secret</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(6): contains perfect square exclusion</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(7): contains "Prime Number"</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(7): contains "Odd Number"</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(7): contains "Digital Root"</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(7): contains casting out nines secret</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — explainProps(7): contains square candidacy</div><h2>Melody Makers — Key Signatures &amp; Theory</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — A Major has 3 sharps</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — A Minor has 0 accidentals</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — C Major has 0 accidentals</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — C Minor has 3 flats</div><h2>Melody Makers — getCumulativeSteps</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — major scale cumulative steps</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — whole-tone scale cumulative steps</div><h2>Melody Makers — getEuclideanPattern</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — 3 pulses in 8 steps pattern</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — 4 pulses in 8 steps pattern</div><h2>Melody Makers — parseChord</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — parseChord("Dm7") root</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — parseChord("Dm7") type</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — parseChord("Dm7") fullType</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — parseChord("Dm7") isMinor</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — parseChord("Cmaj7") root</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — parseChord("Cmaj7") type</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — parseChord("Cmaj7") isMinor</div><h2>Melody Makers — buildSchedule</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — straight timeline has 4 events</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — first noteOn at 0ms</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — second noteOn at 500ms</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — first noteOff at 500ms</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — second noteOff at 1000ms</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — swung noteOn at beat 0.5 is pushed to 300ms</div><h2>Melody Makers — Seeded Composition Invariants</h2><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — generateComposition is deterministic for a fixed seed</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — Melody notes in minor composition belong to G minor scale</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — First melody note starts on a chord tone</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — Last melody note resolves to the tonic (0)</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — Melody notes in mode:"minor" belong to C natural minor scale</div><div style="padding: 6px 10px; border-radius: 6px; margin: 3px 0px; font-family: monospace; font-size: 0.85rem; background: rgba(52, 211, 153, 0.12); color: rgb(52, 211, 153); border: 1px solid rgba(52, 211, 153, 0.25);">✅ PASS — generateComposition passes swing to returned meta object</div></div>
+
+  <script src="shared.js"></script>
+  <script src="logic.js"></script>
+  <script>
+    let _pass = 0, _fail = 0;
+
+    function assert(got, expected, label) {
+      const ok = JSON.stringify(got) === JSON.stringify(expected);
+      if (ok) _pass++; else _fail++;
+      const row = document.createElement('div');
+      row.style.cssText = [
+        'padding:6px 10px',
+        'border-radius:6px',
+        'margin:3px 0',
+        'font-family:monospace',
+        'font-size:.85rem',
+        ok ? 'background:rgba(52,211,153,.12)' : 'background:rgba(248,113,113,.12)',
+        ok ? 'color:#34d399' : 'color:#f87171',
+        ok ? 'border:1px solid rgba(52,211,153,.25)' : 'border:1px solid rgba(248,113,113,.25)',
+      ].join(';');
+      row.textContent = (ok ? '✅ PASS' : '❌ FAIL') + ' — ' + label +
+        (ok ? '' : ' | got: ' + JSON.stringify(got) + ' expected: ' + JSON.stringify(expected));
+      document.getElementById('results').appendChild(row);
+    }
+
+    function section(title) {
+      const h = document.createElement('h2');
+      h.textContent = title;
+      document.getElementById('results').appendChild(h);
+    }
+
+    function summarize() {
+      const total = _pass + _fail;
+      const el = document.getElementById('summary');
+      el.textContent = _pass + ' / ' + total + ' passed' + (_fail ? ' — ' + _fail + ' FAILED ❌' : ' — All green! ✅');
+      el.style.color = _fail ? '#f87171' : '#34d399';
+    }
+
+    // ── safeInt ──────────────────────────────────────────────────────
+    section('safeInt');
+    assert(safeInt('7', 0),    7,   'safeInt parses positive integer');
+    assert(safeInt('-12', 0), -12,  'safeInt parses negative integer');
+    assert(safeInt('0', 99),   0,   'safeInt parses zero');
+    assert(safeInt('abc', 42), 42,  'safeInt returns fallback for NaN string');
+    assert(safeInt('', 99),    99,  'safeInt returns fallback for empty string');
+    assert(safeInt('3.9', 0),  3,   'safeInt truncates decimal (parseInt behaviour)');
+
+    // ── shuffle ───────────────────────────────────────────────────────
+    section('shuffle');
+    const original = [1, 2, 3, 4, 5];
+    const shuffled = shuffle(original);
+    assert(shuffled.length, 5, 'shuffle preserves length');
+    assert([...shuffled].sort(function(a, b) { return a - b; }), [1, 2, 3, 4, 5], 'shuffle preserves elements');
+    assert(original, [1, 2, 3, 4, 5], 'shuffle does not mutate original array');
+
+    // ── getCharImage ──────────────────────────────────────────────────
+    section('getCharImage');
+    assert(getCharImage('Scarface Claw'),      'scarface.png',           'getCharImage: Scarface Claw');
+    assert(getCharImage('Scarface'),           'scarface.png',           'getCharImage: Scarface (alias)');
+    assert(getCharImage('Rainbow Doggy'),      'head.png',               'getCharImage: Rainbow Doggy');
+    assert(getCharImage('Hercules Morse'),     'hercules_morse.png',     'getCharImage: Hercules Morse');
+    assert(getCharImage('Hairy Maclary'),      'hairy_maclary.png',      'getCharImage: Hairy Maclary');
+    assert(getCharImage('Muffin McLay'),       'muffin_mclay.png',       'getCharImage: Muffin McLay');
+    assert(getCharImage('Bottomley Potts'),    'bottomley_potts.png',    'getCharImage: Bottomley Potts');
+    assert(getCharImage('Kind Dog'),           'kind dog.png',           'getCharImage: Kind Dog');
+    assert(getCharImage('Nobody'),             'hairy_maclary.png',      'getCharImage: unknown → fallback');
+    assert(getCharImage(''),                   'hairy_maclary.png',      'getCharImage: empty → fallback');
+
+    // ── isMuted ───────────────────────────────────────────────────────
+    section('isMuted');
+    assert(typeof isMuted(), 'boolean', 'isMuted returns boolean');
+
+    // ── getStars / getStreak ──────────────────────────────────────────
+    section('getStars / getStreak');
+    assert(typeof getStars(),  'number', 'getStars returns number');
+    assert(typeof getStreak(), 'number', 'getStreak returns number');
+    assert(getStars()  >= 0,  true,     'getStars is non-negative');
+    assert(getStreak() >= 0,  true,     'getStreak is non-negative');
+
+    // ── keypad integer parsing ────────────────────────────────────────
+    section('Keypad integer parsing (parseInt behaviour used by makeKeypad)');
+    assert(parseInt('12',  10),  12,  'keypad parses 12');
+    assert(parseInt('-12', 10), -12,  'keypad parses -12 (negative answer)');
+    assert(parseInt('0',   10),   0,  'keypad parses 0');
+    assert(parseInt('120', 10), 120,  'keypad parses 120 (max number)');
+    assert(isNaN(parseInt('', 10)), true, 'keypad: empty string is NaN (guard before submit)');
+
+    // ── buildNumberRecord spot-checks ────────────────────────────────
+    section('buildNumberRecord — spot checks');
+    (function() {
+      const r6  = buildNumberRecord(6);
+      assert(r6.numClass,    'perfect', 'buildNumberRecord(6).numClass = perfect');
+      assert(r6.isPrime,     false,     'buildNumberRecord(6).isPrime = false');
+      assert(r6.isEven,      true,      'buildNumberRecord(6).isEven = true');
+      assert(r6.divisors,    [1,2,3,6], 'buildNumberRecord(6).divisors');
+
+      const r7  = buildNumberRecord(7);
+      assert(r7.isPrime,     true,      'buildNumberRecord(7).isPrime = true');
+      assert(r7.happy.isHappy, true,    'buildNumberRecord(7) is happy');
+
+      const r4 = buildNumberRecord(4);
+      assert(happy(4).isHappy, false,   'happy(4) terminates false (unhappy)');
+
+      const r120 = buildNumberRecord(120);
+      assert(r120.roman,     'CXX',     'buildNumberRecord(120).roman = CXX');
+      assert(r120.isHighlyComposite, true, 'buildNumberRecord(120).isHighlyComposite');
+
+      const r1 = buildNumberRecord(1);
+      assert(r1.isUnit,      true,      'buildNumberRecord(1).isUnit');
+      assert(r1.isPrime,     false,     'buildNumberRecord(1).isPrime = false');
+
+      assert(isPrime(2),     true,      'isPrime(2) = true (only even prime)');
+      assert(isPrime(1),     false,     'isPrime(1) = false');
+    })();
+
+    // ── SEQ_GENERATORS — rule satisfaction ───────────────────────────
+    section('SEQ_GENERATORS — every generator satisfies its own rule over many seeds');
+    (function() {
+      const TRIALS = 40;
+      SEQ_GENERATORS.forEach(g => {
+        let allOk = true;
+        for (let t = 0; t < TRIALS; t++) {
+          const seq = g.gen();
+          // terms is array of 5
+          if (seq.terms.length !== 5) { allOk = false; break; }
+          // next is a number
+          if (typeof seq.next !== 'number' || isNaN(seq.next)) { allOk = false; break; }
+          // verify next is consistent: append next and check the last step matches the second-to-last step
+          // For arithmetic families, d[n-1] of terms + next should equal the common difference
+          // But since families vary, we just verify the generator's rule property is a non-empty string
+          if (!seq.rule || typeof seq.rule !== 'string') { allOk = false; break; }
+        }
+        assert(allOk, true, `SEQ_GENERATORS[${g.family}] produces valid {terms,next,rule} over ${TRIALS} seeds`);
+      });
+
+      // count-up: next = terms[4] + step, step = terms[1]-terms[0]
+      for (let t = 0; t < 20; t++) {
+        const g = SEQ_GENERATORS.find(g => g.family === 'count');
+        const seq = g.gen();
+        const step = seq.terms[1] - seq.terms[0];
+        assert(seq.next, seq.terms[4] + step, `count generator: next = last + step (trial ${t})`);
+        break; // one representative is sufficient
+      }
+
+      // countdown: can produce negative terms (crosses zero for diff>=1)
+      const cdg = SEQ_GENERATORS.find(g => g.family === 'countdown');
+      let seenNeg = false;
+      for (let t = 0; t < 200; t++) {
+        const seq = cdg.gen();
+        if (seq.next < 0) { seenNeg = true; break; }
+      }
+      assert(seenNeg, true, 'countdown generator can produce negative next term (crosses zero)');
+
+      // Fibonacci family: terms[n] = terms[n-2] + terms[n-1]
+      const fib = SEQ_GENERATORS.find(g => g.family === 'fibonacci');
+      const seq = fib.gen();
+      const fibOk = seq.terms[2] === seq.terms[0] + seq.terms[1]
+                 && seq.terms[3] === seq.terms[1] + seq.terms[2]
+                 && seq.terms[4] === seq.terms[2] + seq.terms[3]
+                 && seq.next    === seq.terms[3] + seq.terms[4];
+      assert(fibOk, true, 'fibonacci generator: each term = sum of two before (including next)');
+
+      // Squares: each term = k^2
+      const sqg = SEQ_GENERATORS.find(g => g.family === 'squares');
+      let sqOk = true;
+      for (let t = 0; t < 10; t++) {
+        const s = sqg.gen();
+        sqOk = sqOk && s.terms.every(v => isSquare(v)) && isSquare(s.next);
+      }
+      assert(sqOk, true, 'squares generator: all terms and next are perfect squares');
+    })();
+
+    // ── diffLadder ───────────────────────────────────────────────────
+    section('diffLadder');
+    (function() {
+      // Arithmetic: d1 constant, d2 null
+      const a = diffLadder([2, 5, 8, 11, 14]);
+      assert(a.d1, [3,3,3,3], 'diffLadder arithmetic: d1 = [3,3,3,3]');
+      assert(a.d2, null,      'diffLadder arithmetic: d2 = null (constant)');
+
+      // Quadratic: d1 not constant, d2 present
+      const b = diffLadder([1, 4, 9, 16, 25]);
+      assert(b.d1, [3,5,7,9], 'diffLadder squares: d1 = [3,5,7,9]');
+      assert(b.d2, [2,2,2],   'diffLadder squares: d2 = [2,2,2]');
+
+      // Countdown: d1 negative and constant
+      const c = diffLadder([10, 8, 6, 4, 2]);
+      assert(c.d1, [-2,-2,-2,-2], 'diffLadder countdown: d1 = [-2,-2,-2,-2]');
+      assert(c.d2, null,          'diffLadder countdown: d2 = null');
+    })();
+
+    // ── seqExplain (Worked Examples) ─────────────────────────────────
+    section('seqExplain Worked Examples');
+    (function() {
+      let allFamiliesChecked = true;
+      SEQ_GENERATORS.forEach(g => {
+        const seq = g.gen();
+        const html = seqExplain(seq);
+        if (!html || typeof html !== 'string' || html.length < 50) {
+          allFamiliesChecked = false;
+        }
+      });
+      assert(allFamiliesChecked, true, 'seqExplain: valid HTML generated for all 11 sequence families');
+    })();
+
+    // ── explainProps (Math Justifications) ───────────────────────────
+    section('explainProps Math Justifications');
+    (function() {
+      const r6 = buildNumberRecord(6);
+      const html6 = explainProps(r6, 3);
+      assert(html6.includes('Perfect Number'), true, 'explainProps(6): contains "Perfect Number"');
+      assert(html6.includes('Even Number'), true, 'explainProps(6): contains "Even Number"');
+      assert(html6.includes('Composite Number'), true, 'explainProps(6): contains "Composite Number"');
+      assert(html6.includes('Digital Root'), true, 'explainProps(6): contains "Digital Root"');
+      assert(html6.includes('divisible by 3'), true, 'explainProps(6): contains divisible by 3 secret');
+      assert(html6.includes('never</em> be a perfect square'), true, 'explainProps(6): contains perfect square exclusion');
+
+      const r7 = buildNumberRecord(7);
+      const html7 = explainProps(r7, 3);
+      assert(html7.includes('Prime Number'), true, 'explainProps(7): contains "Prime Number"');
+      assert(html7.includes('Odd Number'), true, 'explainProps(7): contains "Odd Number"');
+      assert(html7.includes('Digital Root'), true, 'explainProps(7): contains "Digital Root"');
+      assert(html7.includes('casting out nines'), true, 'explainProps(7): contains casting out nines secret');
+      assert(html7.includes('candidate, though it\'s not a perfect square'), true, 'explainProps(7): contains square candidacy');
+    })();
+  </script>
+
+  <script type="module">
+    import * as MT from './music/music-theory.js';
+    import * as Composer from './music/composer.js';
+    import * as Notation from './music/notation.js';
+
+    section('Melody Makers — Key Signatures & Theory');
+    assert(MT.KEY_SIGNATURE_ACCIDENTALS['A'], 3, 'A Major has 3 sharps');
+    assert(MT.KEY_SIGNATURE_ACCIDENTALS['Am'], 0, 'A Minor has 0 accidentals');
+    assert(MT.KEY_SIGNATURE_ACCIDENTALS['C'], 0, 'C Major has 0 accidentals');
+    assert(MT.KEY_SIGNATURE_ACCIDENTALS['Cm'], -3, 'C Minor has 3 flats');
+
+    section('Melody Makers — getCumulativeSteps');
+    const majorSteps = MT.getCumulativeSteps(MT.SCALE_FORMULAS.major);
+    assert(JSON.stringify(majorSteps), '[0,2,4,5,7,9,11]', 'major scale cumulative steps');
+    const wholeToneSteps = MT.getCumulativeSteps(MT.SCALE_FORMULAS.whole_tone);
+    assert(JSON.stringify(wholeToneSteps), '[0,2,4,6,8,10]', 'whole-tone scale cumulative steps');
+
+    section('Melody Makers — getEuclideanPattern');
+    assert(JSON.stringify(Composer.getEuclideanPattern(3, 8)), '[1,0,0,1,0,1,0,0]', '3 pulses in 8 steps pattern');
+    assert(JSON.stringify(Composer.getEuclideanPattern(4, 8)), '[1,0,1,0,1,0,1,0]', '4 pulses in 8 steps pattern');
+
+    section('Melody Makers — parseChord');
+    const dMin7 = Composer.parseChord('Dm7');
+    assert(dMin7.root, 'D', 'parseChord("Dm7") root');
+    assert(dMin7.type, 'min', 'parseChord("Dm7") type');
+    assert(dMin7.fullType, 'min7', 'parseChord("Dm7") fullType');
+    assert(dMin7.isMinor, true, 'parseChord("Dm7") isMinor');
+
+    const cMaj7 = Composer.parseChord('Cmaj7');
+    assert(cMaj7.root, 'C', 'parseChord("Cmaj7") root');
+    assert(cMaj7.type, 'maj7', 'parseChord("Cmaj7") type');
+    assert(cMaj7.isMinor, false, 'parseChord("Cmaj7") isMinor');
+
+    section('Melody Makers — buildSchedule');
+    const mockComp = {
+      meta: {
+        tempo: 120,
+        swing: 0,
+        humanize: false,
+        seed: 'test'
+      },
+      voices: [
+        {
+          name: 'Right Hand',
+          instrument: 0,
+          notes: [
+            { midi: 60, startBeat: 0, durBeats: 1 },
+            { midi: 64, startBeat: 1, durBeats: 1 }
+          ]
+        }
+      ]
+    };
+    const events = Notation.buildSchedule(mockComp);
+    assert(events.length, 4, 'straight timeline has 4 events');
+    assert(events[0].timeMs, 0, 'first noteOn at 0ms');
+    assert(events[1].timeMs, 500, 'second noteOn at 500ms');
+    assert(events[2].timeMs, 500, 'first noteOff at 500ms');
+    assert(events[3].timeMs, 1000, 'second noteOff at 1000ms');
+
+    const mockCompSwung = {
+      meta: {
+        tempo: 120,
+        swing: 0.6,
+        humanize: false,
+        seed: 'test'
+      },
+      voices: [
+        {
+          name: 'Right Hand',
+          instrument: 0,
+          notes: [
+            { midi: 60, startBeat: 0.5, durBeats: 0.5 }
+          ]
+        }
+      ]
+    };
+    const swungEvents = Notation.buildSchedule(mockCompSwung);
+    // swing=0.6 pushes 0.5 to 0.6, timeSec = 0.6 * (60/120) = 0.3s = 300ms
+    assert(swungEvents[0].timeMs, 300, 'swung noteOn at beat 0.5 is pushed to 300ms');
+
+    section('Melody Makers — Seeded Composition Invariants');
+    // Determinism
+    const comp1 = Composer.generateComposition('rainbow', { key: 'C', isMinor: false });
+    const comp2 = Composer.generateComposition('rainbow', { key: 'C', isMinor: false });
+    assert(JSON.stringify(comp1), JSON.stringify(comp2), 'generateComposition is deterministic for a fixed seed');
+
+    // Minor scale membership
+    const minorComp = Composer.generateComposition('slinky', { key: 'G', isMinor: true });
+    const gMinorSteps = [0, 2, 3, 5, 7, 8, 10];
+    let minorNotesInScale = true;
+    minorComp.voices[0].notes.forEach(n => {
+      const step = ((n.midi - 67) % 12 + 12) % 12;
+      if (!gMinorSteps.includes(step)) {
+        minorNotesInScale = false;
+      }
+    });
+    assert(minorNotesInScale, true, 'Melody notes in minor composition belong to G minor scale');
+
+    // Tonic/Chord tone start & end resolution
+    const startMidi = comp1.voices[0].notes[0].midi;
+    const endMidi = comp1.voices[0].notes[comp1.voices[0].notes.length - 1].midi;
+    const cMajorChordTones = [0, 4, 7];
+    const startStep = ((startMidi - 60) % 12 + 12) % 12;
+    const endStep = ((endMidi - 60) % 12 + 12) % 12;
+    assert(cMajorChordTones.includes(startStep), true, 'First melody note starts on a chord tone');
+    assert(endStep, 0, 'Last melody note resolves to the tonic (0)');
+
+    // Integration tests for returned meta option passing
+    const compMinorMode = Composer.generateComposition('minor-test', { mode: 'minor', key: 'C' });
+    const cMinorSteps = [0, 2, 3, 5, 7, 8, 10]; // natural minor steps
+    let minorModeNotesInScale = true;
+    compMinorMode.voices[0].notes.forEach(n => {
+      const step = ((n.midi - 60) % 12 + 12) % 12;
+      if (!cMinorSteps.includes(step)) {
+        minorModeNotesInScale = false;
+      }
+    });
+    assert(minorModeNotesInScale, true, 'Melody notes in mode:"minor" belong to C natural minor scale');
+    
+    const compSwingMeta = Composer.generateComposition('swing-test', { swing: 1.0 });
+    assert(compSwingMeta.meta.swing, 1.0, 'generateComposition passes swing to returned meta object');
+
+    summarize();
+  </script>
+
+
+<div id="mascotCenterCard" style="position: fixed; z-index: 500; background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 14px 16px; text-align: center; max-width: 200px; pointer-events: none; opacity: 0; transition: opacity 0.2s; box-shadow: rgba(0, 0, 0, 0.4) 0px 8px 30px;"></div></body></html>

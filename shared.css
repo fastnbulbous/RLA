@@ -36,18 +36,21 @@
   --area-time-a: var(--candy-green);      --area-time-b: var(--candy-mint);
   --area-num-a:  var(--candy-cyan);       --area-num-b:  var(--candy-blueberry);
   --area-calc-a: var(--candy-strawberry); --area-calc-b: var(--candy-magenta);
+  --area-music-a: var(--candy-grape);     --area-music-b: var(--candy-magenta);
 
   /* Per-area gradients */
   --grad-frac: linear-gradient(120deg in oklch, var(--area-frac-a), var(--area-frac-b));
   --grad-time: linear-gradient(120deg in oklch, var(--area-time-a), var(--area-time-b));
   --grad-num:  linear-gradient(120deg in oklch, var(--area-num-a),  var(--area-num-b));
   --grad-calc: linear-gradient(120deg in oklch, var(--area-calc-a), var(--area-calc-b));
+  --grad-music: linear-gradient(120deg in oklch, var(--area-music-a), var(--area-music-b));
 
   /* Legacy single-color tokens (gradient midpoint) */
   --area-frac: oklch(var(--aL) var(--aC) 95);   /* gold-lemon midpoint */
   --area-time: oklch(var(--aL) var(--aC) 162);  /* green-mint midpoint */
   --area-num:  oklch(var(--aL) var(--aC) 244);  /* cyan-blueberry midpoint */
   --area-calc: oklch(var(--aL) var(--aC) 331);  /* strawberry-magenta midpoint */
+  --area-music: oklch(var(--aL) var(--aC) 308); /* grape-magenta midpoint */
 
   /* Semantic */
   --accent:  var(--area-frac);
@@ -112,16 +115,19 @@ body.theme-light {
   --area-time-a: var(--candy-green);      --area-time-b: var(--candy-mint);
   --area-num-a:  var(--candy-cyan);       --area-num-b:  var(--candy-blueberry);
   --area-calc-a: var(--candy-strawberry); --area-calc-b: var(--candy-magenta);
+  --area-music-a: var(--candy-grape);     --area-music-b: var(--candy-magenta);
 
   --grad-frac: linear-gradient(120deg in oklch, var(--area-frac-a), var(--area-frac-b));
   --grad-time: linear-gradient(120deg in oklch, var(--area-time-a), var(--area-time-b));
   --grad-num:  linear-gradient(120deg in oklch, var(--area-num-a),  var(--area-num-b));
   --grad-calc: linear-gradient(120deg in oklch, var(--area-calc-a), var(--area-calc-b));
+  --grad-music: linear-gradient(120deg in oklch, var(--area-music-a), var(--area-music-b));
 
   --area-frac: oklch(var(--aL) var(--aC) 95);   /* gold-lemon midpoint */
   --area-time: oklch(var(--aL) var(--aC) 162);  /* green-mint midpoint */
   --area-num:  oklch(var(--aL) var(--aC) 244);  /* cyan-blueberry midpoint */
   --area-calc: oklch(var(--aL) var(--aC) 331);  /* strawberry-magenta midpoint */
+  --area-music: oklch(var(--aL) var(--aC) 308); /* grape-magenta midpoint */
 
   --accent:  var(--area-frac);
   --accent2: var(--candy-lemon);
@@ -181,14 +187,17 @@ body.theme-rainbow-doggy {
   --area-time-a: var(--candy-green);      --area-time-b: var(--candy-mint);
   --area-num-a:  var(--candy-cyan);       --area-num-b:  var(--candy-blueberry);
   --area-calc-a: var(--candy-strawberry); --area-calc-b: var(--candy-magenta);
+  --area-music-a: var(--candy-grape);     --area-music-b: var(--candy-magenta);
   --grad-frac: linear-gradient(120deg in oklch, var(--area-frac-a), var(--area-frac-b));
   --grad-time: linear-gradient(120deg in oklch, var(--area-time-a), var(--area-time-b));
   --grad-num:  linear-gradient(120deg in oklch, var(--area-num-a),  var(--area-num-b));
   --grad-calc: linear-gradient(120deg in oklch, var(--area-calc-a), var(--area-calc-b));
+  --grad-music: linear-gradient(120deg in oklch, var(--area-music-a), var(--area-music-b));
   --area-frac: oklch(var(--aL) var(--aC) 95);   /* gold-lemon midpoint */
   --area-time: oklch(var(--aL) var(--aC) 162);  /* green-mint midpoint */
   --area-num:  oklch(var(--aL) var(--aC) 244);  /* cyan-blueberry midpoint */
   --area-calc: oklch(var(--aL) var(--aC) 331);  /* strawberry-magenta midpoint */
+  --area-music: oklch(var(--aL) var(--aC) 308); /* grape-magenta midpoint */
   --accent:  var(--area-frac);
   --accent2: var(--candy-lemon);
   --green:   oklch(var(--aL) var(--aC) 150);
@@ -351,6 +360,7 @@ button:active, .tab-btn:active, .tool-btn:active, .home-btn:active, .kp-btn:acti
 .portal-card.calc::before { background: var(--grad-calc, linear-gradient(to right in oklch, var(--area-calc-a), var(--area-calc-b))); }
 .portal-card.frac::before { background: var(--grad-frac, linear-gradient(to right in oklch, var(--area-frac-a), var(--area-frac-b))); }
 .portal-card.time::before { background: var(--grad-time, linear-gradient(to right in oklch, var(--area-time-a), var(--area-time-b))); }
+.portal-card.music::before { background: var(--grad-music, linear-gradient(to right in oklch, var(--area-music-a), var(--area-music-b))); }
 
 .portal-card:hover { transform: translateY(-10px) scale(1.04); }
 .portal-card:active { transform: scale(.97); }
@@ -358,6 +368,7 @@ button:active, .tab-btn:active, .tool-btn:active, .home-btn:active, .kp-btn:acti
 .portal-card.calc:hover { box-shadow: 0 28px 60px oklch(70% 0.15 331 / .28); border-color: var(--area-calc-a); }
 .portal-card.frac:hover { box-shadow: 0 28px 60px oklch(70% 0.15 95  / .28);  border-color: var(--area-frac-a); }
 .portal-card.time:hover { box-shadow: 0 28px 60px oklch(70% 0.15 162 / .28);  border-color: var(--area-time-a); }
+.portal-card.music:hover { box-shadow: 0 28px 60px oklch(70% 0.15 308 / .28); border-color: var(--area-music-a); }
 
 /* Tool / home button */
 .tool-btn {
@@ -587,3 +598,72 @@ body.user-interacted .nav-pulse {
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
 }
+
+/* ── Standardized Premium Virtual Keypad ── */
+.keypad-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+.keypad-answer-display {
+  background: var(--surface-inset, rgba(0,0,0,0.2));
+  border: 2px solid var(--accent);
+  border-radius: 14px;
+  padding: 12px 24px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 900;
+  font-size: 2.4rem;
+  color: var(--accent);
+  min-width: 120px;
+  text-align: center;
+  letter-spacing: 2px;
+}
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 240px;
+}
+.kp-btn {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 14px 8px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 800;
+  font-size: 1.2rem;
+  color: var(--text1);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: all .15s cubic-bezier(.175,.885,.32,1.275);
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.kp-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--accent);
+  transform: scale(1.04);
+}
+.kp-btn:active {
+  transform: scale(.92);
+}
+.kp-btn.submit {
+  grid-column: span 3;
+  background: linear-gradient(135deg, var(--accent), var(--accent2, var(--accent)));
+  color: var(--on-accent, white);
+  border-color: transparent;
+  font-size: 1rem;
+}
+.kp-btn.submit:hover {
+  filter: brightness(1.1);
+}
+.kp-btn.del {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--accent);
+}
+

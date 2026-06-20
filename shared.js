@@ -7,7 +7,9 @@ const AREA_NAMES = {
   num:  'Number Explorers',
   calc: 'Calculation Crew',
   frac: 'Fraction Friends',
-  time: 'Time Travellers'
+  time: 'Time Travellers',
+  geom: 'Angle & Shape Detective',
+  music: 'Melody Makers'
 };
 
 // ── HELPERS ──────────────────────────────────────────────────────────────────
@@ -562,6 +564,7 @@ function makeKeypad(containerId, displayId, onSubmit, opts) {
   const container = document.getElementById(containerId);
   const display   = document.getElementById(displayId);
   const allowNeg  = opts && opts.allowNegative;
+  const allowDecimal = opts && opts.allowDecimal;
   let current = '';
 
   function updateDisplay() {
@@ -573,26 +576,36 @@ function makeKeypad(containerId, displayId, onSubmit, opts) {
       current = current.slice(0, -1);
     } else if (val === 'neg') {
       if (allowNeg) current = current.startsWith('-') ? current.slice(1) : (current ? '-' + current : '-');
+    } else if (val === '.') {
+      if (allowDecimal && !current.includes('.')) {
+        current = current ? current + '.' : '0.';
+      }
     } else if (val === 'submit') {
       if (current !== '' && current !== '-') {
-        onSubmit(parseInt(current, 10));
+        const valNum = allowDecimal ? parseFloat(current) : parseInt(current, 10);
+        onSubmit(valNum);
         current = '';
         updateDisplay();
       }
       return;
     } else {
-      if (current.length < 5) current += val;
+      if (current.length < 6) current += val;
     }
     updateDisplay();
   }
 
   container.innerHTML = '';
-  const keys = allowNeg
-    ? ['7','8','9','4','5','6','1','2','3','neg','0','submit']
-    : ['7','8','9','4','5','6','1','2','3','del','0','submit'];
+  let keys;
+  if (allowDecimal) {
+    keys = ['7','8','9','4','5','6','1','2','3','.','0','del','submit'];
+  } else if (allowNeg) {
+    keys = ['7','8','9','4','5','6','1','2','3','neg','0','submit'];
+  } else {
+    keys = ['7','8','9','4','5','6','1','2','3','del','0','submit'];
+  }
   keys.forEach(v => {
     const btn = document.createElement('button');
-    btn.className = 'kp-btn' + (v === 'submit' ? ' submit' : (v === 'del' || v === 'neg') ? ' del' : '');
+    btn.className = 'kp-btn' + (v === 'submit' ? ' submit' : (v === 'del' || v === 'neg' || v === '.') ? ' del' : '');
     btn.textContent = v === 'submit' ? '✓ Check' : v === 'del' ? '⌫' : v === 'neg' ? '±' : v;
     btn.addEventListener('click', () => press(v));
     container.appendChild(btn);
@@ -605,6 +618,7 @@ function makeKeypad(containerId, displayId, onSubmit, opts) {
     else if (e.key === 'Backspace') press('del');
     else if (e.key === 'Enter') press('submit');
     else if (e.key === '-' && allowNeg) press('neg');
+    else if (e.key === '.' && allowDecimal) press('.');
   }
   document.addEventListener('keydown', keyHandler);
 
